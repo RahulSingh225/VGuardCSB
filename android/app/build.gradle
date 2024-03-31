@@ -76,7 +76,7 @@ android {
 
     namespace "com.vguardcsb"
     defaultConfig {
-        applicationId "com.vguardcsb"
+        applicationId "com.spacempact.vguardcsb"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
