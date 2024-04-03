@@ -106,6 +106,7 @@ export const Colors = {
   red: '#FF0000',
   coupon_page: '#7798e9',
   grey_light: '#BDBDBD',
+  lightGrey: '#BDBDBD',
   activity_bg_color: '#FFFFFF',
   yellow: '#F0C300',
   transparent_white: '#00FFFFFF',

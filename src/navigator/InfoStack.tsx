@@ -1,11 +1,12 @@
 import React from 'react';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import Info from '../Info';
-import Downloads from '../Downloads';
-import ProductCatalogue from '../ProductCatalogue';
-import VGuardInfo from '../VGuardInfo';
-import colors from '../../../../../../../colors';
-import { Image } from 'react-native';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
+
+import {Image} from 'react-native';
+import {Colors} from '../utils/constants';
+import Info from '../screens/Info/Info';
+import Downloads from '../screens/Info/Downloads';
+import ProductCatalogue from '../screens/Info/ProductCatalogue';
+import VGuardInfo from '../screens/Info/VGuardInfo';
 
 const InfoStack: React.FC = () => {
   const Stack = createNativeStackNavigator();
@@ -14,7 +15,7 @@ const InfoStack: React.FC = () => {
     <Stack.Navigator
       screenOptions={{
         headerStyle: {
-          backgroundColor: colors.yellow,
+          backgroundColor: Colors.yellow,
         },
         headerShown: false,
       }}>
@@ -25,10 +26,11 @@ const InfoStack: React.FC = () => {
           headerShown: true,
           headerRight: () => (
             <Image
-              style={{ width: 70, height: 50 }}
+              style={{width: 70, height: 50}}
               resizeMode="contain"
-              source={require('../../../../../../assets/images/group_910.png')}
-            />),
+              source={require('../assets/images/group_910.png')}
+            />
+          ),
         }}
       />
       <Stack.Screen
@@ -52,10 +54,11 @@ const InfoStack: React.FC = () => {
           headerShown: true,
           headerRight: () => (
             <Image
-              style={{ width: 70, height: 50 }}
+              style={{width: 70, height: 50}}
               resizeMode="contain"
-              source={require('../../../../../../assets/images/group_910.png')}
-            />),
+              source={require('../assets/images/group_910.png')}
+            />
+          ),
         }}
       />
     </Stack.Navigator>

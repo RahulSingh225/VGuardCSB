@@ -1,9 +1,8 @@
 /* eslint-disable react/no-unstable-nested-components */
-import React, {useState} from 'react';
-import HomeScreen from '../pages/HomeScreen';
+import React, {Profiler, useState} from 'react';
+
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import colors from '../../../../colors';
-import {CustomTabHeader} from '../../common/services/BottomTab';
+
 import {
   Image,
   Modal,
@@ -12,25 +11,17 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import LanguagePicker from '../../../components/LanguagePicker';
-import ProfileStack from '../../profile/stack/ProfileStack';
-import ScanStack from '../pages/options/scanQR/stack/ScanStack';
-import RedeemStack from '../pages/options/redeemPoints/stack/RedeemStack';
-import DashboardStack from '../pages/options/dashboard/stack/DashboardStack';
-import SchemesStack from '../pages/options/schemes/stack/SchemesStack';
-import InfoStack from '../pages/options/info/stack/InfoStack';
-import NewStack from '../pages/options/new/stack/NewStack';
-import TicketStack from '../pages/options/ticket/stack/TicketStack';
-import Bank from '../pages/options/bank/Bank';
-import TDS from '../pages/options/TDS/TDS';
-import Engagement from '../pages/options/engagement/Engagement';
-import TDSStatement from '../pages/options/TDSStatement/TDSStatement';
-import UpdatePAN from '../pages/options/pan/UpdatePAN';
-import AirCoolerStack from '../pages/options/airCooler/stack/AirCoolerStack';
-import RedemptionHistory from '../pages/options/redeemPoints/RedemptionHistory';
-import UniqueCodeHistory from '../pages/options/scanQR/pages/UniqueCodeHistory';
-import ProductRegistrationForm from '../pages/options/scanQR/pages/ProductRegistrationForm';
-import ScanCodeReg from '../pages/options/scanQR/pages/ScanCodeReg';
+import { Colors } from '../utils/constants';
+import { CustomTabHeader } from './BottomTab';
+import RedeemStack from './RedeemStack';
+import DashboardStack from './DashboardStack';
+import SchemesStack from './SchemesStack';
+import InfoStack from './InfoStack';
+import TicketStack from './TicketStack';
+import RedemptionHistory from '../screens/Redeem/RedemptionHistory';
+import ProfileStack from './ProfileStack';
+import LanguagePicker from '../components/LanguagePicker';
+
 
 const HomeStack: React.FC = () => {
   type HomeStackParams = {
@@ -73,7 +64,7 @@ const HomeStack: React.FC = () => {
       <Stack.Navigator
         screenOptions={{
           headerStyle: {
-            backgroundColor: colors.yellow,
+            backgroundColor: Colors.yellow,
           },
           headerShown: false,
         }}>
@@ -94,10 +85,12 @@ const HomeStack: React.FC = () => {
         <Stack.Screen name="Redeem Products" component={RedeemStack} />
         <Stack.Screen name="Dashboard" component={DashboardStack} />
         <Stack.Screen name="schemes" component={SchemesStack} />
-        <Stack.Screen name="info" component={InfoStack} />
+        <Stack.Screen name="info" component={
+          InfoStack}
+         />
         <Stack.Screen name="new" component={NewStack} />
         <Stack.Screen name="ticket" component={TicketStack} />
-        <Stack.Screen name="Air Cooler" component={AirCoolerStack} />
+       
         <Stack.Screen
           name="Product Registration Form"
           component={ProductRegistrationForm}
@@ -126,34 +119,8 @@ const HomeStack: React.FC = () => {
             headerShown: true,
           }}
         />
-        <Stack.Screen
-          name="Update PAN"
-          component={UpdatePAN}
-          options={{
-            headerShown: true,
-            headerRight: () => (
-              <Image
-                style={{width: 70, height: 50}}
-                resizeMode="contain"
-                source={require('../../../assets/images/group_910.png')}
-              />
-            ),
-          }}
-        />
-        <Stack.Screen
-          name="Update Bank"
-          component={Bank}
-          options={{
-            headerShown: true,
-            headerRight: () => (
-              <Image
-                style={{width: 70, height: 50}}
-                resizeMode="contain"
-                source={require('../../../assets/images/group_910.png')}
-              />
-            ),
-          }}
-        />
+       
+      
         <Stack.Screen
           name="TDS Certificate"
           component={TDS}
@@ -163,25 +130,12 @@ const HomeStack: React.FC = () => {
               <Image
                 style={{width: 70, height: 50}}
                 resizeMode="contain"
-                source={require('../../../assets/images/group_910.png')}
+                source={require('../assets/images/group_910.png')}
               />
             ),
           }}
         />
-        <Stack.Screen
-          name="Engagement"
-          component={Engagement}
-          options={{
-            headerShown: true,
-            headerRight: () => (
-              <Image
-                style={{width: 70, height: 50}}
-                resizeMode="contain"
-                source={require('../../../assets/images/group_910.png')}
-              />
-            ),
-          }}
-        />
+       
         <Stack.Screen
           name="TDS Statement"
           component={TDSStatement}
@@ -191,7 +145,7 @@ const HomeStack: React.FC = () => {
               <Image
                 style={{width: 70, height: 50}}
                 resizeMode="contain"
-                source={require('../../../assets/images/group_910.png')}
+                source={require('../assets/images/group_910.png')}
               />
             ),
           }}
@@ -223,7 +177,7 @@ const HomeStack: React.FC = () => {
 const styles = StyleSheet.create({
   languageContainer: {
     borderWidth: 1,
-    borderColor: colors.black,
+    borderColor: Colors.black,
     paddingVertical: 2,
     paddingHorizontal: 5,
     borderRadius: 5,
@@ -234,12 +188,12 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: colors.white,
+    backgroundColor: Colors.white,
   },
   closeText: {
     marginTop: 20,
-    color: colors.black,
-    backgroundColor: colors.yellow,
+    color: Colors.black,
+    backgroundColor: Colors.yellow,
     paddingHorizontal: 15,
     paddingVertical: 5,
     borderRadius: 5,

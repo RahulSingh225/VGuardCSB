@@ -1,9 +1,10 @@
 import React from 'react';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import TicketHistory from '../TicketHistory';
-import Ticket from '../Ticket';
-import colors from '../../../../../../../colors';
-import { Image } from 'react-native';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
+
+import {Image} from 'react-native';
+import {Colors} from '../utils/constants';
+import Ticket from '../screens/Ticket/Ticket';
+import TicketHistory from '../screens/Ticket/TicketHistory';
 
 const TicketStack: React.FC = () => {
   const Stack = createNativeStackNavigator();
@@ -12,11 +13,10 @@ const TicketStack: React.FC = () => {
     <Stack.Navigator
       screenOptions={{
         headerStyle: {
-          backgroundColor: colors.yellow,
+          backgroundColor: Colors.yellow,
         },
         headerShown: false,
-      }}
-    >
+      }}>
       <Stack.Screen
         name="Raise Tickets"
         component={Ticket}
@@ -24,10 +24,11 @@ const TicketStack: React.FC = () => {
           headerShown: true,
           headerRight: () => (
             <Image
-              style={{ width: 70, height: 50 }}
+              style={{width: 70, height: 50}}
               resizeMode="contain"
-              source={require('../../../../../../assets/images/group_910.png')}
-            />),
+              source={require('../assets/images/group_910.png')}
+            />
+          ),
         }}
       />
       <Stack.Screen
@@ -37,10 +38,11 @@ const TicketStack: React.FC = () => {
           headerShown: true,
           headerRight: () => (
             <Image
-              style={{ width: 70, height: 50 }}
+              style={{width: 70, height: 50}}
               resizeMode="contain"
-              source={require('../../../../../../assets/images/group_910.png')}
-            />),
+              source={require('../assets/images/group_910.png')}
+            />
+          ),
         }}
       />
     </Stack.Navigator>

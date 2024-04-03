@@ -1,12 +1,13 @@
 import React from 'react';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import Schemes from '../Schemes';
-import ProductWise from '../ProductWise';
-import ActiveScheme from '../ActiveScheme';
-import SpecialCombo from '../SpecialCombo';
-import ProductWiseOfferTable from '../ProductWiseOfferTable';
-import colors from '../../../../../../../colors';
-import { Image } from 'react-native';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
+
+import {Image} from 'react-native';
+import {Colors} from '../utils/constants';
+import Schemes from '../screens/Scheme/Schemes';
+import ProductWise from '../screens/Scheme/ProductWise';
+import ActiveScheme from '../screens/Scheme/ActiveScheme';
+import SpecialCombo from '../screens/Scheme/SpecialCombo';
+import ProductWiseOfferTable from '../screens/Scheme/ProductWiseOfferTable';
 
 const SchemesStack: React.FC = () => {
   const Stack = createNativeStackNavigator();
@@ -15,7 +16,7 @@ const SchemesStack: React.FC = () => {
     <Stack.Navigator
       screenOptions={{
         headerStyle: {
-          backgroundColor: colors.yellow,
+          backgroundColor: Colors.yellow,
         },
         headerShown: false,
       }}>
@@ -26,10 +27,11 @@ const SchemesStack: React.FC = () => {
           headerShown: true,
           headerRight: () => (
             <Image
-              style={{ width: 70, height: 50 }}
+              style={{width: 70, height: 50}}
               resizeMode="contain"
-              source={require('../../../../../../assets/images/group_910.png')}
-            />),
+              source={require('../assets/images/group_910.png')}
+            />
+          ),
         }}
       />
       <Stack.Screen
@@ -46,10 +48,11 @@ const SchemesStack: React.FC = () => {
           headerShown: true,
           headerRight: () => (
             <Image
-              style={{ width: 70, height: 50 }}
+              style={{width: 70, height: 50}}
               resizeMode="contain"
-              source={require('../../../../../../assets/images/group_910.png')}
-            />),
+              source={require('../assets/images/group_910.png')}
+            />
+          ),
         }}
       />
       <Stack.Screen

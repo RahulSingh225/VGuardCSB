@@ -1,9 +1,9 @@
-import React, { useEffect } from 'react';
-import { View, Image, StyleSheet } from 'react-native';
-import { useFocusEffect } from '@react-navigation/native';
-import colors from '../../../../colors';
+import React, {useEffect} from 'react';
+import {View, Image, StyleSheet} from 'react-native';
+import {useFocusEffect} from '@react-navigation/native';
+import {Colors} from '../../utils/constants';
 
-const SplashScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
+const SplashScreen: React.FC<{navigation: any}> = ({navigation}) => {
   useFocusEffect(
     React.useCallback(() => {
       const timeoutId = setTimeout(() => {
@@ -11,7 +11,7 @@ const SplashScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
       }, 1000);
 
       return () => clearTimeout(timeoutId);
-    }, [navigation])
+    }, [navigation]),
   );
 
   return (
@@ -34,7 +34,7 @@ const styles = StyleSheet.create({
   mainWrapper: {
     flex: 1,
     padding: 25,
-    backgroundColor: colors.white,
+    backgroundColor: Colors.white,
   },
   imageContainer: {
     display: 'flex',

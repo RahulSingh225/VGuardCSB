@@ -1,13 +1,19 @@
-import React, { useState } from 'react';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import Profile from '../pages/Profile';
-import EditProfile from '../pages/EditProfile';
-import { CustomTabHeader } from '../../common/services/BottomTab';
-import LanguagePicker from '../../../components/LanguagePicker';
-import { Image, Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import colors from '../../../../colors';
-import AddSubLogin from '../pages/AddSubLogin';
-import ViewSubLogins from '../pages/ViewSubLogins';
+import React, {useState} from 'react';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
+
+import {
+  Image,
+  Modal,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import {Colors} from '../utils/constants';
+import Profile from '../screens/BottomTab/Profile';
+import {CustomTabHeader} from './BottomTab';
+import EditProfile from '../screens/BottomTab/EditProfile';
+import LanguagePicker from '../components/LanguagePicker';
 
 const ProfileStack: React.FC = () => {
   const [showLanguagePicker, setShowLanguagePicker] = useState(false);
@@ -26,42 +32,44 @@ const ProfileStack: React.FC = () => {
       <Stack.Navigator
         screenOptions={{
           headerStyle: {
-            backgroundColor: colors.yellow,
+            backgroundColor: Colors.yellow,
           },
           headerShown: false,
         }}>
-        <Stack.Screen name="Profile" component={Profile}
-          options={({ route }) => ({
+        <Stack.Screen
+          name="Profile"
+          component={Profile}
+          options={({route}) => ({
             headerBackVisible: false,
-            headerTitle: () => <CustomTabHeader handleLanguageButtonPress={handleLanguageButtonPress} route={route} />,
+            headerTitle: () => (
+              <CustomTabHeader
+                handleLanguageButtonPress={handleLanguageButtonPress}
+                route={route}
+              />
+            ),
             headerShown: true,
-
-          })} />
-        <Stack.Screen name="Edit Profile" component={EditProfile}
+          })}
+        />
+        <Stack.Screen
+          name="Edit Profile"
+          component={EditProfile}
           options={{
             headerShown: true,
             headerRight: () => (
               <Image
-                style={{ width: 70, height: 50 }} // Adjust width and height as needed
+                style={{width: 70, height: 50}} // Adjust width and height as needed
                 resizeMode="contain"
-                source={require('../../../assets/images/group_910.png')}
-              />),
-          }} />
-        <Stack.Screen name="Add Sub-Login" component={AddSubLogin}
-          options={{
-            headerShown: true,
-          }} />
-        <Stack.Screen name="View All Logins" component={ViewSubLogins}
-          options={{
-            headerShown: true,
-          }} />
+                source={require('../assets/images/group_910.png')}
+              />
+            ),
+          }}
+        />
       </Stack.Navigator>
       <Modal
         animationType="slide"
         transparent={true}
         visible={showLanguagePicker}
-        onRequestClose={handleCloseLanguagePicker}
-      >
+        onRequestClose={handleCloseLanguagePicker}>
         <View style={styles.languagePickerContainer}>
           <LanguagePicker onCloseModal={handleCloseLanguagePicker} />
           <TouchableOpacity onPress={handleCloseLanguagePicker}>
@@ -76,7 +84,7 @@ const ProfileStack: React.FC = () => {
 const styles = StyleSheet.create({
   languageContainer: {
     borderWidth: 1,
-    borderColor: colors.black,
+    borderColor: Colors.black,
     paddingVertical: 2,
     paddingHorizontal: 5,
     borderRadius: 5,
@@ -87,12 +95,12 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: colors.white,
+    backgroundColor: Colors.white,
   },
   closeText: {
     marginTop: 20,
-    color: colors.black,
-    backgroundColor: colors.yellow,
+    color: Colors.black,
+    backgroundColor: Colors.yellow,
     paddingHorizontal: 15,
     paddingVertical: 5,
     borderRadius: 5,

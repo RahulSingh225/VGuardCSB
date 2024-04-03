@@ -1,18 +1,14 @@
 import React from 'react';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import RedeemPoints from '../RedeemPoints';
-import InstantBankTransfer from '../InstantBankTransfer';
-import PaytmTransfer from '../PaytmTransfer';
-import RedeemProducts from '../RedeemProducts';
-import ElectronicGiftVoucher from '../ElectronicGiftVoucher';
-import TrackRedemption from '../TrackRedemption';
-import RedemptionHistory from '../RedemptionHistory';
-import ViewCart from '../ViewCart';
-import AddAddress from '../AddAddress';
-import UpiTransfer from '../UpiTransfer';
-import colors from '../../../../../../../colors';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { Image } from 'react-native';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
+
+import {Image} from 'react-native';
+import {Colors} from '../utils/constants';
+import RedeemPoints from '../screens/Redeem/RedeemPoints';
+import Bank from '../screens/Redeem/InstantBankTransfer';
+import UpiTransfer from '../screens/Redeem/UpiTransfer';
+import RedeemProducts from '../screens/Redeem/RedeemProducts';
+
+import RedemptionHistory from '../screens/Redeem/RedemptionHistory';
 
 type RedeemStackParamList = {
   'Redeem Products': undefined;
@@ -34,43 +30,32 @@ const RedeemStack: React.FC = () => {
     <Stack.Navigator
       screenOptions={{
         headerStyle: {
-          backgroundColor: colors.yellow,
+          backgroundColor: Colors.yellow,
         },
         headerShown: false,
       }}>
       <Stack.Screen
-        name="Redeem Points"
+        name="RedeemPoints"
         component={RedeemPoints}
         options={{
           headerShown: true,
           headerRight: () => (
             <Image
-              style={{ width: 70, height: 50 }}
+              style={{width: 70, height: 50}}
               resizeMode="contain"
-              source={require('../../../../../../assets/images/group_910.png')}
-            />),
+              source={require('../assets/images/group_910.png')}
+            />
+          ),
         }}
       />
       <Stack.Screen
         name="Bank Transfer"
-        component={InstantBankTransfer}
+        component={Bank}
         options={{
           headerShown: true,
         }}
       />
-      <Stack.Screen
-        name="Paytm Transfer"
-        component={PaytmTransfer}
-        options={{
-          headerShown: true,
-          headerRight: () => (
-            <Image
-              style={{ width: 70, height: 50 }}
-              resizeMode="contain"
-              source={require('../../../../../../assets/images/group_910.png')}
-            />),
-        }}
-      />
+
       <Stack.Screen
         name="redeemproducts"
         component={RedeemProducts}
@@ -78,20 +63,8 @@ const RedeemStack: React.FC = () => {
           headerShown: true,
         }}
       />
-      <Stack.Screen
-        name="Gift Voucher"
-        component={ElectronicGiftVoucher}
-        options={{
-          headerShown: true,
-        }}
-      />
-      <Stack.Screen
-        name="Track Redemption"
-        component={TrackRedemption}
-        options={{
-          headerShown: true,
-        }}
-      />
+
+      
       <Stack.Screen
         name="Redemption History"
         component={RedemptionHistory}
@@ -99,26 +72,14 @@ const RedeemStack: React.FC = () => {
           headerShown: true,
           headerRight: () => (
             <Image
-              style={{ width: 70, height: 50 }}
+              style={{width: 70, height: 50}}
               resizeMode="contain"
-              source={require('../../../../../../assets/images/group_910.png')}
-            />),
+              source={require('../assets/images/group_910.png')}
+            />
+          ),
         }}
       />
-      <Stack.Screen
-        name="View Cart"
-        component={ViewCart}
-        options={{
-          headerShown: true,
-        }}
-      />
-      <Stack.Screen
-        name="Add Address"
-        component={AddAddress}
-        options={{
-          headerShown: true,
-        }}
-      />
+
       <Stack.Screen
         name="UPI Transfer"
         component={UpiTransfer}

@@ -1,32 +1,30 @@
 import React, {useEffect, useState} from 'react';
-import {
-  View,
-  TouchableOpacity,
-  StyleSheet,
-  Text,
-} from 'react-native';
+import {View, TouchableOpacity, StyleSheet, Text} from 'react-native';
 import BottomTabLogo from './BottomTabLogo';
-import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
+import {BottomTabBarProps} from '@react-navigation/bottom-tabs';
 import Icon from 'react-native-vector-icons/Ionicons';
-import colors from '../../colors';
-import { responsiveFontSize } from 'react-native-responsive-dimensions';
-import { getNotificationCount } from '../utils/apiservice';
 
-const BottomTabBar: React.FC<BottomTabBarProps> = ({ state, descriptors, navigation }) => {
-  const { routes = [], index: activeIndex } = state;
+import {responsiveFontSize} from 'react-native-responsive-dimensions';
+
+import { Colors } from '../utils/constants';
+
+const BottomTabBar: React.FC<BottomTabBarProps> = ({
+  state,
+  descriptors,
+  navigation,
+}) => {
+  const {routes = [], index: activeIndex} = state;
   const [count, setCount] = useState('0');
   useEffect(() => {
     getNotificationCount().then(async r => {
       const result = await r.data;
-      if(result.count > 999){
-        setCount('999+')
-      }
-      else{
+      if (result.count > 999) {
+        setCount('999+');
+      } else {
         setCount(result.count);
       }
-      
     });
-}, []);
+  }, []);
   const getTabIcon = (routeName: string) => {
     switch (routeName) {
       case 'Home':
@@ -49,21 +47,21 @@ const BottomTabBar: React.FC<BottomTabBarProps> = ({ state, descriptors, navigat
       <BottomTabLogo />
       <View style={styles.tabContainer}>
         {state.routes.map((route, index) => {
-          const { options } = descriptors[route.key];
+          const {options} = descriptors[route.key];
           const label =
             options.tabBarLabel !== undefined
               ? options.tabBarLabel
               : options.title !== undefined
-                ? options.title
-                : route.name;
+              ? options.title
+              : route.name;
 
           const isFocused = state.index === index;
 
           const onPress = () => {
             const event = navigation.emit({
-                type: 'tabPress',
-                target: route.key,
-                canPreventDefault: true
+              type: 'tabPress',
+              target: route.key,
+              canPreventDefault: true,
             });
 
             if (!isFocused && !event.defaultPrevented) {
@@ -83,27 +81,34 @@ const BottomTabBar: React.FC<BottomTabBarProps> = ({ state, descriptors, navigat
           return (
             <TouchableOpacity
               accessibilityRole="button"
-              accessibilityState={isFocused ? { selected: true } : {}}
+              accessibilityState={isFocused ? {selected: true} : {}}
               accessibilityLabel={options.tabBarAccessibilityLabel}
               testID={options.tabBarTestID}
               onPress={onPress}
               onLongPress={onLongPress}
-              style={{ flex: 1 }}
-              key={route.key}
-            >
-              <View style={{ alignItems: 'center' }}>
+              style={{flex: 1}}
+              key={route.key}>
+              <View style={{alignItems: 'center'}}>
                 {route.name === 'Notifications' && (
                   <View>
-                    <Icon name={icon} size={24} color={isFocused ? '#673ab7' : '#222'} />
-                    { count > '0' &&
-                      (<View style={styles.badge}>
-                      <Text style={styles.badgeText}>{count}</Text>
-                    </View>)
-                    }
+                    <Icon
+                      name={icon}
+                      size={24}
+                      color={isFocused ? '#673ab7' : '#222'}
+                    />
+                    {count > '0' && (
+                      <View style={styles.badge}>
+                        <Text style={styles.badgeText}>{count}</Text>
+                      </View>
+                    )}
                   </View>
                 )}
                 {route.name !== 'Notifications' && (
-                  <Icon name={icon} size={24} color={isFocused ? '#673ab7' : '#222'} />
+                  <Icon
+                    name={icon}
+                    size={24}
+                    color={isFocused ? '#673ab7' : '#222'}
+                  />
                 )}
               </View>
             </TouchableOpacity>
@@ -127,26 +132,26 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     height: 60,
     backgroundColor: 'white',
-    elevation: 15
+    elevation: 15,
   },
   badge: {
     position: 'absolute',
     top: -8,
     right: -8,
-    backgroundColor: colors.yellow,
+    backgroundColor: Colors.yellow,
     borderRadius: 50,
     width: 20,
     height: 20,
     padding: 2,
     display: 'flex',
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
   badgeText: {
-    color: colors.black,
+    color: Colors.black,
     fontSize: responsiveFontSize(0.9),
     fontWeight: 'bold',
-    textAlign: 'center'
+    textAlign: 'center',
   },
 });
 

@@ -1,21 +1,22 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import React, {useState} from 'react';
+import {View, Text, StyleSheet} from 'react-native';
 import i18n from '../utils/i18n';
-import { Picker } from '@react-native-picker/picker';
-import colors from '../../colors';
+import {Picker} from '@react-native-picker/picker';
+
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {Colors} from '../utils/constants';
 
 interface LanguagePickerProps {
   onCloseModal: () => void;
 }
 
-const LanguagePicker: React.FC<LanguagePickerProps> = ({ onCloseModal }) => {
+const LanguagePicker: React.FC<LanguagePickerProps> = ({onCloseModal}) => {
   const [selectedLanguage, setSelectedLanguage] = useState(i18n.language);
 
   const changeLanguage = (language: string) => {
     i18n.changeLanguage(language);
     setSelectedLanguage(language);
-    AsyncStorage.setItem("language", language);
+    AsyncStorage.setItem('language', language);
     onCloseModal();
   };
 
@@ -25,9 +26,8 @@ const LanguagePicker: React.FC<LanguagePickerProps> = ({ onCloseModal }) => {
       <View style={styles.pickerContainer}>
         <Picker
           selectedValue={selectedLanguage}
-          onValueChange={(itemValue) => changeLanguage(itemValue)}
-          style={styles.picker}
-        >
+          onValueChange={itemValue => changeLanguage(itemValue)}
+          style={styles.picker}>
           <Picker.Item label="English" value="en" />
           <Picker.Item label="Hindi" value="hn" />
           <Picker.Item label="Bengali" value="bn" />
@@ -50,16 +50,16 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 10,
-    color: colors.black,
+    color: Colors.black,
   },
   picker: {
-    color: colors.black,
+    color: Colors.black,
   },
   pickerContainer: {
     borderWidth: 1,
-    borderColor: colors.lightGrey,
+    borderColor: Colors.lightGrey,
     borderRadius: 5,
-    backgroundColor: colors.lightGrey,
+    backgroundColor: Colors.lightGrey,
   },
 });
 

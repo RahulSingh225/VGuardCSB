@@ -10,33 +10,33 @@ import {
   Modal,
 } from 'react-native';
 import {useTranslation} from 'react-i18next';
-import colors from '../../../../colors';
-import Buttons from '../../../components/Buttons';
-import arrowIcon from '../../../assets/images/arrow.png';
-import {loginWithPassword} from '../../../utils/apiservice';
-import {useAuth} from '../../../components/AuthContext';
-import Popup from '../../../components/Popup';
+
 import Snackbar from 'react-native-snackbar';
-import Loader from '../../../components/Loader';
+
 import {Linking} from 'react-native';
-import selectedTickImage from '../../../assets/images/tick_1.png';
-import notSelectedTickImage from '../../../assets/images/tick_1_notSelected.png';
-import LanguagePicker from '../../../components/LanguagePicker';
-import language from '../../../assets/images/language.png';
+
 import {responsiveFontSize} from 'react-native-responsive-dimensions';
 import DeviceInfo from 'react-native-device-info';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import Constants from '../../../utils/constants';
+import Buttons from '../../components/Buttons';
+import {Colors} from '../../utils/constants';
+import LanguagePicker from '../../components/LanguagePicker';
+import Loader from '../../components/Loader';
+import language from '../../assets/images/language.png';
+import arrowIcon from '../../assets/images/arrow.png';
+import selectedTickImage from '../../assets/images/tick_1.png';
+import notSelectedTickImage from '../../assets/images/tick_1_notSelected.png';
+import Popup from '../../components/Popup';
 
-const LoginScreen: React.FC<{navigation: any}> = ({navigation}) => {
+const Login: React.FC<{navigation: any}> = ({navigation}) => {
   const {t, i18n} = useTranslation();
   const [showLanguagePicker, setShowLanguagePicker] = useState(false);
   const [loader, showLoader] = useState(false);
-  const yellow = colors.yellow;
-  const placeholderColor = colors.lightGrey;
+  const yellow = Colors.yellow;
+  const placeholderColor = Colors.lightGrey;
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const {login, showPopup, popupAuthContent, setShowPopup} = useAuth();
+  const [showPopup, setShowPopup] = useState(false);
   const [isPopupVisible, setIsPopupVisible] = useState(false);
   const [popupContent, setPopupContent] = useState('');
   const [selectedOption, setSelectedOption] = useState(true);
@@ -45,7 +45,6 @@ const LoginScreen: React.FC<{navigation: any}> = ({navigation}) => {
     setShowLanguagePicker(true);
   };
 
-  const pkg = require('../../../../package.json');
   const version = DeviceInfo.getVersion();
 
   const handleCloseLanguagePicker = () => {
@@ -101,11 +100,7 @@ const LoginScreen: React.FC<{navigation: any}> = ({navigation}) => {
     showLoader(true);
 
     try {
-      const response = await loginWithPassword(
-        username,
-        password,
-        Constants.RET_USER_TYPE,
-      );
+      const response = await loginWithPassword(username, password);
       showLoader(false);
       if (response.status === 200) {
         const responseData = response.data;
@@ -219,13 +214,6 @@ const LoginScreen: React.FC<{navigation: any}> = ({navigation}) => {
                 onPress={() => navigation.navigate('loginWithNumber')}
                 width="100%"
               />
-              {/* <Buttons
-                style={styles.button}
-                label={t('strings:new_user_registration')}
-                variant="blackButton"
-                onPress={() => navigation.navigate('register')}
-                width="100%"
-              /> */}
             </View>
           </View>
         </View>
@@ -269,7 +257,7 @@ const LoginScreen: React.FC<{navigation: any}> = ({navigation}) => {
         )}
         {showPopup && (
           <Popup isVisible={showPopup} onClose={() => setShowPopup(false)}>
-            <Text style={{fontWeight: 'bold'}}>{popupAuthContent}</Text>
+            <Text style={{fontWeight: 'bold'}}>{'Hello'}</Text>
           </Popup>
         )}
 
@@ -455,4 +443,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default LoginScreen;
+export default Login

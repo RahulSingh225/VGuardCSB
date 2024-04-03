@@ -1,11 +1,12 @@
 import React from 'react';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import colors from '../../../../../../../colors';
-import Dashboard from '../Dashboard';
-import ProductWiseEarning from '../ProductWiseEarning';
-import SchemeWiseEarning from '../SchemeWiseEarning';
-import YourRewards from '../YourRewards';
-import { Image } from 'react-native';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
+
+import {Image} from 'react-native';
+import {Colors} from '../utils/constants';
+import Dashboard from '../screens/Dashboard/Dashboard';
+import ProductWiseEarning from '../screens/Dashboard/ProductWiseEarning';
+import SchemeWiseEarning from '../screens/Dashboard/SchemeWiseEarning';
+import YourRewards from '../screens/Dashboard/YourRewards';
 
 const DashboardStack: React.FC = () => {
   const Stack = createNativeStackNavigator();
@@ -14,7 +15,7 @@ const DashboardStack: React.FC = () => {
     <Stack.Navigator
       screenOptions={{
         headerStyle: {
-          backgroundColor: colors.yellow,
+          backgroundColor: Colors.yellow,
         },
         headerShown: false,
       }}>
@@ -25,10 +26,11 @@ const DashboardStack: React.FC = () => {
           headerShown: true,
           headerRight: () => (
             <Image
-              style={{ width: 70, height: 50 }}
+              style={{width: 70, height: 50}}
               resizeMode="contain"
-              source={require('../../../../../../assets/images/group_910.png')}
-            />),
+              source={require('../assets/images/group_910.png')}
+            />
+          ),
         }}
       />
       <Stack.Screen
@@ -38,10 +40,11 @@ const DashboardStack: React.FC = () => {
           headerShown: true,
           headerRight: () => (
             <Image
-              style={{ width: 70, height: 50 }}
+              style={{width: 70, height: 50}}
               resizeMode="contain"
-              source={require('../../../../../../assets/images/group_910.png')}
-            />),
+              source={require('../assets/images/group_910.png')}
+            />
+          ),
         }}
       />
       <Stack.Screen
