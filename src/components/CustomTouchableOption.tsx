@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, Image, StyleSheet } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useNavigation } from '@react-navigation/native';
-import colors from '../../colors';
+
 import {
   responsiveHeight,
   responsiveWidth,
@@ -10,6 +10,7 @@ import {
 } from "react-native-responsive-dimensions";
 import Popup from './Popup';
 import Snackbar from 'react-native-snackbar';
+import { Colors } from '../utils/constants';
 
 interface CustomTouchableOptionProps {
   text: string;
@@ -96,7 +97,7 @@ const styles = StyleSheet.create({
     width: responsiveWidth(25),
     maxWidth: responsiveWidth(25),
     flexGrow: 1,
-    backgroundColor: colors.white,
+    backgroundColor: Colors.white,
     shadowColor: 'rgba(0, 0, 0, 0.8)',
     elevation: 5,
     borderRadius: 100,
@@ -107,7 +108,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   nav: {
-    color: colors.black,
+    color: Colors.black,
     fontSize: responsiveFontSize(1.5),
     fontWeight: 'bold',
     textAlign: 'center',
@@ -119,7 +120,7 @@ const styles = StyleSheet.create({
     filter: 'grayscale(100%)',
   },
   disabledText: {
-    color: colors.grey,
+    color: Colors.grey,
   },
 });
 

@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   Text,
@@ -7,7 +7,6 @@ import {
   Image,
   Linking,
   TouchableOpacity,
-  Modal,
   ImageBackground,
 } from 'react-native';
 import {
@@ -16,255 +15,300 @@ import {
   responsiveWidth,
 } from 'react-native-responsive-dimensions';
 
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useTranslation} from 'react-i18next';
 
-import Snackbar from 'react-native-snackbar';
-import {getImageUrl} from '../../utils/fileutils';
+import {Colors} from '../../utils/constants';
+import {VguardUser} from '../../types';
+import {StorageItem, addItem, getItem} from '../../services/StorageService';
+import EntypoIcon from 'react-native-vector-icons/MaterialCommunityIcons';
+import {getUserProfile, verifyVPA} from '../../utils/apiservice';
 import Loader from '../../components/Loader';
-import InputField from '../../components/InputField';
-import Popup from '../../components/Popup';
-import { Colors } from '../../utils/constants';
 
 const Profile: React.FC<{navigation: any}> = ({navigation}) => {
   const {t} = useTranslation();
 
   const baseURL = 'https://www.vguardrishta.com/img/appImages/Profile/';
   const ecardURL = 'https://www.vguardrishta.com/img/appImages/eCard/';
-
-  const [userData, setUserData] = useState<VguardRishtaUser | any>();
+  const [showBankDetails, setShowBankDetails] = useState(false);
+  const [showPanDetails, setShowPanDetails] = useState(false);
+  const [showId, setShowId] = useState(false);
+  const [loader, setLoader] = useState(false);
+  const [userData, setUserData] = useState<VguardUser | any>();
   const [profileImage, setProfileImage] = useState('');
-  const [showImagePreviewModal, setShowImagePreviewModal] = useState(false);
-  const [gstImageName, setGstImageName] = useState('');
-  const [frontFacadeImageName, setFrontFacadeImageName] = useState('');
-  const [chequeImageName, setChequeImageName] = useState('');
-  const [imageOpen, setimageOpen] = useState('');
-  const [loading, setLoading] = useState(true);
-  const [disableOptions, setDisableOptions] = useState(false);
-  const [userName, setUserName] = useState('');
 
-  const handleImageClick = (imageSource: string | '') => {
-    setShowImagePreviewModal(true);
-    setimageOpen(imageSource);
-  };
   useEffect(() => {
-    AsyncStorage.getItem('USER').then(r => {
-      const user = JSON.parse(r as string);
-      setUserName(user.name);
+    getItem('USER').then(res => {
+      const vg: VguardUser = res;
+      setUserData(vg);
     });
-    const fetchData = async () => {
-      try {
-        const diffAcc = await AsyncStorage.getItem('diffAcc');
-        if (diffAcc == '1') {
-          setDisableOptions(true);
-        }
-        const response = await getUser();
-        const res = await response.data;
-
-        setUserData(res);
-        setLoading(false);
-      } catch (error) {
-        setPopupContent('Something Went Wrong!');
-        setPopupVisible(true);
-        setLoading(false);
-      }
-    };
-
-    fetchData();
   }, []);
-  useEffect(() => {
-    if (userData?.kycDetails?.selfie) {
-      const getImage = async () => {
-        try {
-          // const profileImageUrl = await getFile(userData.kycDetails.selfie, 'Profile', "2");
-          const profileImageUrl = await getImageUrl(
-            userData.kycDetails.selfie,
-            'Profile',
-          );
-          setProfileImage(profileImageUrl);
-        } catch (error) {
-          console.error('Error while fetching profile image:', error);
-        }
-      };
-      getImage();
+  async function updateProfileData() {
+    try {
+      const data = await getUserProfile({user_id: userData?.user_id});
+      console.log(data);
+      setLoader(false);
+      if (data.data.status) {
+        const vg: VguardUser = data.data.data;
+        const st: StorageItem = {key: 'USER', value: vg};
+        addItem(st);
+        setUserData(vg);
+      }
+    } catch (error) {
+      console.log(error);
     }
-    if (userData?.checkPhoto) {
-      const getImage = async () => {
-        try {
-          const source = await getImageUrl(userData?.checkPhoto, 'Cheque');
-          setChequeCopySource(source);
-        } catch (error) {
-          console.error('Error while fetching cheque image:', error);
-        }
-      };
-      getImage();
-    }
-    if (userData?.gstPic) {
-      const getImage = async () => {
-        try {
-          const gstSource = await getImageUrl(userData?.gstPic, 'GST');
-          setGstCopySource(gstSource);
-        } catch (error) {
-          console.error('Error while fetching GST image:', error);
-        }
-      };
-      getImage();
-    }
-  }, [userData?.roleId]);
-
-  const showSnackbar = (message: string) => {
-    Snackbar.show({
-      text: message,
-      duration: Snackbar.LENGTH_SHORT,
-    });
-  };
-
-  const handleAddSubLogin = async () => {
-    if (disableOptions == true) {
-      showSnackbar('User not allowed');
-    } else {
-      navigation.navigate('Add Sub-Login');
-    }
-  };
-  const [isPopupVisible, setPopupVisible] = useState(false);
-  const [popupContent, setPopupContent] = useState('');
-
-  const openReferralPopop = () => {
-    setPopupVisible(true);
-    setPopupContent('Coming Soon!');
-  };
-
+  }
+  async function VerifyUpi() {
+    setLoader(true);
+    const body = {mobile_no: userData.contact};
+    await verifyVPA(body);
+    updateProfileData();
+  }
+  async function VerifyBank() {
+    setLoader(true);
+    //TODO make the api call
+    updateProfileData();
+  }
   const labels = [
-    // 'Preferred Language',
-    'Contact Number',
-    'Store/Firm Name',
-    // 'Front Facade',
-    // 'GST Photo',
+    'Preferred Language',
+    'Gender',
+    'Date of Birth',
+    'Contact',
+    'WhatsApp',
+    'Email',
+    'Address',
+    'Selfie',
+    'ID Document',
+    'Pan Card',
+    'Bank Details',
+    'UPI Id',
   ];
-  const label2 = ['Date of Birth', 'Email'];
-
-  const addressLabels = [
-    'Permanent Address House/Flat/Block No.',
-    'Street/Colony/Locality Name',
-    'Landmark',
-    'State',
-    'Distict',
-    'City',
-    'Pincode',
-    'Marital Status',
-    'Annual Business Potential',
-  ];
-
-  const bankDetails = [
-    'Account Number',
-    'Account Holder Name',
-    'Bank Name',
-    'IFSC Code',
-    // 'Cancelled Cheque Copy'
-  ];
-
-  const renderField = async (fieldName: string): Promise<string> => {
-    if (fieldName === 'Cancelled Cheque Copy') {
-      const checkPhoto = userData.bankDetail.checkPhoto;
-      setChequeImageName(checkPhoto);
-      // const chequePhoto = await getFile(checkPhoto, 'Cheque', "2");
-      const chequePhoto = await getImageUrl(checkPhoto, 'Cheque');
-      const url = chequePhoto;
-      return url;
-    }
-    if (fieldName === 'GST Photo') {
-      const gstFront = userData.gstPic;
-      setGstImageName(gstFront);
-      // const gstPhoto = await getFile(gstFront, 'GST', "2");
-      const gstPhoto = await getImageUrl(gstFront, 'GST');
-      const url = gstPhoto;
-      return url;
-    }
-    const fieldMap: Record<string, string> = {
+  const renderField = fieldName => {
+    const fieldMap = {
       'Date of Birth': 'dob',
-      'Contact Number': 'contactNo',
-      Email: 'emailId',
-      'Store/Firm Name': 'firmName',
-      'Permanent Address House/Flat/Block No.': 'permanentAddress',
-      'Street/Colony/Locality Name': 'streetAndLocality',
-      Landmark: 'currLandmark',
-      State: 'state',
-      Distict: 'dist',
-      City: 'city',
-      Pincode: 'pinCode',
-      'Marital Status': 'maritalStatus',
-      'Annual Business Potential': 'annualBusinessPotential',
-      'Account Number': 'bankDetail.bankAccNo',
-      'Account Holder Name': 'bankDetail.bankAccHolderName',
-      'Bank Name': 'bankDetail.bankNameAndBranch',
-      'IFSC Code': 'bankDetail.bankIfsc',
-      'GST Photo': 'gstPic',
+      Contact: 'contact',
+      WhatsApp: 'alternate_contact',
+      Address: 'currentaddress1',
+
+      'Preferred Language': 'preferred_language',
+      Gender: 'gender',
+      Email: 'email',
     };
 
     if (fieldName in fieldMap) {
       const mappedField = fieldMap[fieldName];
-      const fieldValue = mappedField
-        .split('.')
-        .reduce((obj, key) => obj[key], userData);
-      const formattedValue =
-        typeof fieldValue === 'number' ? fieldValue.toString() : fieldValue;
-      return formattedValue === true
+      if (userData && mappedField in userData) {
+        const fieldValue = userData[mappedField];
+        return fieldValue === true
+          ? 'Yes'
+          : fieldValue === false
+          ? 'No'
+          : fieldValue;
+      } else {
+        return '';
+      }
+    } else if (fieldName === 'Selfie') {
+      if (userData && userData.selfie) {
+        return 'Yes';
+      } else {
+        return 'No';
+      }
+    } else if (fieldName === 'ID Document') {
+      const hasAdhaar = userData && userData?.aadhar;
+      return (
+        <>
+          <View>
+            <View style={styles.databox}>
+              <Text style={styles.yesorno}>{hasAdhaar ? 'Yes' : 'No'}</Text>
+              {hasAdhaar && (
+                <TouchableOpacity
+                  style={{marginLeft: 5}}
+                  onPress={() => setShowId(!showId)}>
+                  <Image
+                    source={require('../../assets/images/ic_ticket_drop_down2.png')}
+                    style={{width: 20, height: 20}}
+                  />
+                </TouchableOpacity>
+              )}
+            </View>
+            {showId && (
+              <View style={styles.smallDataBox}>
+                <View style={styles.smallDataRow}>
+                  <Text style={styles.dataSmallLabel}>ID Card No: </Text>
+                  <Text style={styles.dataSmall}>{userData.aadhar}</Text>
+                </View>
+              </View>
+            )}
+          </View>
+        </>
+      );
+    } else if (fieldName === 'Pan Card') {
+      const hasPanDetails = userData && userData.pan;
+      return (
+        <>
+          <View>
+            <View style={styles.databox}>
+              <Text style={styles.yesorno}>{hasPanDetails ? 'Yes' : 'No'}</Text>
+              {hasPanDetails && (
+                <TouchableOpacity
+                  style={{marginLeft: 5}}
+                  onPress={() => setShowPanDetails(!showPanDetails)}>
+                  <Image
+                    source={require('../../assets/images/ic_ticket_drop_down2.png')}
+                    style={{width: 20, height: 20}}
+                  />
+                </TouchableOpacity>
+              )}
+            </View>
+            {showPanDetails && (
+              <View style={styles.smallDataBox}>
+                <View style={styles.smallDataRow}>
+                  <Text style={styles.dataSmallLabel}>Pan Card No: </Text>
+                  <Text style={styles.dataSmall}>{userData.pan}</Text>
+                </View>
+              </View>
+            )}
+          </View>
+        </>
+      );
+    } else if (fieldName === 'Bank Details') {
+      console.log(fieldName);
+      const hasBankDetails =
+        userData?.bank_details && userData?.bank_details?.bank_account_number;
+      return (
+        <>
+          <View>
+            <View style={styles.databox}>
+              <EntypoIcon
+                name={'close-circle-outline'}
+                size={24}
+                color={Colors.red}
+              />
+              <Text style={styles.yesorno}>
+                {hasBankDetails ? 'Yes' : 'No'}
+              </Text>
+              {hasBankDetails && (
+                <TouchableOpacity
+                  style={{marginLeft: 5}}
+                  onPress={() => setShowBankDetails(!showBankDetails)}>
+                  <Image
+                    source={require('../../assets/images/ic_ticket_drop_down2.png')}
+                    style={{width: 20, height: 20}}
+                  />
+                </TouchableOpacity>
+              )}
+            </View>
+            {showBankDetails && (
+              <View style={styles.smallDataBox}>
+                <View style={styles.smallDataRow}>
+                  <Text style={styles.dataSmallLabel}>Bank Acc No: </Text>
+                  <Text style={styles.dataSmall}>
+                    {userData.bank_details.bank_account_number}
+                  </Text>
+                </View>
+                <View style={styles.smallDataRow}>
+                  <Text style={styles.dataSmallLabel}>
+                    Bank Acc Holder Name:{' '}
+                  </Text>
+                  <Text style={styles.dataSmall}>
+                    {userData.bank_details.bank_account_name}
+                  </Text>
+                </View>
+                <View style={styles.smallDataRow}>
+                  <Text style={styles.dataSmallLabel}>Bank Acc Type: </Text>
+                  <Text style={styles.dataSmall}>
+                    {userData.bank_details.bank_account_type}
+                  </Text>
+                </View>
+
+                <View style={styles.smallDataRow}>
+                  <Text style={styles.dataSmallLabel}>IFSC code: </Text>
+                  <Text style={styles.dataSmall}>
+                    {userData.bank_details.bank_account_ifsc}
+                  </Text>
+                </View>
+                {userData.bank_verified ? (
+                  <>
+                    <EntypoIcon
+                      name={'check-circle'}
+                      size={24}
+                      color={'green'}
+                    />
+                  </>
+                ) : (
+                  <>
+                    <TouchableOpacity
+                      onPress={() => VerifyBank()}
+                      style={{
+                        width: 80,
+                        height: 40,
+                        backgroundColor: Colors.yellow,
+                        justifyContent: 'center',
+                        borderRadius: 5,
+                      }}>
+                      <Text
+                        style={{
+                          fontWeight: 'bold',
+                          color: 'black',
+                          textAlign: 'center',
+                        }}>
+                        Verify
+                      </Text>
+                    </TouchableOpacity>
+                  </>
+                )}
+              </View>
+            )}
+          </View>
+        </>
+      );
+    } else if (fieldName === 'UPI Id') {
+      console.log(fieldName);
+      return (
+        <>
+          {userData?.vpa_verified ? (
+            <EntypoIcon name={'check-circle'} size={24} color={'green'} />
+          ) : (
+            <TouchableOpacity
+              onPress={() => VerifyUpi()}
+              style={{
+                width: 80,
+                height: 40,
+                backgroundColor: Colors.yellow,
+                justifyContent: 'center',
+                borderRadius: 5,
+              }}>
+              <Text
+                style={{
+                  fontWeight: 'bold',
+                  color: 'black',
+                  textAlign: 'center',
+                }}>
+                Verify
+              </Text>
+            </TouchableOpacity>
+          )}
+        </>
+      );
+    } else if (fieldName in userData) {
+      const fieldValue = userData[fieldName];
+      return fieldValue === true
         ? 'Yes'
-        : formattedValue === false
+        : fieldValue === false
         ? 'No'
-        : formattedValue;
+        : fieldValue;
     } else {
-      return '';
+      return 'N/A';
     }
   };
 
   const openEVisitingCard = () => {
-    Linking.openURL(ecardURL + userData.ecardPath);
+    Linking.openURL(ecardURL);
   };
-
-  const renderFields = async (fieldNames: string[]): Promise<string[]> => {
-    const results = await Promise.all(
-      fieldNames.map(async fieldName => await renderField(fieldName)),
-    );
-    return results;
-  };
-
-  const [renderedFields, setRenderedFields] = useState<string[] | null>(null);
-  const [renderedlabel2Fields, setRenderedlabel2Fields] = useState<
-    string[] | null
-  >(null);
-  const [renderedBankFields, setRenderedBankFields] = useState<string[] | null>(
-    null,
-  );
-  const [renderedAddressFields, setRenderedAddressFields] = useState<
-    string[] | null
-  >(null);
-  useEffect(() => {
-    const fetchData = async () => {
-      const fields = await renderFields(labels);
-      const label2Fields = await renderFields(label2);
-      const addressFields = await renderFields(addressLabels);
-      const bankFields = await renderFields(bankDetails);
-      setRenderedFields(fields);
-      setRenderedlabel2Fields(label2Fields);
-      setRenderedAddressFields(addressFields);
-      setRenderedBankFields(bankFields);
-    };
-
-    fetchData();
-  }, [userData?.roleId, userData?.kycDetails?.selfie]);
-
-  const [chequeCopySource, setChequeCopySource] = useState<string | null>(null);
-  const [gstCopySource, setGstCopySource] = useState<string | ''>('');
-  const [frontFacadeCopySource, setFrontFacadeCopySource] = useState<
-    string | null
-  >(null);
-  // const [facadeCopySource, setFacadeCopySource] = useState<string | null>(null)
 
   return (
     <ScrollView style={styles.mainWrapper}>
-      {loading && <Loader isLoading={loading} />}
       <View style={styles.flexBox}>
+        {loader && <Loader isLoading={loader} />}
         <View style={styles.ImageProfile}>
           <ImageBackground
             source={require('../../assets/images/ic_v_guards_user.png')}
@@ -273,139 +317,43 @@ const Profile: React.FC<{navigation: any}> = ({navigation}) => {
             <Image
               source={{uri: profileImage}}
               style={{width: '100%', height: '100%', borderRadius: 100}}
-              resizeMode="contain"
+              resizeMode="cover"
             />
           </ImageBackground>
         </View>
-        <View style={styles.profileText}>
-          <Text style={styles.textDetail}>{userName}</Text>
-          <Text style={styles.textDetail}>{userData?.userCode}</Text>
-          <TouchableOpacity onPress={openEVisitingCard}>
-            <Text style={styles.viewProfile}>{t('strings:view_e_card')}</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-      <View style={styles.buttons}>
         <TouchableOpacity
           style={styles.button}
           onPress={() => navigation.navigate('Edit Profile')}>
           <Text style={styles.buttonText}>{t('strings:edit_profile')}</Text>
         </TouchableOpacity>
       </View>
+      <View style={styles.profileText}>
+        <Text style={styles.textDetail}>{userData?.name}</Text>
+        <Text style={styles.textDetail}>{userData?.rishta_id}</Text>
+        <TouchableOpacity onPress={openEVisitingCard}>
+          <Text style={styles.viewProfile}>{t('strings:view_e_card')}</Text>
+        </TouchableOpacity>
+      </View>
       <View style={styles.detailsContainer}>
         {labels.map((label, index) => (
-          <InputField
-            key={index}
-            label={label}
-            value={renderedFields ? renderedFields[index] : ''}
-            disabled={true}
-            isImage={false}
-          />
-        ))}
-        {/* <InputField
-          label="Front Facade"
-          isImage
-          imageSource={facadeCopySource}
-          onPressImage={() => {
-          }}
-        /> */}
-
-        <InputField
-          label="Front Facade"
-          isImage
-          imageName={profileImage}
-          imageSource={profileImage}
-          onPressImage={() => handleImageClick(profileImage)}
-        />
-
-        {label2.map((label, index) => (
-          <InputField
-            key={index}
-            label={label}
-            value={renderedlabel2Fields ? renderedlabel2Fields[index] : ''}
-            disabled={true}
-            isImage={false}
-          />
-        ))}
-
-        <Text style={styles.subHeading}>{t('strings:permanent_address')}</Text>
-        {addressLabels.map((label, index) => (
-          <InputField
-            label={label}
-            value={renderedAddressFields ? renderedAddressFields[index] : ''}
-            disabled={true}
-            isImage={false}
-          />
-        ))}
-        <Text style={styles.subHeading}>{t('strings:lbl_bank_details')}</Text>
-        {bankDetails.map((label, index) => (
-          <InputField
-            label={label}
-            value={renderedBankFields ? renderedBankFields[index] : ''}
-            disabled={true}
-            isImage={false}
-          />
+          <View style={styles.labelDataContainer}>
+            <Text style={styles.label}>{label}:</Text>
+            <Text style={styles.data}>{renderField(label)}</Text>
+          </View>
         ))}
       </View>
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={showImagePreviewModal}
-        onRequestClose={() => setShowImagePreviewModal(false)}>
-        <View style={styles.modalContainer}>
-          <TouchableOpacity onPress={() => setShowImagePreviewModal(false)}>
-            <Image
-              resizeMode="contain"
-              style={{width: 50, height: 50}}
-              source={require('../../assets/images/ic_close.png')}
-            />
-          </TouchableOpacity>
-          {/* <ImageBackground
-            source={require('../../../assets/images/no_image.webp')}
-            style={{ width: '100%', height: '70%'}}
-            resizeMode="contain"
-          > */}
-          <Image
-            source={{uri: imageOpen}}
-            style={{width: '100%', height: '70%'}}
-            resizeMode="contain"
-          />
-          {/* </ImageBackground> */}
-        </View>
-      </Modal>
-      {isPopupVisible && (
-        <Popup
-          isVisible={isPopupVisible}
-          onClose={() => setPopupVisible(false)}>
-          {popupContent}
-        </Popup>
-      )}
     </ScrollView>
   );
 };
-
 const styles = StyleSheet.create({
-  modalContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.7)',
-  },
-  modalContent: {
-    backgroundColor: 'white',
-    padding: 20,
-    gap: 10,
-    borderRadius: 10,
-    alignItems: 'center',
-  },
   mainWrapper: {
     padding: 15,
     flex: 1,
     backgroundColor: Colors.white,
   },
   ImageProfile: {
-    height: 50,
-    width: 50,
+    height: 80,
+    width: 80,
     borderRadius: 100,
   },
   textName: {
@@ -437,14 +385,51 @@ const styles = StyleSheet.create({
     textAlign: 'right',
     fontWeight: 'bold',
   },
-  buttons: {
+  dataSmall: {
+    color: Colors.black,
+    fontSize: responsiveFontSize(1.5),
+    textAlign: 'right',
+    fontWeight: 'bold',
+    maxWidth: responsiveWidth(50),
+  },
+  dataSmallLabel: {
+    color: Colors.grey,
+    fontSize: responsiveFontSize(1.5),
+    textAlign: 'right',
+    fontWeight: 'bold',
+  },
+  smallDataBox: {
+    backgroundColor: Colors.yellow,
+    padding: 5,
+    borderRadius: 5,
+    marginTop: 5,
+  },
+  smallDataRow: {
+    flexDirection: 'row',
+    textAlign: 'right',
+    justifyContent: 'flex-end',
+    width: responsiveWidth(50),
+    flexWrap: 'wrap',
+  },
+  yesorno: {
+    color: Colors.black,
+    fontSize: responsiveFontSize(1.7),
+    textAlign: 'right',
+    alignSelf: 'center',
+    fontWeight: 'bold',
+  },
+  databox: {
     display: 'flex',
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+  },
+  profileText: {
+    marginTop: responsiveHeight(2),
   },
   button: {
     backgroundColor: Colors.yellow,
-    paddingHorizontal: responsiveWidth(3),
+    paddingHorizontal: responsiveWidth(5),
     paddingVertical: responsiveHeight(1),
     shadowColor: 'rgba(0, 0, 0, 0.8)',
     elevation: 5,
@@ -453,9 +438,8 @@ const styles = StyleSheet.create({
   flexBox: {
     display: 'flex',
     flexDirection: 'row',
+    justifyContent: 'space-between',
     alignItems: 'center',
-    gap: 20,
-    marginBottom: 20,
   },
   buttonText: {
     color: Colors.black,
@@ -464,13 +448,12 @@ const styles = StyleSheet.create({
   },
   detailsContainer: {
     flexDirection: 'column',
-    marginVertical: 30,
+    marginBottom: 50,
   },
-  subHeading: {
-    color: Colors.grey,
-    fontSize: responsiveFontSize(2.2),
-    fontWeight: 'bold',
-    marginBottom: 20,
+  labelDataContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
   },
 });
 

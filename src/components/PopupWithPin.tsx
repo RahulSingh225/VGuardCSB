@@ -11,12 +11,12 @@ import {
 import closeIcon from '../assets/images/ic_close.png';
 import okIcon from '../assets/images/ic_accept_black2.png';
 
-import colors from '../../colors';
 import {
   responsiveFontSize,
   responsiveHeight,
 } from 'react-native-responsive-dimensions';
 import { useTranslation } from 'react-i18next';
+import { Colors } from '../utils/constants';
 
 interface PopupProps {
   isVisible: boolean;
@@ -90,7 +90,7 @@ const styles = StyleSheet.create({
     height: 220,
     width: '80%',
     padding: 30,
-    backgroundColor: colors.yellow,
+    backgroundColor: Colors.yellow,
     borderRadius: 10,
     borderBottomRightRadius: 30,
     alignItems: 'center',
@@ -109,7 +109,7 @@ const styles = StyleSheet.create({
     color: 'blue',
   },
   popupText: {
-    color: colors.black,
+    color: Colors.black,
     fontSize: responsiveFontSize(2),
     textAlign: 'center',
     fontWeight: 'bold',
@@ -119,10 +119,10 @@ const styles = StyleSheet.create({
   pinInput: {
     height: 40,
     width: '80%',
-    backgroundColor: colors.white,
+    backgroundColor: Colors.white,
     borderRadius: 10,
     textAlign: 'center',
-    color: colors.black,
+    color: Colors.black,
     elevation: 5,
     marginTop: 25
   },

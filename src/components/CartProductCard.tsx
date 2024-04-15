@@ -1,7 +1,8 @@
 import React from 'react';
 import { View, Text, Image, StyleSheet } from 'react-native';
 import { responsiveFontSize } from 'react-native-responsive-dimensions';
-import colors from '../../colors';
+import { Colors } from '../utils/constants';
+
 
 interface CartProductCardProps {
   product: {
@@ -25,7 +26,7 @@ const CartProductCard: React.FC<CartProductCardProps> = ({ product }) => {
 
 const styles = StyleSheet.create({
   productCard: {
-    backgroundColor: colors.white,
+    backgroundColor: Colors.white,
     padding: 10,
     borderRadius: 8,
     shadowColor: '#000',
@@ -44,11 +45,11 @@ const styles = StyleSheet.create({
   productName: {
     fontSize: responsiveFontSize(2),
     fontWeight: 'bold',
-    color: colors.black,
+    color: Colors.black,
   },
   productPrice: {
     fontSize: responsiveFontSize(1.8),
-    color: colors.yellow,
+    color: Colors.yellow,
     fontWeight: 'bold',
     textAlign: 'right',
     position: 'absolute',

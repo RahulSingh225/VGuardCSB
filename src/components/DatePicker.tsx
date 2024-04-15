@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { StyleSheet, TextInput, View } from 'react-native';
 import DateTimePicker, { Event } from '@react-native-community/datetimepicker';
-import colors from '../../colors';
+import { Colors } from '../utils/constants';
+
 
 interface DatePickerProps {
     date: Date | null;
@@ -37,7 +38,7 @@ const styles = StyleSheet.create({
         backgroundColor: "#fff",
         borderRadius: 5,
         padding: 10,
-        color: colors.black,
+        color: Colors.black,
     },
 });
 

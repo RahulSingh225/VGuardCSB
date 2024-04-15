@@ -18,11 +18,11 @@ const SplashScreen: React.FC<{navigation: any}> = ({navigation}) => {
     <View style={styles.mainWrapper}>
       <View style={styles.imageContainer}>
         <Image
-          source={require('../../../assets/images/group_910.png')}
+          source={require('../../assets/images/group_910.png')}
           style={styles.imageVguard}
         />
         <Image
-          source={require('../../../assets/images/group_907.png')}
+          source={require('../../assets/images/group_907.png')}
           style={styles.imageSaathi}
         />
       </View>

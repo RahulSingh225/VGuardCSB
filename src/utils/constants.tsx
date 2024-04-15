@@ -109,6 +109,7 @@ export const Colors = {
   lightGrey: '#BDBDBD',
   activity_bg_color: '#FFFFFF',
   yellow: '#F0C300',
+  lightYellow: '#F8E799',
   transparent_white: '#00FFFFFF',
   custom_black: '#000104',
   grey: '#9E9E9E',

@@ -11,8 +11,8 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { Colors } from '../utils/constants';
-import { CustomTabHeader } from './BottomTab';
+import {Colors} from '../utils/constants';
+import {CustomTabHeader} from './BottomTab';
 import RedeemStack from './RedeemStack';
 import DashboardStack from './DashboardStack';
 import SchemesStack from './SchemesStack';
@@ -21,7 +21,10 @@ import TicketStack from './TicketStack';
 import RedemptionHistory from '../screens/Redeem/RedemptionHistory';
 import ProfileStack from './ProfileStack';
 import LanguagePicker from '../components/LanguagePicker';
-
+import HomeScreen from '../screens/Home/HomeScreen';
+import Profile from '../screens/BottomTab/Profile';
+import EditProfile from '../screens/BottomTab/EditProfile';
+import UpdatePassword from '../screens/Home/UpdatePassword';
 
 const HomeStack: React.FC = () => {
   type HomeStackParams = {
@@ -81,46 +84,58 @@ const HomeStack: React.FC = () => {
             headerShown: true,
           })}
         />
-        <Stack.Screen name="Scan QR" component={ScanStack} />
-        <Stack.Screen name="Redeem Products" component={RedeemStack} />
+          <Stack.Screen
+          name="UpdatePassword"
+          component={UpdatePassword}
+          
+          options={({route}) => ({
+            headerBackVisible:false,
+            headerTitle: () => (
+              <CustomTabHeader
+                handleLanguageButtonPress={handleLanguageButtonPress}
+                route={route}
+              />
+            ),
+            headerShown: true,
+          })}
+        />
+        {/* <Stack.Screen name="Scan QR" component={ScanStack} /> */}
+        {/* <Stack.Screen name="Redeem Products" component={RedeemStack} />
         <Stack.Screen name="Dashboard" component={DashboardStack} />
         <Stack.Screen name="schemes" component={SchemesStack} />
-        <Stack.Screen name="info" component={
-          InfoStack}
-         />
-        <Stack.Screen name="new" component={NewStack} />
-        <Stack.Screen name="ticket" component={TicketStack} />
-       
-        <Stack.Screen
+        <Stack.Screen name="info" component={InfoStack} />
+        {/* <Stack.Screen name="new" component={NewStack} /> */}
+        {/* <Stack.Screen name="ticket" component={TicketStack} />  */}
+
+        {/* <Stack.Screen
           name="Product Registration Form"
           component={ProductRegistrationForm}
           options={{
             headerShown: true,
           }}
-        />
-        <Stack.Screen
+        /> */}
+        {/* <Stack.Screen
           name="Redemption History"
           component={RedemptionHistory}
           options={{
             headerShown: true,
           }}
-        />
-        <Stack.Screen
+        /> */}
+        {/* <Stack.Screen
           name="Unique Code History"
           component={UniqueCodeHistory}
           options={{
             headerShown: true,
           }}
-        />
-        <Stack.Screen
+        /> */}
+        {/* <Stack.Screen
           name="Scan In"
           component={ScanCodeReg}
           options={{
             headerShown: true,
           }}
-        />
-       
-      
+        /> */}
+{/* 
         <Stack.Screen
           name="TDS Certificate"
           component={TDS}
@@ -134,9 +149,9 @@ const HomeStack: React.FC = () => {
               />
             ),
           }}
-        />
-       
-        <Stack.Screen
+        /> */}
+
+        {/* <Stack.Screen
           name="TDS Statement"
           component={TDSStatement}
           options={{
@@ -149,7 +164,7 @@ const HomeStack: React.FC = () => {
               />
             ),
           }}
-        />
+        /> */}
         <Stack.Screen
           name="Profile"
           component={ProfileStack}

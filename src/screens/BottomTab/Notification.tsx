@@ -15,6 +15,7 @@ import {
 
 import Loader from '../../components/Loader';
 import { Colors } from '../../utils/constants';
+import { getNotifications } from '../../utils/apiservice';
 
 interface NotificationItem {
   alertDesc: string;

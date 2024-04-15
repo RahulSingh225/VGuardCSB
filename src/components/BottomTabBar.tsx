@@ -6,7 +6,8 @@ import Icon from 'react-native-vector-icons/Ionicons';
 
 import {responsiveFontSize} from 'react-native-responsive-dimensions';
 
-import { Colors } from '../utils/constants';
+import {Colors} from '../utils/constants';
+import {getNotificationCount} from '../utils/apiservice';
 
 const BottomTabBar: React.FC<BottomTabBarProps> = ({
   state,

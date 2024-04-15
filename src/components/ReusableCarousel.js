@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import {View, Image, StyleSheet, Dimensions} from 'react-native';
 import Carousel from 'react-native-snap-carousel';
-import colors from '../../colors';
+
 
 const ReusableCarousel = ({
   data,

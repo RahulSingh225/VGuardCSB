@@ -3,8 +3,9 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
-import colors from '../../colors';
+
 import { responsiveFontSize } from 'react-native-responsive-dimensions';
+import { Colors } from '../utils/constants';
 
 interface DatePickerFieldProps {
     label: string;
@@ -54,7 +55,7 @@ const styles = StyleSheet.create({
     container: {
         height: 50,
         marginBottom: 20,
-        borderColor: colors.grey,
+        borderColor: Colors.grey,
         borderWidth: 2,
         paddingHorizontal: 10,
         paddingVertical: 5,
@@ -65,14 +66,14 @@ const styles = StyleSheet.create({
         top: -8,
         left: 10,
         fontSize: responsiveFontSize(1.5),
-        color: colors.black,
-        backgroundColor: colors.white,
+        color: Colors.black,
+        backgroundColor: Colors.white,
         paddingHorizontal: 3,
         fontWeight: 'bold',
         zIndex: 999
     },
     input: {
-        color: colors.black,
+        color: Colors.black,
         paddingTop: 10,
     },
 });

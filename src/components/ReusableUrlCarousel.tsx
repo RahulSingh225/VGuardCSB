@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { View, Image, StyleSheet, Dimensions, ImageBackground } from 'react-native';
 import Carousel, { Pagination, ParallaxImage } from 'react-native-snap-carousel';
+import { Colors } from '../utils/constants';
 // import PDFView from 'react-native-pdf'; // Import PDFView from react-native-pdf
-import colors from '../../colors';
+
 
 interface CarouselItem {
   imageUrl: string;
@@ -32,7 +33,7 @@ const ReusableUrlCarousel: React.FC<ReusableUrlCarouselProps> = ({
           style={styles.carouselImage}
           parallaxFactor={0.4}
           showSpinner={true}
-          spinnerColor={colors.yellow}
+          spinnerColor={Colors.yellow}
           spinnerSize={15}
           resizeMode="contain"
         /> */}
@@ -42,7 +43,7 @@ const ReusableUrlCarousel: React.FC<ReusableUrlCarouselProps> = ({
               style={styles.carouselImage}
               parallaxFactor={0.4}
               showSpinner={true}
-              spinnerColor={colors.yellow}
+              spinnerColor={Colors.yellow}
               spinnerSize={15}
               resizeMode="contain"
           >
@@ -52,7 +53,7 @@ const ReusableUrlCarousel: React.FC<ReusableUrlCarouselProps> = ({
               style={styles.carouselImage}
               parallaxFactor={0.4}
               showSpinner={true}
-              spinnerColor={colors.yellow}
+              spinnerColor={Colors.yellow}
               spinnerSize={15}
               resizeMode="cover"
             />

@@ -2,9 +2,10 @@
 
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, Modal, TextInput } from 'react-native';
-import colors from '../../colors';
+
 import { responsiveFontSize } from 'react-native-responsive-dimensions';
 import { height, width } from '../utils/dimensions';
+import { Colors } from '../utils/constants';
 
 interface PickerItem {
     label: string;
@@ -101,7 +102,7 @@ const MultiSelectField: React.FC<MultiSelectFieldProps> = ({
                                         />
                                     )}
                                 </View>
-                                <Text style={{ color: colors.black }}>{item.label}</Text>
+                                <Text style={{ color: Colors.black }}>{item.label}</Text>
                             </TouchableOpacity>
                         ))}
 
@@ -115,20 +116,20 @@ const MultiSelectField: React.FC<MultiSelectFieldProps> = ({
 const styles = StyleSheet.create({
     container: {
         marginBottom: 20,
-        borderColor: colors.lightGrey,
+        borderColor: Colors.lightGrey,
         borderWidth: 2,
         paddingHorizontal: 10,
         paddingVertical: 5,
         borderRadius: 5,
     },
     focusedContainer: {
-        borderColor: colors.grey,
+        borderColor: Colors.grey,
     },
     label: {
         fontSize: responsiveFontSize(1.7),
         fontWeight: 'bold',
-        color: colors.black,
-        backgroundColor: colors.white,
+        color: Colors.black,
+        backgroundColor: Colors.white,
         paddingHorizontal: 3,
     },
     focusedLabel: {
@@ -136,7 +137,7 @@ const styles = StyleSheet.create({
         top: -8,
         left: 10,
         fontSize: responsiveFontSize(1.5),
-        color: colors.black,
+        color: Colors.black,
     },
     checkboxContainer: {
         flexDirection: 'row',
@@ -151,7 +152,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     selectedValuesTextInput: {
-        color: colors.black
+        color: Colors.black
     },
     overlay: {
         flex: 1,
@@ -165,7 +166,7 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
         minHeight: height / 8,
         margin: 20,
-        backgroundColor: colors.white,
+        backgroundColor: Colors.white,
         padding: 10,
         elevation: 10,
     },

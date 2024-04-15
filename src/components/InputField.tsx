@@ -1,12 +1,22 @@
 // InputField.tsx
 
-import React, { useState, useRef } from 'react';
-import { View, Text, TextInput, StyleSheet, Image, TouchableOpacity, ImageBackground } from 'react-native';
-import colors from '../../colors';
-import { responsiveFontSize } from 'react-native-responsive-dimensions';
+import React, {useState, useRef} from 'react';
+import {
+  View,
+  Text,
+  TextInput,
+  StyleSheet,
+  Image,
+  TouchableOpacity,
+  ImageBackground,
+} from 'react-native';
+
+import {responsiveFontSize} from 'react-native-responsive-dimensions';
+import {Colors} from '../utils/constants';
 
 interface InputFieldProps {
   label: string;
+  value: string;
   errorMessage?: string;
   disabled?: boolean;
   isImage?: boolean;
@@ -29,6 +39,7 @@ const InputField: React.FC<InputFieldProps> = ({
   onChangeText,
   numeric,
   maxLength,
+  value,
   ...rest
 }) => {
   const [isFocused, setIsFocused] = useState(false);
@@ -44,26 +55,35 @@ const InputField: React.FC<InputFieldProps> = ({
     }
   };
 
-
   return (
-    <View style={[styles.container, isFocused || hasInput || isImage ? styles.focusedContainer : null]}>
-      <Text style={[styles.label, isFocused || hasInput || isImage ? styles.focusedLabel : null]}>{label}</Text>
+    <View
+      style={[
+        styles.container,
+        isFocused || hasInput || isImage ? styles.focusedContainer : null,
+      ]}>
+      <Text
+        style={[
+          styles.label,
+          isFocused || hasInput || isImage ? styles.focusedLabel : null,
+        ]}>
+        {label}
+      </Text>
       {isImage ? (
-        <View style={{ flexDirection: 'row' }}>
+        <View style={{flexDirection: 'row'}}>
           <TextInput
-            style={[styles.input, styles.disabledInput, { flex: 1 }]}
+            style={[styles.input, styles.disabledInput, {flex: 1}]}
             editable={false}
-            value={label}
+            placeholder={label}
+            value={value}
             {...rest}
           />
           <TouchableOpacity onPress={onPressImage}>
             <ImageBackground
               source={require('../assets/images/no_image.webp')}
               style={styles.image}
-              resizeMode="cover"
-            >
+              resizeMode="cover">
               <Image
-                source={{ uri: imageSource }}
+                source={{uri: imageSource}}
                 style={styles.image}
                 resizeMode="cover"
               />
@@ -79,6 +99,7 @@ const InputField: React.FC<InputFieldProps> = ({
           onChangeText={onChangeText}
           keyboardType={numeric ? 'numeric' : 'default'}
           maxLength={maxLength}
+          value={value}
           {...rest}
         />
       )}
@@ -91,20 +112,20 @@ const styles = StyleSheet.create({
   container: {
     height: 50,
     marginBottom: 20,
-    borderColor: colors.lightGrey,
+    borderColor: Colors.lightGrey,
     borderWidth: 2,
     paddingHorizontal: 10,
     paddingVertical: 5,
     borderRadius: 5,
   },
   focusedContainer: {
-    borderColor: colors.grey,
+    borderColor: Colors.grey,
   },
   label: {
     fontSize: responsiveFontSize(1.7),
     fontWeight: 'bold',
-    color: colors.black,
-    backgroundColor: colors.white,
+    color: Colors.black,
+    backgroundColor: 'transparent',
     paddingHorizontal: 3,
   },
   focusedLabel: {
@@ -112,27 +133,27 @@ const styles = StyleSheet.create({
     top: -8,
     left: 10,
     fontSize: responsiveFontSize(1.5),
-    color: colors.black,
+    color: Colors.black,
   },
   input: {
-    color: colors.black,
+    color: Colors.black,
     paddingTop: 10,
   },
   disabledInput: {
-    color: colors.grey,
+    color: Colors.grey,
   },
   image: {
     width: 35,
     height: 35,
     alignSelf: 'flex-end',
-    // backgroundColor: colors.lightGrey
+    // backgroundColor: Colors.lightGrey
   },
   error: {
     color: 'red',
     marginTop: 5,
   },
   imageName: {
-    color: colors.grey,
+    color: Colors.grey,
   },
 });
 

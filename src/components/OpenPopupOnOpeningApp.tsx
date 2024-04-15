@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, TouchableOpacity, Text, Linking, Image, View, Modal, Dimensions } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import colors from '../../colors';
+
 import { responsiveFontSize } from 'react-native-responsive-dimensions';
+import { Colors } from '../utils/constants';
 
 const OpenPopupOnOpeningApp = () => {
     const [isModalVisible, setModalVisible] = useState(false);
@@ -136,11 +137,11 @@ const styles = StyleSheet.create({
 
     },
     viewText: {
-        color: colors.black,
+        color: Colors.black,
         fontWeight: 'bold',
     },
     viewTouchable: {
-        backgroundColor: colors.yellow,
+        backgroundColor: Colors.yellow,
         paddingVertical: 10,
         paddingHorizontal: 20,
         borderRadius: 30,

@@ -17,6 +17,13 @@ import {
   StorageItem,
 } from './src/services/StorageService';
 import {VguardUser} from './src/types';
+import {Text} from 'react-native-paper';
+import {View} from 'react-native';
+import AuthNavigator from './src/navigator/AuthNavigator';
+import Notification from './src/screens/BottomTab/Notification';
+import EditProfile from './src/screens/BottomTab/EditProfile';
+import Test from './src/screens/WhatsNew/Test';
+import UpdatePassword from './src/screens/Home/UpdatePassword';
 
 function App(): React.JSX.Element {
   useEffect(() => {
@@ -32,7 +39,9 @@ function App(): React.JSX.Element {
         addItem(item).then(res => console.log(res));
       },
       signOut: () => {
-        removeItem('USER').then(res => console.log(res));
+        removeItem('USER').then(res => {
+          setUser(null);
+        });
       },
       getUserDetails: () => user,
     }),
@@ -45,7 +54,9 @@ function App(): React.JSX.Element {
           <BottomTab />
         </AppContext.Provider>
       ) : (
-        <AppContext.Provider value={appUtils} />
+        <AppContext.Provider value={appUtils}>
+          <AuthNavigator />
+        </AppContext.Provider>
       )}
     </NavigationContainer>
   );

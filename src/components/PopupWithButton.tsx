@@ -8,11 +8,12 @@ import {
   Image,
 } from 'react-native';
 import closeIcon from '../assets/images/ic_close.png';
-import colors from '../../colors';
+
 import {
   responsiveFontSize,
   responsiveHeight,
 } from 'react-native-responsive-dimensions';
+import { Colors } from '../utils/constants';
 
 interface PopupWithButtonProps {
   isVisible: boolean;
@@ -69,7 +70,7 @@ const styles = StyleSheet.create({
     height: '30%',
     width: '80%',
     padding: 30,
-    backgroundColor: colors.yellow,
+    backgroundColor: Colors.yellow,
     borderRadius: 10,
     borderBottomRightRadius: 30,
     alignItems: 'center',
@@ -86,7 +87,7 @@ const styles = StyleSheet.create({
     color: 'blue',
   },
   popupText: {
-    color: colors.black,
+    color: Colors.black,
     fontSize: responsiveFontSize(2),
     textAlign: 'center',
     fontWeight: 'bold',
@@ -94,11 +95,11 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   buttonText: {
-    color: colors.black,
+    color: Colors.black,
     fontWeight: 'bold',
   },
   button: {
-    backgroundColor: colors.white,
+    backgroundColor: Colors.white,
     position: 'absolute',
     bottom: 20,
     borderRadius: 5,

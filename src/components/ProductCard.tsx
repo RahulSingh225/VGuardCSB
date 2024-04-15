@@ -1,7 +1,8 @@
 import React from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
-import colors from '../../colors';
+
 import { responsiveFontSize } from 'react-native-responsive-dimensions';
+import { Colors } from '../utils/constants';
 
 interface Product {
     title: string;
@@ -52,17 +53,17 @@ const styles = StyleSheet.create({
         fontSize: responsiveFontSize(1.7),
         fontWeight: 'bold',
         textAlign: 'center',
-        color: colors.black
+        color: Colors.black
     },
     price: {
         fontSize: responsiveFontSize(1.5),
         fontWeight: 'bold',
-        color: colors.black,
+        color: Colors.black,
         textAlign: 'center',
     },
     detail: {
         width: '100%',
-        backgroundColor: colors.lightYellow,
+        backgroundColor: Colors.lightYellow,
         display: 'flex',
         flexDirection: 'row',
         justifyContent: 'space-between',

@@ -1,9 +1,9 @@
 import React from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, Linking } from 'react-native';
 import { responsiveFontSize } from 'react-native-responsive-dimensions';
-import colors from '../../colors';
 
 import { useTranslation } from 'react-i18next';
+import { Colors } from '../utils/constants';
 
 const NeedHelp: React.FC = () => {
   const { t } = useTranslation();
@@ -57,7 +57,7 @@ const styles = StyleSheet.create({
   },
   textHeader: {
     fontWeight: 'bold',
-    color: colors.black,
+    color: Colors.black,
     fontSize: responsiveFontSize(2.5),
   },
   helpContainer: {
@@ -74,7 +74,7 @@ const styles = StyleSheet.create({
   textHelp: {
     fontSize: responsiveFontSize(1.7),
     fontWeight: 'bold',
-    color: colors.black,
+    color: Colors.black,
   },
 });
 

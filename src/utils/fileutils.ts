@@ -1,11 +1,11 @@
-const imageBaseUrl =  "https://storage.googleapis.com/vguard_staging_bucket/";
+const imageBaseUrl = 'https://storage.googleapis.com/vguard_staging_bucket/';
 // const imageBaseUrl = "http://34.100.133.239/";
 
-export function getImageUrl(uuid, folderName) {
+export function getImageUrl(uuid: string, folderName: string) {
   let baseUrl = imageBaseUrl;
 
   switch (folderName) {
-    case 'Profile':
+    case 'PROFILE':
       baseUrl += 'retimg/appImages/Profile/';
       break;
     case 'Cheque':
@@ -21,6 +21,7 @@ export function getImageUrl(uuid, folderName) {
       baseUrl += 'retimg/appImages/GST/';
       break;
     default:
+      baseUrl = 'null';
       break;
   }
 

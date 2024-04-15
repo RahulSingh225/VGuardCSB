@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import colors from '../../colors';
+import { Colors } from '../utils/constants';
+;
 
 interface DeliveryStatusProps {
   statuses: string[];
@@ -58,7 +59,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'black',
   },
   activeCircle: {
-    backgroundColor: colors.yellow,
+    backgroundColor: Colors.yellow,
   },
   line: {
     marginLeft: 8,
@@ -67,7 +68,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#ccc',
   },
   completedLine: {
-    backgroundColor: colors.yellow,
+    backgroundColor: Colors.yellow,
   },
   pendingLine: {
     backgroundColor: '#ccc',
@@ -80,7 +81,7 @@ const styles = StyleSheet.create({
     color: 'black',
   },
   activeText: {
-    color: colors.black,
+    color: Colors.black,
     fontWeight: 'bold'
   },
 });

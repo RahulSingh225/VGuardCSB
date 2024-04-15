@@ -10,11 +10,12 @@ import {
 } from 'react-native';
 import closeIcon from '../assets/images/ic_close.png';
 import okIcon from '../assets/images/ic_accept_black2.png';
-import colors from '../../colors';
+
 import {
   responsiveFontSize,
   responsiveHeight,
 } from 'react-native-responsive-dimensions';
+import { Colors } from '../utils/constants';
 
 interface PopupProps {
   isVisible: boolean;
@@ -71,7 +72,7 @@ const styles = StyleSheet.create({
     height: '30%',
     width: '80%',
     padding: 30,
-    backgroundColor: colors.yellow,
+    backgroundColor: Colors.yellow,
     borderRadius: 10,
     borderBottomRightRadius: 30,
     alignItems: 'center',
@@ -95,7 +96,7 @@ const styles = StyleSheet.create({
     color: 'blue',
   },
   popupText: {
-    color: colors.black,
+    color: Colors.black,
     fontSize: responsiveFontSize(2.2),
     textAlign: 'center',
     fontWeight: 'bold',

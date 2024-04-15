@@ -1,9 +1,9 @@
 interface BankDetail {
-  bank_account_name:string|null=null
-  bank_account_number:string|null=null
-  bank_account_ifsc:string|null=null
-  bank_account_type:string|null=null
-  }
+  bank_account_name: string | null = null;
+  bank_account_number: string | null = null;
+  bank_account_ifsc: string | null = null;
+  bank_account_type: string | null = null;
+}
 
 interface PointsSummary {
   pointsBalance: string | '';
@@ -80,6 +80,7 @@ export interface VguardUser {
   bank_account_change_count: string | '';
   bank_verified: number | 0;
   vpa_id: string | '';
+  preferred_language: number | 1;
   vpa_verified: number | 0;
   email: string | '';
   selfie: string | '';
@@ -93,7 +94,6 @@ export interface VguardUser {
   retrigger_invite: boolean | false;
   access_token: string | '';
   refresh_token: string | '';
-
 }
 
 export interface User {

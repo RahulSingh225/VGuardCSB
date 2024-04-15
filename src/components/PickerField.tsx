@@ -2,9 +2,10 @@
 
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, Image } from 'react-native';
-import colors from '../../colors';
+
 import { responsiveFontSize } from 'react-native-responsive-dimensions';
 import { Picker } from '@react-native-picker/picker';
+import { Colors } from '../utils/constants';
 
 const PickerField: React.FC<PickerFieldProps> = ({
     label,
@@ -39,7 +40,7 @@ const PickerField: React.FC<PickerFieldProps> = ({
                 <Picker
                     style={[styles.picker, disabled && styles.disabledPicker]}
                     enabled={!disabled}
-                    dropdownIconColor = {colors.black}
+                    dropdownIconColor = {Colors.black}
                     onValueChange={handleValueChange}
                     selectedValue={selectedValue}
                     onFocus={handleFocus}
@@ -60,20 +61,20 @@ const styles = StyleSheet.create({
     container: {
         height: 50,
         marginBottom: 20,
-        borderColor: colors.lightGrey,
+        borderColor: Colors.lightGrey,
         borderWidth: 2,
         paddingHorizontal: 10,
         paddingVertical: 5,
         borderRadius: 5,
     },
     focusedContainer: {
-        borderColor: colors.grey,
+        borderColor: Colors.grey,
     },
     label: {
         fontSize: responsiveFontSize(1.7),
         fontWeight: 'bold',
-        color: colors.black,
-        backgroundColor: colors.white,
+        color: Colors.black,
+        backgroundColor: Colors.white,
         paddingHorizontal: 3,
     },
     focusedLabel: {
@@ -81,15 +82,15 @@ const styles = StyleSheet.create({
         top: -8,
         left: 10,
         fontSize: responsiveFontSize(1.5),
-        color: colors.black,
+        color: Colors.black,
     },
     picker: {
-        color: colors.black,
-        // backgroundColor: colors.yellow,
+        color: Colors.black,
+        // backgroundColor: Colors.yellow,
         flex: 1
     },
     disabledPicker: {
-        color: colors.grey,
+        color: Colors.grey,
     },
     error: {
         color: 'red',

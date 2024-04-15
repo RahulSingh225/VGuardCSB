@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import {
   View,
   Text,
@@ -27,6 +27,9 @@ import arrowIcon from '../../assets/images/arrow.png';
 import selectedTickImage from '../../assets/images/tick_1.png';
 import notSelectedTickImage from '../../assets/images/tick_1_notSelected.png';
 import Popup from '../../components/Popup';
+import {loginUser} from '../../utils/apiservice';
+import {VguardUser} from '../../types';
+import {AppContext} from '../../services/ContextService';
 
 const Login: React.FC<{navigation: any}> = ({navigation}) => {
   const {t, i18n} = useTranslation();
@@ -40,7 +43,7 @@ const Login: React.FC<{navigation: any}> = ({navigation}) => {
   const [isPopupVisible, setIsPopupVisible] = useState(false);
   const [popupContent, setPopupContent] = useState('');
   const [selectedOption, setSelectedOption] = useState(true);
-
+  const appContext = useContext(AppContext);
   const handleLanguageButtonPress = () => {
     setShowLanguagePicker(true);
   };
@@ -100,16 +103,19 @@ const Login: React.FC<{navigation: any}> = ({navigation}) => {
     showLoader(true);
 
     try {
-      const response = await loginWithPassword(username, password);
+      const body = {
+        mobile_no: username,
+        password: password,
+        method: 'password',
+      };
+      const response = await loginUser(body);
       showLoader(false);
       if (response.status === 200) {
         const responseData = response.data;
-        if (responseData.name === 'Fail') {
-          setIsPopupVisible(!isPopupVisible);
-          setPopupContent('Wrong Username or Password!');
-          throw new Error('Wrong Username or Password!');
+        if (responseData.status) {
+          const vg: VguardUser = responseData.data;
+          appContext.signIn(vg);
         }
-        login(responseData);
       } else {
         setIsPopupVisible(!isPopupVisible);
         setPopupContent('Something went wrong!');
@@ -139,7 +145,7 @@ const Login: React.FC<{navigation: any}> = ({navigation}) => {
           </View>
           {loader && <Loader isLoading={loader} />}
           <Image
-            source={require('../../../assets/images/rishta_retailer_logo.webp')}
+            source={require('../../assets/images/rishta_retailer_logo.webp')}
             style={styles.imageSaathi}
           />
           <Text style={styles.mainHeader}>{t('strings:lbl_welcome')}</Text>
@@ -153,7 +159,7 @@ const Login: React.FC<{navigation: any}> = ({navigation}) => {
               <Image
                 style={styles.icon}
                 resizeMode="contain"
-                source={require('../../../assets/images/mobile_icon.png')}
+                source={require('../../assets/images/mobile_icon.png')}
               />
               <TextInput
                 style={styles.input}
@@ -167,7 +173,7 @@ const Login: React.FC<{navigation: any}> = ({navigation}) => {
               <Image
                 style={styles.icon}
                 resizeMode="contain"
-                source={require('../../../assets/images/lock_icon.png')}
+                source={require('../../assets/images/lock_icon.png')}
               />
               <TextInput
                 style={styles.input}
@@ -243,7 +249,7 @@ const Login: React.FC<{navigation: any}> = ({navigation}) => {
             </Text>
 
             <Image
-              source={require('../../../assets/images/group_910.png')}
+              source={require('../../assets/images/group_910.png')}
               style={styles.imageVguard}
             />
           </View>
@@ -284,7 +290,7 @@ const styles = StyleSheet.create({
   },
   loginScreen: {
     height: '100%',
-    backgroundColor: colors.white,
+    backgroundColor: Colors.white,
     display: 'flex',
   },
   mainWrapper: {
@@ -295,12 +301,12 @@ const styles = StyleSheet.create({
     flexGrow: 1,
   },
   textHeader: {
-    color: colors.grey,
+    color: Colors.grey,
     fontSize: 14,
     fontWeight: 'bold',
   },
   mainHeader: {
-    color: colors.black,
+    color: Colors.black,
     fontSize: 20,
     fontWeight: 'bold',
     marginBottom: 10,
@@ -321,13 +327,13 @@ const styles = StyleSheet.create({
     flex: 2,
   },
   input: {
-    color: colors.black,
+    color: Colors.black,
     height: 40,
     padding: 10,
     flex: 1,
   },
   inputContainer: {
-    backgroundColor: colors.white,
+    backgroundColor: Colors.white,
     marginBottom: 20,
     borderRadius: 5,
     shadowColor: 'rgba(0, 0, 0, 0.8)',
@@ -345,7 +351,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   forgotPassword: {
-    color: colors.grey,
+    color: Colors.grey,
     fontWeight: 'bold',
     fontSize: 12,
     textAlign: 'right',
@@ -354,7 +360,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: 20,
     fontWeight: 'bold',
-    color: colors.black,
+    color: Colors.black,
     marginBottom: 20,
   },
   buttonContainer: {
@@ -364,7 +370,7 @@ const styles = StyleSheet.create({
   footerText: {
     textAlign: 'left',
     fontSize: 10,
-    color: colors.black,
+    color: Colors.black,
   },
   footerTextContainer: {
     paddingBottom: 5,
@@ -382,7 +388,7 @@ const styles = StyleSheet.create({
   footergreyText: {
     textAlign: 'center',
     fontSize: 12,
-    color: colors.grey,
+    color: Colors.grey,
     paddingBottom: 5,
   },
   footerContainer: {
@@ -391,7 +397,7 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
     gap: 10,
     justifyContent: 'center',
-    backgroundColor: colors.lightGrey,
+    backgroundColor: Colors.lightGrey,
     width: '100%',
     paddingVertical: 10,
   },
@@ -403,7 +409,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   button: {
-    backgroundColor: colors.yellow,
+    backgroundColor: Colors.yellow,
     padding: 10,
     borderRadius: 5,
     width: '50%',
@@ -411,7 +417,7 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     fontSize: 12,
-    color: colors.black,
+    color: Colors.black,
     fontWeight: 'bold',
   },
   buttonLanguageContainer: {
@@ -424,12 +430,12 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: colors.white,
+    backgroundColor: Colors.white,
   },
   closeText: {
     marginTop: 20,
-    color: colors.black,
-    backgroundColor: colors.yellow,
+    color: Colors.black,
+    backgroundColor: Colors.yellow,
     paddingHorizontal: 15,
     paddingVertical: 5,
     borderRadius: 5,
@@ -437,10 +443,10 @@ const styles = StyleSheet.create({
   },
   versionText: {
     textAlign: 'center',
-    color: colors.black,
+    color: Colors.black,
     fontSize: responsiveFontSize(1.3),
     marginVertical: 30,
   },
 });
 
-export default Login
+export default Login;

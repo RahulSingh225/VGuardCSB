@@ -24,6 +24,10 @@ import LogoutConfirmationPopup from '../components/LogoutConfirmationPopup';
 import LanguagePicker from '../components/LanguagePicker';
 import BottomTabBar from '../components/BottomTabBar';
 import ProfileStack from './ProfileStack';
+import ContactPage from '../screens/BottomTab/ContactPage';
+import HomeScreen from '../screens/Home/HomeScreen';
+import {removeItem} from '../services/StorageService';
+import {AppContext} from '../services/ContextService';
 
 const CustomTabHeader: React.FC<{
   route: any;
@@ -42,14 +46,14 @@ const CustomTabHeader: React.FC<{
       <View style={{flexDirection: 'row', gap: 10}}>
         <Text
           style={{
-            color: colors.black,
+            color: Colors.black,
             fontSize: responsiveFontSize(2.5),
             fontWeight: 'bold',
           }}>
           {route.name}
         </Text>
         {/* <TouchableOpacity style={styles.languageContainer} onPress={handleLanguageButtonPress}>
-            <Text style={{ color: colors.black }}>{t('strings:language')}</Text>
+            <Text style={{ color: Colors.black }}>{t('strings:language')}</Text>
             <Image style={{ width: 15, height: 15, marginLeft: 5 }} source={require('../../../assets/images/down_yellow_arrow.png')} />
           </TouchableOpacity> */}
       </View>
@@ -65,7 +69,7 @@ const BottomTab: React.FC = () => {
   const {i18n} = useTranslation();
   const [showLanguagePicker, setShowLanguagePicker] = useState(false);
   const [selectedLanguage, setSelectedLanguage] = useState(i18n.language);
-
+  const appContext = React.useContext(AppContext);
   const handleLanguageButtonPress = () => {
     setShowLanguagePicker(true);
   };
@@ -91,7 +95,6 @@ const BottomTab: React.FC = () => {
 
   const Tab = createBottomTabNavigator();
   const [isLogoutPopupVisible, setLogoutPopupVisible] = useState(false);
-  const {logout} = useAuth();
 
   const showLogoutPopup = () => {
     setLogoutPopupVisible(true);
@@ -105,14 +108,15 @@ const BottomTab: React.FC = () => {
   };
 
   const confirmLogout = () => {
-    logout();
+    removeItem('USER');
+    appContext.signOut();
     hideLogoutPopup();
   };
 
   return (
     <>
       <Tab.Navigator
-        initialRouteName="HomeStack"
+        initialRouteName="Home"
         tabBar={props => <BottomTabBar {...props} />}
         screenOptions={{
           headerStyle: {
@@ -143,7 +147,7 @@ const BottomTab: React.FC = () => {
         />
         <Tab.Screen
           name="Profile"
-          component={ProfileStack}
+          component={Notification}
           options={({route}) => ({
             headerTitle: () => (
               <CustomTabHeader
@@ -156,7 +160,7 @@ const BottomTab: React.FC = () => {
         />
         <Tab.Screen
           name="Contact Us"
-          component={ContactPage}
+          component={Notification}
           options={({route}) => ({
             headerTitle: () => (
               <CustomTabHeader
