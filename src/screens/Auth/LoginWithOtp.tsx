@@ -64,28 +64,26 @@ const LoginWithOtp: React.FC<LoginWithOtpProps> = ({navigation, route}) => {
     };
   }, [countdown]);
 
-  async function getOTP(otpType: string) {
+  async function getOTP() {
     showLoader(true);
     if (countdown < 1) {
       try {
         const body = {
-          loginOtpUserName: number,
-          otpType,
+          mobile_no: number,
         };
         const validationResponse = await generateOtpForLogin(body);
         if (validationResponse.status === 200) {
           showLoader(false);
-          const validationResponseData = validationResponse.data;
-          if (validationResponseData.code === 200) {
-            const successMessage = validationResponseData.message;
+          const validationResponseData = validationResponse.data.data;
+          if (validationResponseData.code === 1) {
+            const successMessage = validationResponseData.ErrorMessage;
             setIsPopupVisible(true);
             setPopupMessage(successMessage);
           } else {
-            const errorMessage = validationResponseData.message;
+            const errorMessage = validationResponseData.ErrorMessage;
             setIsPopupVisible(true);
             setPopupMessage(errorMessage);
           }
-          setCountdown(60);
         } else {
           throw new Error('Something went wrong!');
         }
@@ -266,7 +264,7 @@ const LoginWithOtp: React.FC<LoginWithOtpProps> = ({navigation, route}) => {
                 <Text style={styles.greyText}>
                   {t('strings:otp_not_received')}
                 </Text>
-                <TouchableOpacity onPress={() => getOTP('SMS')}>
+                <TouchableOpacity onPress={() => getOTP()}>
                   <Text style={{color: Colors.yellow}}>
                     {t('strings:resend_otp')}
                   </Text>

@@ -14,7 +14,7 @@ const UpdatePassword = ({navigation}) => {
   const context = useContext(AppContext);
   const user: VguardUser = context.getUserDetails();
   useEffect(() => {
-    navigation.replace('Edit Profile');
+    
     const backHandler = BackHandler.addEventListener(
       'hardwareBackPress',
       () => true,
@@ -34,7 +34,7 @@ const UpdatePassword = ({navigation}) => {
         .then(res => {
           setLoader(false);
           if (res.data.status) {
-            navigation.replace('Edit Profile');
+            navigation.replace('Profile');
           } else {
             setPopup({visible: true, content: res.data.message});
           }

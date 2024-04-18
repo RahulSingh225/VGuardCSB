@@ -25,7 +25,7 @@ import {
   responsiveFontSize,
   responsiveHeight,
 } from 'react-native-responsive-dimensions';
-import {Cities, VguardUser} from '../../types';
+import {BankDetail, Cities, VguardUser} from '../../types';
 import {
   getCities,
   getDetailsByPinCode,
@@ -34,7 +34,7 @@ import {
   updateProfile,
 } from '../../utils/apiservice';
 import {AppContext} from '../../services/ContextService';
-import { StorageItem, addItem } from '../../services/StorageService';
+import {StorageItem, addItem} from '../../services/StorageService';
 
 const EditProfile: React.FC<{navigation: any}> = ({navigation}) => {
   const appContext = useContext(AppContext);
@@ -47,6 +47,7 @@ const EditProfile: React.FC<{navigation: any}> = ({navigation}) => {
         const vg: VguardUser = res.data.data;
         console.log(vg);
         setUserData(vg);
+        setBankDetail(vg.bank_details)
       } else {
         setPopupVisible(true);
         setPopupContent(() => (
@@ -55,6 +56,8 @@ const EditProfile: React.FC<{navigation: any}> = ({navigation}) => {
       }
     });
   }, []);
+
+  const gender = ['Male', 'Female', 'Other'];
 
   const ecardURL = 'https://www.vguardrishta.com/img/appImages/eCard/';
 
@@ -71,6 +74,7 @@ const EditProfile: React.FC<{navigation: any}> = ({navigation}) => {
     name: '',
     type: '',
   });
+  const [bankDetails, setBankDetail] = useState<BankDetail | any>();
   const [popupContent, setPopupContent] = useState<any>();
   const [isFieldAvailable, showField] = useState(false);
   const [cities, setCities] = useState<Cities | any>();
@@ -186,7 +190,6 @@ const EditProfile: React.FC<{navigation: any}> = ({navigation}) => {
       console.log(data);
       showLoader(false);
       if (data.data.status) {
-  
         const vg: VguardUser = data.data.data;
         const st: StorageItem = {key: 'USER', value: vg};
         addItem(st);
@@ -197,29 +200,59 @@ const EditProfile: React.FC<{navigation: any}> = ({navigation}) => {
     }
   }
 
+  function checkValidation() {
+    if (userData.currentaddress1.length == 0) {
+      showError('Please enter address details');
+      return;
+    } else if (userData.currentaddress2.length == 0) {
+      showError('Please enter address details');
+      return;
+    } else if (userData.currentaddress3.length == 0) {
+      showError('Please enter address details');
+      return;
+    } else if (userData.pincode.length == 0) {
+      showError('Please enter pincode');
+      return;
+    } else if (bankDetails.bank_account_number.length == 0) {
+      showError('Please enter Bank details');
+      return;
+    } else if (bankDetails.bank_account_ifsc.length == 0) {
+      showError('Please enter Bank details');
+      return;
+    } else {
+      handleSubmit();
+    }
+  }
+  function showError(msg: string) {
+    setPopupContent(msg);
+    setPopupVisible(true);
+  }
+
   async function handleSubmit() {
     console.log('called');
-    const data: VguardUser = userData;
-    showLoader(true)
+
+    var data: VguardUser = userData;
+    data.bank_details = bankDetails;
+    showLoader(true);
     updateProfile(data)
       .then(res => {
-        showLoader(false)
+        showLoader(false);
         if (res.status == 200 && res.data.status) {
           setPopupContent(() => <Text>{res.data.message}</Text>);
           setPopupVisible(true);
-          updateProfileData()
+          updateProfileData();
         } else {
           setPopupContent(() => <Text>Please try again</Text>);
           setPopupVisible(true);
         }
       })
-      .catch(err =>{
-        showLoader(false)
-        console.log(err)
-
+      .catch(err => {
+        showLoader(false);
+        console.log(err);
       });
   }
   const handleInputChange = async (value: string, label: string) => {
+    console.log(userData);
     setUserData((prevData: VguardUser) => {
       let updatedValue: any = value;
       if (['annualBusinessPotential'].includes(label)) {
@@ -291,6 +324,11 @@ const EditProfile: React.FC<{navigation: any}> = ({navigation}) => {
           value={userData?.contact}
           disabled={true}
         />
+        <InputField
+          label={t('strings:alternate_contact_number')}
+          value={userData?.alternate_contact}
+          onChangeText={text => handleInputChange(text, 'alternate_contact')}
+        />
 
         <DatePickerField
           label={t('strings:lbl_date_of_birth_mandatory')}
@@ -298,9 +336,32 @@ const EditProfile: React.FC<{navigation: any}> = ({navigation}) => {
           onDateChange={date => handleInputChange(date, 'dob')}
         />
         <InputField
+          label={t('strings:id_proof_no')}
+          value={userData?.aadhar}
+          // onChangeText={(text) => handleInputChange(text, 'kycDetails.aadharOrVoterOrDlNo')}
+          disabled={true}
+        />
+
+        <InputField
+          label={t('strings:pan_card')}
+          value={userData?.pan}
+          // onChangeText={(text) => handleInputChange(text, 'kycDetails.aadharOrVoterOrDlNo')}
+          disabled={true}
+        />
+        <InputField
           label={t('strings:email')}
           value={userData?.email}
           onChangeText={text => handleInputChange(text, 'email')}
+        />
+        <PickerField
+          label={t('strings:lbl_gender_mandatory')}
+          disabled={false}
+          selectedValue={userData?.gender}
+          onValueChange={(text: string) => handleInputChange(text, 'gender')}
+          items={gender?.map((city: string) => ({
+            label: city,
+            value: city,
+          }))}
         />
         <Text style={styles.subHeading}>{t('strings:permanent_address')}</Text>
         <InputField
@@ -383,24 +444,11 @@ const EditProfile: React.FC<{navigation: any}> = ({navigation}) => {
           value={userData?.district}
           disabled={true}
         />
-
-        <PickerField
+        <InputField
           label={t('strings:city')}
-          disabled={false}
-          selectedValue={userData?.city}
-          onValueChange={(text: string) => handleCitySelect(text, 'permanent')}
-          items={cities?.map((city: {cityName: any}) => ({
-            label: city.cityName,
-            value: city.cityName,
-          }))}
+          value={userData?.city}
+          disabled={true}
         />
-        {isFieldAvailable ? (
-          <InputField
-            label={t('strings:city')}
-            value={userData?.otherCity}
-            onChangeText={text => handleInputChange(text, 'city')}
-          />
-        ) : null}
         {userData?.selfie?.length > 1 && (
           <ImagePickerField
             label="Selfie"
@@ -411,26 +459,33 @@ const EditProfile: React.FC<{navigation: any}> = ({navigation}) => {
             editable={false}
           />
         )}
-
+        <Text style={styles.subHeading}>{t('strings:lbl_bank_details')}</Text>
         <InputField
-          label={t('strings:id_proof_no')}
-          value={userData?.aadhar}
-          // onChangeText={(text) => handleInputChange(text, 'kycDetails.aadharOrVoterOrDlNo')}
-          disabled={true}
+          label={t('strings:lbl_account_number')}
+          value={bankDetails?.bank_account_number}
+          onChangeText={text => {
+            setBankDetail((prevState: BankDetail) => ({
+              ...prevState,
+              bank_account_number: text,
+            }));
+          }}
         />
-
         <InputField
-          label={t('strings:pan_card')}
-          value={userData?.pan}
-          // onChangeText={(text) => handleInputChange(text, 'kycDetails.aadharOrVoterOrDlNo')}
-          disabled={true}
+          label={t('strings:lbl_ifsc_code')}
+          value={bankDetails?.bank_account_ifsc}
+          onChangeText={text =>
+            setBankDetail((prevState: BankDetail) => ({
+              ...prevState,
+              bank_account_ifsc: text,
+            }))
+          }
         />
 
         <View style={styles.button}>
           <Buttons
             label={t('strings:submit')}
             variant="filled"
-            onPress={() => handleSubmit()}
+            onPress={() => checkValidation()}
             width="100%"
           />
         </View>

@@ -21,8 +21,9 @@ import {Colors} from '../../utils/constants';
 import {VguardUser} from '../../types';
 import {StorageItem, addItem, getItem} from '../../services/StorageService';
 import EntypoIcon from 'react-native-vector-icons/MaterialCommunityIcons';
-import {getUserProfile, verifyVPA} from '../../utils/apiservice';
+import {getUserProfile, verifyBank, verifyVPA} from '../../utils/apiservice';
 import Loader from '../../components/Loader';
+import { useFocusEffect } from '@react-navigation/native';
 
 const Profile: React.FC<{navigation: any}> = ({navigation}) => {
   const {t} = useTranslation();
@@ -36,15 +37,20 @@ const Profile: React.FC<{navigation: any}> = ({navigation}) => {
   const [userData, setUserData] = useState<VguardUser | any>();
   const [profileImage, setProfileImage] = useState('');
 
-  useEffect(() => {
-    getItem('USER').then(res => {
-      const vg: VguardUser = res;
-      setUserData(vg);
-    });
-  }, []);
-  async function updateProfileData() {
+
+  useFocusEffect(
+    React.useCallback(() => {
+      getItem('USER').then(res => {
+        const vg: VguardUser = res;
+        //setUserData(vg);
+        updateProfileData(vg);
+      });
+    }, []),
+  );
+
+  async function updateProfileData(vg:VguardUser) {
     try {
-      const data = await getUserProfile({user_id: userData?.user_id});
+      const data = await getUserProfile({user_id: vg?.user_id});
       console.log(data);
       setLoader(false);
       if (data.data.status) {
@@ -61,12 +67,12 @@ const Profile: React.FC<{navigation: any}> = ({navigation}) => {
     setLoader(true);
     const body = {mobile_no: userData.contact};
     await verifyVPA(body);
-    updateProfileData();
+    updateProfileData(userData);
   }
   async function VerifyBank() {
     setLoader(true);
-    //TODO make the api call
-    updateProfileData();
+    await verifyBank(userData);
+    updateProfileData(userData);
   }
   const labels = [
     'Preferred Language',
@@ -81,6 +87,8 @@ const Profile: React.FC<{navigation: any}> = ({navigation}) => {
     'Pan Card',
     'Bank Details',
     'UPI Id',
+    'Activation Status',
+    'Block Status',
   ];
   const renderField = fieldName => {
     const fieldMap = {
@@ -92,6 +100,8 @@ const Profile: React.FC<{navigation: any}> = ({navigation}) => {
       'Preferred Language': 'preferred_language',
       Gender: 'gender',
       Email: 'email',
+      'Activation Status': 'activation_status',
+      'Block Status': 'block_status',
     };
 
     if (fieldName in fieldMap) {
@@ -178,11 +188,15 @@ const Profile: React.FC<{navigation: any}> = ({navigation}) => {
         <>
           <View>
             <View style={styles.databox}>
-              <EntypoIcon
-                name={'close-circle-outline'}
-                size={24}
-                color={Colors.red}
-              />
+              {userData?.bank_verified ? (
+                <EntypoIcon name={'check-circle'} size={24} color={'green'} />
+              ) : (
+                <EntypoIcon
+                  name={'close-circle-outline'}
+                  size={24}
+                  color={Colors.red}
+                />
+              )}
               <Text style={styles.yesorno}>
                 {hasBankDetails ? 'Yes' : 'No'}
               </Text>
@@ -262,11 +276,13 @@ const Profile: React.FC<{navigation: any}> = ({navigation}) => {
         </>
       );
     } else if (fieldName === 'UPI Id') {
-      console.log(fieldName);
       return (
         <>
           {userData?.vpa_verified ? (
-            <EntypoIcon name={'check-circle'} size={24} color={'green'} />
+            <View style={{flexDirection: 'row'}}>
+              <EntypoIcon name={'check-circle'} size={24} color={'green'} />
+              <Text style={styles.yesorno}>{userData.vpa_id}</Text>
+            </View>
           ) : (
             <TouchableOpacity
               onPress={() => VerifyUpi()}

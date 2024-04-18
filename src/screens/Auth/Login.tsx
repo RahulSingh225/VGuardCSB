@@ -112,9 +112,13 @@ const Login: React.FC<{navigation: any}> = ({navigation}) => {
       showLoader(false);
       if (response.status === 200) {
         const responseData = response.data;
+        console.log(responseData)
         if (responseData.status) {
           const vg: VguardUser = responseData.data;
           appContext.signIn(vg);
+        }else{
+          setIsPopupVisible(!isPopupVisible);
+        setPopupContent(responseData.message);
         }
       } else {
         setIsPopupVisible(!isPopupVisible);

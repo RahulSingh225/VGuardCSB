@@ -25,6 +25,7 @@ import HomeScreen from '../screens/Home/HomeScreen';
 import Profile from '../screens/BottomTab/Profile';
 import EditProfile from '../screens/BottomTab/EditProfile';
 import UpdatePassword from '../screens/Home/UpdatePassword';
+import Bank from '../screens/Home/Bank';
 
 const HomeStack: React.FC = () => {
   type HomeStackParams = {
@@ -84,12 +85,26 @@ const HomeStack: React.FC = () => {
             headerShown: true,
           })}
         />
-          <Stack.Screen
+        <Stack.Screen
           name="UpdatePassword"
           component={UpdatePassword}
-          
           options={({route}) => ({
-            headerBackVisible:false,
+            headerBackVisible: false,
+            headerTitle: () => (
+              <CustomTabHeader
+                handleLanguageButtonPress={handleLanguageButtonPress}
+                route={route}
+              />
+            ),
+            headerShown: true,
+          })}
+        />
+
+<Stack.Screen
+          name="UpdateBank"
+          component={Bank}
+          options={({route}) => ({
+            headerBackVisible: false,
             headerTitle: () => (
               <CustomTabHeader
                 handleLanguageButtonPress={handleLanguageButtonPress}
@@ -135,7 +150,7 @@ const HomeStack: React.FC = () => {
             headerShown: true,
           }}
         /> */}
-{/* 
+        {/*
         <Stack.Screen
           name="TDS Certificate"
           component={TDS}

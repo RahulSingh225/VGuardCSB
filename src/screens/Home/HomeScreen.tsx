@@ -49,9 +49,9 @@ const HomeScreen: React.FC<{navigation: any}> = ({navigation}) => {
   }, []);
   useEffect(() => {
     console.log(userData)
-    // if (userData?.login_date == null) {
-    //   navigation.navigate('UpdatePassword');
-    // }
+    if (userData?.login_date == null) {
+      navigation.navigate('UpdatePassword');
+    }
     if (userData?.selfie) {
       const getImage = async () => {
         try {
@@ -115,7 +115,7 @@ const HomeScreen: React.FC<{navigation: any}> = ({navigation}) => {
             style={styles.rightPoint}
             onPress={() => navigation.navigate('Unique Code History')}>
             <Text style={styles.greyText}>{t('strings:number_of_scans')}</Text>
-            <Text style={styles.point}>{userData?.numberOfScan}</Text>
+            <Text style={styles.point}>0</Text>
           </TouchableOpacity>
         </View>
         <View style={styles.dashboard}>

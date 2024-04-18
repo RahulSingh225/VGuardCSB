@@ -548,7 +548,10 @@ export function verifyVPA(body: any) {
   const path = 'user/getUPI';
   return createPostRequest(path, body);
 }
-
+export function verifyBank(body: any) {
+  const path = 'user/verifyBankDetails';
+  return createPostRequest(path, body);
+}
 export function updatePassword(password: string, user_id: string) {
   const path = 'user/updatePassword';
   const body = {user_id: user_id, password: password};

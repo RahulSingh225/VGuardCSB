@@ -1,4 +1,4 @@
-interface BankDetail {
+export interface BankDetail {
   bank_account_name: string | null = null;
   bank_account_number: string | null = null;
   bank_account_ifsc: string | null = null;
