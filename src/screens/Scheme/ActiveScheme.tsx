@@ -9,6 +9,7 @@ import {
 
 import { useTranslation } from 'react-i18next';
 import { Colors } from '../../utils/constants';
+import { getActiveSchemeOffers } from '../../utils/apiservice';
 
 interface OfferItem {
   offerHeading: string;
@@ -25,6 +26,7 @@ const ActiveScheme: React.FC = () => {
     getActiveSchemeOffers()
       .then(response => response.data)
       .then(responseData => {
+        console.log(responseData)
         setData(responseData);
       })
       .catch(error => {

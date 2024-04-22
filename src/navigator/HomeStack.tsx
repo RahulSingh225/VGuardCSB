@@ -1,7 +1,7 @@
 /* eslint-disable react/no-unstable-nested-components */
-import React, {Profiler, useState} from 'react';
+import React, { Profiler, useState } from 'react';
 
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import {
   Image,
@@ -11,8 +11,8 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import {Colors} from '../utils/constants';
-import {CustomTabHeader} from './BottomTab';
+import { Colors } from '../utils/constants';
+import { CustomTabHeader } from './BottomTab';
 import RedeemStack from './RedeemStack';
 import DashboardStack from './DashboardStack';
 import SchemesStack from './SchemesStack';
@@ -26,6 +26,7 @@ import Profile from '../screens/BottomTab/Profile';
 import EditProfile from '../screens/BottomTab/EditProfile';
 import UpdatePassword from '../screens/Home/UpdatePassword';
 import Bank from '../screens/Home/Bank';
+import ScanStack from './ScanStack';
 
 const HomeStack: React.FC = () => {
   type HomeStackParams = {
@@ -75,7 +76,7 @@ const HomeStack: React.FC = () => {
         <Stack.Screen
           name="Home"
           component={HomeScreen}
-          options={({route}) => ({
+          options={({ route }) => ({
             headerTitle: () => (
               <CustomTabHeader
                 handleLanguageButtonPress={handleLanguageButtonPress}
@@ -88,7 +89,7 @@ const HomeStack: React.FC = () => {
         <Stack.Screen
           name="UpdatePassword"
           component={UpdatePassword}
-          options={({route}) => ({
+          options={({ route }) => ({
             headerBackVisible: false,
             headerTitle: () => (
               <CustomTabHeader
@@ -100,10 +101,10 @@ const HomeStack: React.FC = () => {
           })}
         />
 
-<Stack.Screen
+        <Stack.Screen
           name="UpdateBank"
           component={Bank}
-          options={({route}) => ({
+          options={({ route }) => ({
             headerBackVisible: false,
             headerTitle: () => (
               <CustomTabHeader
@@ -114,10 +115,11 @@ const HomeStack: React.FC = () => {
             headerShown: true,
           })}
         />
-        {/* <Stack.Screen name="Scan QR" component={ScanStack} /> */}
+        <Stack.Screen name="schemes" component={SchemesStack} />
+        <Stack.Screen name="Scan QR" component={ScanStack} />
         {/* <Stack.Screen name="Redeem Products" component={RedeemStack} />
         <Stack.Screen name="Dashboard" component={DashboardStack} />
-        <Stack.Screen name="schemes" component={SchemesStack} />
+        
         <Stack.Screen name="info" component={InfoStack} />
         {/* <Stack.Screen name="new" component={NewStack} /> */}
         {/* <Stack.Screen name="ticket" component={TicketStack} />  */}

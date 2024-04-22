@@ -1,4 +1,4 @@
-import React, {useContext, useEffect, useState} from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -17,14 +17,14 @@ import {
   responsiveHeight,
   responsiveWidth,
 } from 'react-native-responsive-dimensions';
-import {useTranslation} from 'react-i18next';
-import {getFile} from '../../utils/apiservice';
+import { useTranslation } from 'react-i18next';
+import { getFile } from '../../utils/apiservice';
 import CustomTouchableOption from '../../components/CustomTouchableOption';
 import NeedHelp from '../../components/NeedHelp';
-import Constants, {Colors} from '../../utils/constants';
-import {VguardUser} from '../../types';
-import {AppContext} from '../../services/ContextService';
-import {getImageUrl} from '../../utils/fileutils';
+import Constants, { Colors } from '../../utils/constants';
+import { VguardUser } from '../../types';
+import { AppContext } from '../../services/ContextService';
+import { getImageUrl } from '../../utils/fileutils';
 
 interface User {
   userCode: string;
@@ -37,8 +37,8 @@ interface User {
   inAllow: number;
 }
 
-const HomeScreen: React.FC<{navigation: any}> = ({navigation}) => {
-  const {t} = useTranslation();
+const HomeScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
+  const { t } = useTranslation();
   const [userData, setUserData] = useState<VguardUser | null>(null);
   const [profileImage, setProfileImage] = useState('');
   const [disableOptions, setDisableOptions] = useState(false);
@@ -69,16 +69,16 @@ const HomeScreen: React.FC<{navigation: any}> = ({navigation}) => {
   }, [userData?.selfie]);
   return (
     <ScrollView style={styles.mainWrapper}>
-      <View style={{padding: 15}}>
+      <View style={{ padding: 15 }}>
         <View style={styles.detailContainer}>
           <View style={styles.ImageProfile}>
             <ImageBackground
               source={require('../../assets/images/ic_v_guards_user.png')}
-              style={{width: '100%', height: '100%', borderRadius: 100}}
+              style={{ width: '100%', height: '100%', borderRadius: 100 }}
               resizeMode="contain">
               <Image
-                source={{uri: profileImage}}
-                style={{width: '100%', height: '100%', borderRadius: 100}}
+                source={{ uri: profileImage }}
+                style={{ width: '100%', height: '100%', borderRadius: 100 }}
                 resizeMode="contain"
               />
             </ImageBackground>
@@ -120,7 +120,7 @@ const HomeScreen: React.FC<{navigation: any}> = ({navigation}) => {
         </View>
         <View style={styles.dashboard}>
           <View style={styles.row}>
-            {userData?.cs_type == 'CSB' && (
+            {userData?.cs_type == 'Store Demonstrator' && (
               <CustomTouchableOption
                 text="strings:scan_code"
                 iconSource={require('../../assets/images/ic_scan_code.png')}

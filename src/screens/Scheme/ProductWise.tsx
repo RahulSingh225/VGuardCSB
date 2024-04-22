@@ -11,6 +11,7 @@ import {
 import { responsiveHeight } from 'react-native-responsive-dimensions';
 import Loader from '../../components/Loader';
 import { Colors } from '../../utils/constants';
+import { getProductWiseOffers } from '../../utils/apiservice';
 
 const baseURL = 'https://www.vguardrishta.com/';
 
@@ -32,7 +33,8 @@ const ProductWise: React.FC<ProductWiseProps> = ({ navigation }) => {
     getProductWiseOffers()
       .then(response => response.data)
       .then(responseData => {
-        
+        console.log(responseData)
+
         const updatedData = responseData.map((category: Category) => ({
           ...category,
           imageUrl: baseURL + category.imageUrl,

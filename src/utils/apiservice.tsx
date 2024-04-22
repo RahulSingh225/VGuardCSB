@@ -1,10 +1,11 @@
-import axios, {AxiosError, AxiosInstance, AxiosResponse} from 'axios';
+import axios, { AxiosError, AxiosInstance, AxiosResponse } from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {VguardUser} from '../types';
+import { VguardUser } from '../types';
+import { getItem } from '../services/StorageService';
 
 // const BASE_URL = 'http://192.168.1.37:5000/vguard/api';
-//const BASE_URL = 'http://localhost:5000/vguard/api';
-const BASE_URL = 'https://vguardcsb.spacempact.cloud/vguard/api';
+const BASE_URL = 'http://localhost:5000/vguard/api';
+//const BASE_URL = 'https://vguardcsb.spacempact.cloud/vguard/api';
 
 export const api: AxiosInstance = axios.create({
   baseURL: BASE_URL,
@@ -21,9 +22,9 @@ export async function newTokens(token: string) {
     const response: AxiosResponse = await createPostRequest(path, {
       refreshToken: token,
     });
-    const {accessToken, refreshToken} = response.data;
+    const { accessToken, refreshToken } = response.data;
     api.defaults.headers.common.Authorization = `Bearer ${accessToken}`;
-    return {accessToken, newRefreshToken: refreshToken};
+    return { accessToken, newRefreshToken: refreshToken };
   } catch (error) {
     throw new Error('Failed to refresh tokens');
   }
@@ -48,6 +49,12 @@ async function createGetRequest(relativeUrl: string): Promise<AxiosResponse> {
     const response = await api.get(relativeUrl);
     return response;
   } catch (error) {
+    if (error.status == 401) {
+      getItem('REFRESH_TOKEN').then(token => {
+        newTokens(token)
+      })
+
+    }
     console.error('Error:', relativeUrl, error);
     throw error;
   }
@@ -554,7 +561,7 @@ export function verifyBank(body: any) {
 }
 export function updatePassword(password: string, user_id: string) {
   const path = 'user/updatePassword';
-  const body = {user_id: user_id, password: password};
+  const body = { user_id: user_id, password: password };
   return createPostRequest(path, body);
 }
 export function getScanCodeHistory() {
@@ -660,7 +667,7 @@ export function logoutUser() {
 
 export function logOut(userId: number) {
   const path = 'user/logout';
-  return createPostRequest(path, {userId});
+  return createPostRequest(path, { userId });
 }
 
 export function getDetailsByPinCode(pinCode: string) {

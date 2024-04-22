@@ -120,6 +120,7 @@ const EditProfile: React.FC<{navigation: any}> = ({navigation}) => {
       })
       .then(secondData => {
         secondData = secondData.data;
+        console.log(secondData)
         showLoader(false);
 
         setUserData((prevData: VguardUser) => ({
@@ -201,22 +202,23 @@ const EditProfile: React.FC<{navigation: any}> = ({navigation}) => {
   }
 
   function checkValidation() {
-    if (userData.currentaddress1.length == 0) {
+    console.log(userData);
+    if (!userData?.currentaddress1) {
       showError('Please enter address details');
       return;
-    } else if (userData.currentaddress2.length == 0) {
+    } else if (!userData?.currentaddress2) {
       showError('Please enter address details');
       return;
-    } else if (userData.currentaddress3.length == 0) {
+    } else if (!userData?.currentaddress3) {
       showError('Please enter address details');
       return;
-    } else if (userData.pincode.length == 0) {
+    } else if (!userData?.pincode) {
       showError('Please enter pincode');
       return;
-    } else if (bankDetails.bank_account_number.length == 0) {
+    } else if (!bankDetails?.bank_account_number) {
       showError('Please enter Bank details');
       return;
-    } else if (bankDetails.bank_account_ifsc.length == 0) {
+    } else if (!bankDetails?.bank_account_ifsc) {
       showError('Please enter Bank details');
       return;
     } else {

@@ -1,9 +1,10 @@
-import React, {useEffect, useState} from 'react';
-import {View, Text, StyleSheet} from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, StyleSheet } from 'react-native';
 import ReusableUrlCarousel from '../../components/ReusableUrlCarousel';
 import CustomTouchableOption from '../../components/CustomTouchableOption';
 import NeedHelp from '../../components/NeedHelp';
 import { Colors } from '../../utils/constants';
+import { getSchemeImages } from '../../utils/apiservice';
 
 const Schemes: React.FC = () => {
   const [imageArray, setImageArray] = useState(null);
@@ -12,8 +13,9 @@ const Schemes: React.FC = () => {
   useEffect(() => {
     getSchemeImages().then(response => {
       const result = response.data;
+      console.log(result)
       var ar = [];
-      result.map(r => ar.push({imageUrl: imageUrl + r.imgPath}));
+      result.map(r => ar.push({ imageUrl: imageUrl + r.imgPath }));
       setImageArray(ar);
     });
   }, []);

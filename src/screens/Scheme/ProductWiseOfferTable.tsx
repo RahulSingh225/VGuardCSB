@@ -6,6 +6,7 @@ import { responsiveFontSize, responsiveHeight } from 'react-native-responsive-di
 import { useTranslation } from 'react-i18next';
 import Loader from '../../components/Loader';
 import { Colors } from '../../utils/constants';
+import { getProductWiseOffersDetail } from '../../utils/apiservice';
 
 interface ProductWiseOfferTableProps {
   route: any; // Replace 'any' with the correct type if possible
@@ -23,10 +24,12 @@ const ProductWiseOfferTable: React.FC<ProductWiseOfferTableProps> = ({ route, na
     getProductWiseOffersDetail(categoryId)
       .then(response => response.data)
       .then(responseData => {
+        console.log(responseData)
         setData(responseData);
         showLoader(false);
       })
       .catch(error => {
+
         console.error('Error fetching data:', error);
       });
   }, [categoryId]);
@@ -43,8 +46,8 @@ const ProductWiseOfferTable: React.FC<ProductWiseOfferTableProps> = ({ route, na
     <ScrollView style={styles.mainWrapper}>
       {loader && <Loader isLoading={loader} />}
       <Table borderStyle={{ borderWidth: 1, borderColor: '#C1C0B9' }}>
-        <Row data={tableHead} style={styles.head} textStyle={styles.text} widthArr={columnWidths}/>
-        <Rows data={dataofTable} textStyle={styles.text} widthArr={columnWidths}/>
+        <Row data={tableHead} style={styles.head} textStyle={styles.text} widthArr={columnWidths} />
+        <Rows data={dataofTable} textStyle={styles.text} widthArr={columnWidths} />
       </Table>
     </ScrollView>
   );
