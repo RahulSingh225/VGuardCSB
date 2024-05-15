@@ -32,6 +32,7 @@ import PopupWithPin from '../../components/PopupWithPin';
 import RewardBox from '../../components/ScratchCard';
 import { sendCouponPin, getBonusPoints, validateRetailerCoupon } from '../../utils/apiservice';
 import { Colors } from '../../utils/constants';
+import getLocation from '../../utils/geolocation';
 
 interface ScanCodeProps {
   navigation: any;

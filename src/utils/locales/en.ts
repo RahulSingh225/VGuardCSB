@@ -96,6 +96,7 @@ export default {
     rishta_id: 'Rishta ID',
     mobile_no: 'Mobile No.',
     user_image: 'User Image',
+    claims: 'Claims',
     arrow_down: 'Arrow Down',
     lbl_referral_code: 'Referral Code (if any)',
     lbl_name_of_referee: 'Name of Referee',

@@ -4,6 +4,7 @@ export default {
         app_name: 'വി-ഗാർഡ് റിഷ്ത',
         ga_tracking_id: 'UA-40418155-2',
         channel_id: 'ചാനൽ ഐഡി',
+        claims: 'Claims',
         channel_name: 'ചാനൽ പേര്',
         please_wait: 'ദയവായി കാത്തിരിക്കുക..',
         enter_username: 'ഉപയോക്തൃനാമം നൽകുക',

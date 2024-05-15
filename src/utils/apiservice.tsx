@@ -35,8 +35,7 @@ async function createPostRequest(
   data: any,
 ): Promise<AxiosResponse> {
   const headers = {
-    Accept: 'application/json',
-    'Content-Type': 'application/json',
+    Accept: 'application/json'
   };
   const response: AxiosResponse = await api.post(relativeUrl, data, {
     headers,
@@ -51,9 +50,8 @@ async function createGetRequest(relativeUrl: string): Promise<AxiosResponse> {
   } catch (error) {
     if (error.status == 401) {
       getItem('REFRESH_TOKEN').then(token => {
-        newTokens(token)
-      })
-
+        newTokens(token);
+      });
     }
     console.error('Error:', relativeUrl, error);
     throw error;
@@ -280,6 +278,11 @@ export function getCategoryList() {
   return createGetRequest(path);
 }
 
+export function getSubCategoryList(data: any) {
+  const path = 'product/subcategories';
+  return createPostRequest(path, data);
+}
+
 export function getDownloads() {
   const path = 'product/getDownloadsData';
   return createGetRequest(path);
@@ -446,6 +449,11 @@ export function paytmTransfer(productOrder: any) {
 export function paytmTransferForAirCooler(productOrder: any) {
   const path = 'order/paytmTransferAircooler';
   return createPostRequest(path, productOrder);
+}
+
+export function raiseClaim(claim: any) {
+  const path = 'claims/raiseClaim';
+  return createPostRequest(path, claim);
 }
 
 export function getCartItems() {
@@ -873,8 +881,6 @@ export function checkVPA() {
   const path = 'order/checkVPA';
   return createGetRequest(path);
 }
-
-
 
 export function sendScanInCoupon(couponData: any) {
   const path = 'coupon/scanIn';

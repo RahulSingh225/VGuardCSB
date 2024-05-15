@@ -33,6 +33,7 @@ import {
 import { height } from '../../utils/dimensions';
 import { CustomerData } from '../../types';
 import { Colors } from '../../utils/constants';
+import getLocation from '../../utils/geolocation';
 
 var location: {};
 const ProductRegistrationForm: React.FC<{ navigation: any }> = ({ navigation }) => {

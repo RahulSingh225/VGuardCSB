@@ -20,7 +20,7 @@ import {responsiveFontSize} from 'react-native-responsive-dimensions';
 import Popup from './Popup';
 
 import {Colors} from '../utils/constants';
-import { getImageUrl } from '../utils/fileutils';
+import {getImageUrl} from '../utils/fileutils';
 
 const {height} = Dimensions.get('window');
 
@@ -60,18 +60,16 @@ const ImagePickerField: React.FC<ImagePickerFieldProps> = ({
   useEffect(() => {
     console.log(initialImage, imageRelated);
     if (initialImage) {
-        console.log('Huhh');
-  
-        // const image = await getFile(initialImage, imageRelated, "2");
-        const image = getImageUrl(initialImage, imageRelated);
-  
-        setIsImageSelected(true);
-        setSelectedImage(image);
-        setSelectedImageName(initialImage);
-      }
-  }, [initialImage]);
+      console.log('Huhh');
 
-  
+      // const image = await getFile(initialImage, imageRelated, "2");
+      const image = getImageUrl(initialImage, imageRelated);
+
+      setIsImageSelected(true);
+      setSelectedImage(image);
+      setSelectedImageName(initialImage);
+    }
+  }, [initialImage]);
 
   const handleImagePickerPress = () => {
     setShowImagePickerModal(true);
@@ -99,7 +97,8 @@ const ImagePickerField: React.FC<ImagePickerFieldProps> = ({
     launchImageLibrary(
       {
         mediaType: 'photo',
-        includeBase64: false,
+        includeBase64: true,
+        selectionLimit: 15,
       },
       (response: ImagePickerResponse) => {
         handleImageResponse(response);
@@ -113,9 +112,10 @@ const ImagePickerField: React.FC<ImagePickerFieldProps> = ({
     } else if (response.error) {
       console.error('Image picker error: ', response.error);
     } else {
-      setSelectedImage(response?.assets[0]?.uri);
-      setSelectedImageName(response?.assets[0]?.fileName || 'Image');
-      setIsImageSelected(true);
+        
+      // setSelectedImage(response?.assets[0]?.uri);
+      // setSelectedImageName(response?.assets[0]?.fileName || 'Image');
+      // setIsImageSelected(true);
 
       try {
         // const apiResponse = await triggerApiWithImage(fileData);
@@ -134,15 +134,15 @@ const ImagePickerField: React.FC<ImagePickerFieldProps> = ({
       }
     }
   };
- 
+
   return (
     <View style={styles.container}>
       <Popup isVisible={isPopupVisible} onClose={() => setPopupVisible(false)}>
         <Text>{popupContent}</Text>
       </Popup>
       <TouchableOpacity
-        style={[styles.input, isImageSelected && styles.selectedContainer]}>
-        {/* //onPress={()=>editable ? handleImagePickerPress() : ()=>console.log("ddd")}> */}
+        style={[styles.input, isImageSelected && styles.selectedContainer]}
+        onPress={() => handleGalleryUpload()}>
         <View style={[styles.labelContainer]}>
           <Text
             style={[

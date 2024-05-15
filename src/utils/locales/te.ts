@@ -5,6 +5,7 @@ export default {
         ga_tracking_id: 'UA-40418155-2',
         channel_id: 'ఛానల్ ఐడి',
         channel_name: 'ఛానల్ పేరు',
+        claims: 'Claims',
         please_wait: 'దయచేసి ఎంచుకోండి...',
         enter_username: 'యూజర్ పేరు నమోదు చేయండి',
         enter_password: 'పాస్వర్డ్ నమోదు చేయండి',

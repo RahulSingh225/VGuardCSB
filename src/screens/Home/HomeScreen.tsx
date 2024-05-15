@@ -48,7 +48,7 @@ const HomeScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
     setUserData(appContext.getUserDetails());
   }, []);
   useEffect(() => {
-    console.log(userData)
+    console.log(userData);
     if (userData?.login_date == null) {
       navigation.navigate('UpdatePassword');
     }
@@ -120,11 +120,17 @@ const HomeScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
         </View>
         <View style={styles.dashboard}>
           <View style={styles.row}>
-            {userData?.cs_type == 'Store Demonstrator' && (
+            {userData?.cs_type == 'Store Demonstrator' ? (
               <CustomTouchableOption
                 text="strings:scan_code"
                 iconSource={require('../../assets/images/ic_scan_code.png')}
-                screenName="Product Registration Form"
+                screenName="Scan QR"
+              />
+            ) : (
+              <CustomTouchableOption
+                text="strings:claims"
+                iconSource={require('../../assets/images/claim.png')}
+                screenName="Claims"
               />
             )}
             <CustomTouchableOption

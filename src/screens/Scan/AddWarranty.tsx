@@ -23,6 +23,8 @@ import RewardBox from '../../components/ScratchCard';
 import { sendFile, sendCustomerData } from '../../utils/apiservice';
 import Constants, { Colors } from '../../utils/constants';
 import { height } from '../../utils/dimensions';
+import { CustomerData } from '../../types';
+import getLocation from '../../utils/geolocation';
 
 const AddWarranty = ({ navigation }) => {
   const { t } = useTranslation();

@@ -485,6 +485,7 @@ export default {
     ac_service_engineer: 'एसी सेवा इंजीनियर',
     electrician_and_plumber: 'इलेक्ट्रीशियन और प्लंबर',
     update_bank: 'बैंक अपडेट करें',
+    claims: 'क्लेइम्',
     please_upload_cheque: 'कृपया चेक छवि अपलोड करें',
     please_enter_valid_ifcsc: 'कृपया वैध IFCSC कोड दर्ज करें',
     please_enter_valid_ifcsc2: 'IFCSC कोड 11 अंकों का होना चाहिए',

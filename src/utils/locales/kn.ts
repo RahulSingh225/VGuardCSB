@@ -4,6 +4,7 @@ export default {
         app_name: 'ವಿ-ಗಾರ್ಡ್ ರಿಷ್ತಾ',
         please_wait: 'ದಯಮಾಡಿ ನಿರೀಕ್ಷಿಸಿ...',
         enter_username: 'ಬಳಕೆದಾರ ಹೆಸರನ್ನು ನಮೂದಿಸಿ',
+        claims: 'Claims',
         enter_password: 'ಪಾಸ್\u200cವರ್ಡ್ ನಮೂದಿಸಿ',
         invalidCredentials: 'ತಪ್ಪಾದ ಬಳಕೆದಾರ ಹೆಸರು ಅಥವಾ ಪಾಸ್\u200cವರ್ಡ್',
         no_internet: 'ಇಂಟರ್\u200cನೆಟ್ ಸಂಪರ್ಕವಿಲ್ಲ',

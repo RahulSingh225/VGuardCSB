@@ -27,6 +27,7 @@ import EditProfile from '../screens/BottomTab/EditProfile';
 import UpdatePassword from '../screens/Home/UpdatePassword';
 import Bank from '../screens/Home/Bank';
 import ScanStack from './ScanStack';
+import ClaimsStack from './ClaimsStack';
 
 const HomeStack: React.FC = () => {
   type HomeStackParams = {
@@ -117,6 +118,7 @@ const HomeStack: React.FC = () => {
         />
         <Stack.Screen name="schemes" component={SchemesStack} />
         <Stack.Screen name="Scan QR" component={ScanStack} />
+        <Stack.Screen name="Claims" component={ClaimsStack} />
         {/* <Stack.Screen name="Redeem Products" component={RedeemStack} />
         <Stack.Screen name="Dashboard" component={DashboardStack} />
         

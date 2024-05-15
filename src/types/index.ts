@@ -1,8 +1,8 @@
 export interface BankDetail {
-  bank_account_name: string | null = null;
-  bank_account_number: string | null = null;
-  bank_account_ifsc: string | null = null;
-  bank_account_type: string | null = null;
+  bank_account_name: string | '';
+  bank_account_number: string | '';
+  bank_account_ifsc: string | '';
+  bank_account_type: string | '';
 }
 
 interface PointsSummary {
@@ -183,4 +183,30 @@ export interface CustomerData {
   longitude: string;
   geolocation: string;
   dealerCategory: string;
+}
+export class Claims {
+  claim_number: string | null = '';
+  claim_date: string | null = null;
+  user_id: string | null = null;
+  rishta_id: string | null = null;
+  unique_id: string | null = '';
+  start_date: string | null = null;
+  end_date: string | null = null;
+  pincode: string | null = null;
+  claim_file: string | null = '';
+  claim_status: string | null = '';
+  claim_closed: string | null = '';
+  comments: string | null = '';
+  claim_data: string | null = null;
+}
+
+export class ClaimsData {
+  category_id: string | null = '';
+  subcategory_id: string | null = '';
+  sku_name: string | null = '';
+  sku_id: string | null = '';
+  subcategory_name: string | null = '';
+  category_name: string | null = '';
+  quantity: number | null = 0;
+  already_claimed_count: number | null = 0;
 }

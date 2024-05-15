@@ -1,5 +1,5 @@
-import {t} from 'i18next';
-import React, {useContext, useEffect, useState} from 'react';
+import { t } from 'i18next';
+import React, { useContext, useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -19,13 +19,13 @@ import Loader from '../../components/Loader';
 import MultiSelectField from '../../components/MultiSelectField';
 import PickerField from '../../components/PickerField';
 import Popup from '../../components/Popup';
-import Constants, {Colors} from '../../utils/constants';
-import {height} from '../../utils/dimensions';
+import Constants, { Colors } from '../../utils/constants';
+import { height } from '../../utils/dimensions';
 import {
   responsiveFontSize,
   responsiveHeight,
 } from 'react-native-responsive-dimensions';
-import {BankDetail, Cities, VguardUser} from '../../types';
+import { BankDetail, Cities, VguardUser } from '../../types';
 import {
   getCities,
   getDetailsByPinCode,
@@ -33,21 +33,21 @@ import {
   getUserProfile,
   updateProfile,
 } from '../../utils/apiservice';
-import {AppContext} from '../../services/ContextService';
-import {StorageItem, addItem} from '../../services/StorageService';
+import { AppContext } from '../../services/ContextService';
+import { StorageItem, addItem } from '../../services/StorageService';
 
-const EditProfile: React.FC<{navigation: any}> = ({navigation}) => {
+const EditProfile: React.FC<{ navigation: any }> = ({ navigation }) => {
   const appContext = useContext(AppContext);
   useEffect(() => {
     showLoader(true);
     const user: VguardUser = appContext.getUserDetails();
-    getUserProfile({user_id: user.user_id}).then(res => {
+    getUserProfile({ user_id: user.user_id }).then(res => {
       showLoader(false);
       if (res.data.status) {
         const vg: VguardUser = res.data.data;
         console.log(vg);
         setUserData(vg);
-        setBankDetail(vg.bank_details)
+        setBankDetail(vg.bank_details);
       } else {
         setPopupVisible(true);
         setPopupContent(() => (
@@ -120,7 +120,7 @@ const EditProfile: React.FC<{navigation: any}> = ({navigation}) => {
       })
       .then(secondData => {
         secondData = secondData.data;
-        console.log(secondData)
+        console.log(secondData);
         showLoader(false);
 
         setUserData((prevData: VguardUser) => ({
@@ -139,7 +139,7 @@ const EditProfile: React.FC<{navigation: any}> = ({navigation}) => {
       })
       .then(cityData => {
         cityData = cityData.data;
-        const cityDataWithOther = [...cityData, {cityName: 'Other', id: ''}];
+        const cityDataWithOther = [...cityData, { cityName: 'Other', id: '' }];
 
         setCities(cityDataWithOther);
 
@@ -187,12 +187,12 @@ const EditProfile: React.FC<{navigation: any}> = ({navigation}) => {
   };
   async function updateProfileData() {
     try {
-      const data = await getUserProfile({user_id: userData?.user_id});
+      const data = await getUserProfile({ user_id: userData?.user_id });
       console.log(data);
       showLoader(false);
       if (data.data.status) {
         const vg: VguardUser = data.data.data;
-        const st: StorageItem = {key: 'USER', value: vg};
+        const st: StorageItem = { key: 'USER', value: vg };
         addItem(st);
         setUserData(vg);
       }
@@ -293,11 +293,11 @@ const EditProfile: React.FC<{navigation: any}> = ({navigation}) => {
         <View style={styles.ImageProfile}>
           <ImageBackground
             source={require('../../assets/images/ic_v_guards_user.png')}
-            style={{width: '100%', height: '100%', borderRadius: 100}}
+            style={{ width: '100%', height: '100%', borderRadius: 100 }}
             resizeMode="contain">
             <Image
-              source={{uri: profileImage}}
-              style={{width: '100%', height: '100%', borderRadius: 100}}
+              source={{ uri: profileImage }}
+              style={{ width: '100%', height: '100%', borderRadius: 100 }}
               resizeMode="contain"
             />
           </ImageBackground>
@@ -382,7 +382,7 @@ const EditProfile: React.FC<{navigation: any}> = ({navigation}) => {
           onChangeText={text => handleInputChange(text, 'currentaddress3')}
         />
         <Text
-          style={{color: Colors.black, fontWeight: 'bold', marginBottom: 2}}>
+          style={{ color: Colors.black, fontWeight: 'bold', marginBottom: 2 }}>
           {'Pincode'}
         </Text>
         <DropDownPicker
@@ -411,7 +411,7 @@ const EditProfile: React.FC<{navigation: any}> = ({navigation}) => {
             label: item?.pinCode,
             value: item?.pinCode,
           }))}
-          setOpen={() => setUIswitch({pincode: !uiSwitch?.pincode})}
+          setOpen={() => setUIswitch({ pincode: !uiSwitch?.pincode })}
           value={userData?.pinCode}
           onSelectItem={item => {
             processPincode(`${item.value}`, 'permanent');

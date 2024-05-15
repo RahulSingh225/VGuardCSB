@@ -413,6 +413,7 @@ export default {
     gst_photo: 'জিএসটি ছবি',
     do_you_have_gst_number: 'আপনার জিএসটি নম্বর আছে কি?',
     tier_club: 'ক্লাব',
+    claims: 'দাবি',
     total_club_points: 'মোট ক্লাব পয়েন্ট',
     excluding_scratch_card_and_points_before_1st_april:
       '(একটি এপ্রিল পূর্বে স্ক্র্যাচ কার্ড এবং পয়েন্ট বাদ)',
