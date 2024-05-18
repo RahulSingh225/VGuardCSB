@@ -24,17 +24,24 @@ import {AppContext} from '../../services/ContextService';
 import Popup from '../../components/Popup';
 import Loader from '../../components/Loader';
 
-const RaiseClaim = () => {
+const RaiseClaim = ({navigation}) => {
   const context = React.useContext(AppContext);
   useEffect(() => {
-    getCategoryList().then(res => {
-      let cat = [{label: 'Select Category', value: 0}];
+    setLoader(true);
+    getCategoryList()
+      .then(res => {
+        setLoader(false);
+        let cat = [{label: 'Select Category', value: 0}];
 
-      res.data.data.map(r => {
-        cat.push({label: r, value: r});
+        res.data.data.map(r => {
+          cat.push({label: r, value: r});
+        });
+        setCategories(cat);
+      })
+      .catch(e => {
+        setLoader(false);
+        setPopup({isPopupVisible: true, popupContent: e.message});
       });
-      setCategories(cat);
-    });
   }, []);
   const [loader, setLoader] = useState(false);
   const [categories, setCategories] = useState([]);
@@ -48,26 +55,33 @@ const RaiseClaim = () => {
 
   function handleCategoryChange(index: number, position: number) {
     console.log(categories[index].label);
-    getSubCategoryList({category: categories[index].value}).then(res => {
-      const data = res.data.data;
-      let subcat = data.subCategories;
-      subcat.unshift({
-        subcategory_name: 'Select Sub-Category',
-        subcategory_id: 0,
+    setLoader(true);
+    getSubCategoryList({category: categories[index].value})
+      .then(res => {
+        setLoader(false);
+        const data = res.data.data;
+        let subcat = data.subCategories;
+        subcat.unshift({
+          subcategory_name: 'Select Sub-Category',
+          subcategory_id: 0,
+        });
+        let newSubArr = [...subCategories];
+        newSubArr[position] = subcat;
+        setSubCategories(newSubArr);
+        let sku = data.skulist;
+        sku.unshift({PartDescription: 'Select SKU', PartNumber: 0});
+        let newSKU = [...skuName];
+        newSKU[position] = sku;
+        setSkuName(newSKU);
+        let newArr = [...claimData];
+        newArr[position].category_id = categories[index].value;
+        newArr[position].category_name = categories[index].label;
+        setClaimData(newArr);
+      })
+      .catch(e => {
+        setLoader(false);
+        setPopup({isPopupVisible: true, popupContent: e.message});
       });
-      let newSubArr = [...subCategories];
-      newSubArr[position] = subcat;
-      setSubCategories(newSubArr);
-      let sku = data.skulist;
-      sku.unshift({PartDescription: 'Select SKU', PartNumber: 0});
-      let newSKU = [...skuName];
-      newSKU[position] = sku;
-      setSkuName(newSKU);
-      let newArr = [...claimData];
-      newArr[position].category_id = categories[index].value;
-      newArr[position].category_name = categories[index].label;
-      setClaimData(newArr);
-    });
   }
 
   function handleSubCategoryChange(index: number, position: number) {
@@ -138,7 +152,8 @@ const RaiseClaim = () => {
   };
 
   function handleSubmit() {
-    if (!claim.start_date || !claim.end_date || claim.pincode) {
+    if (!claim.start_date || !claim.end_date || !claim.pincode) {
+      console.log(claim)
       setPopup({
         isPopupVisible: true,
         popupContent: 'Please enter all the details',
@@ -146,6 +161,7 @@ const RaiseClaim = () => {
     }
 
     const user: VguardUser = context.getUserDetails();
+    console.log(user);
     var postData: Claims = new Claims();
     postData.user_id = user.user_id;
     postData.unique_id = user.unique_id;
@@ -166,9 +182,18 @@ const RaiseClaim = () => {
       }),
     );
     console.log(formData);
+    setLoader(true)
     raiseClaim(formData)
-      .then(res => console.log(res))
-      .catch(e => console.log(e));
+      .then(res => {
+        console.log(res)
+        setLoader(false);
+        setPopup({isPopupVisible:true,popupContent:res.data.message})
+      })
+      .catch(e => {
+        console.log(e)
+        setLoader(false);
+        setPopup({isPopupVisible:true,popupContent:e.response.data.message})
+      });
   }
 
   return (
@@ -184,6 +209,13 @@ const RaiseClaim = () => {
         </Popup>
       )}
       <View style={styles.mainView}>
+        <Buttons
+          btnStyle={{alignSelf: 'center'}}
+          label="View Claims History"
+          onPress={() => navigation.navigate('ClaimsList')}
+          width="90%"
+          variant="outlined"
+        />
         <Text style={styles.label1}>Raise new claim</Text>
 
         <DatePickerField
@@ -244,7 +276,7 @@ const RaiseClaim = () => {
                       fontSize: 24,
                       alignSelf: 'flex-end',
                       marginRight: 10,
-                      fontWeight:'bold'
+                      fontWeight: 'bold',
                     }}>
                     X
                   </Text>
@@ -295,7 +327,7 @@ const RaiseClaim = () => {
 
         {claimData.length < 10 && (
           <Buttons
-            variant="filled"
+            variant="outlined"
             width="100%"
             label="Add More"
             onPress={() => {
@@ -332,6 +364,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   mainView: {
+    rowGap: 10,
     paddingBottom: 100,
     flex: 1,
     backgroundColor: Colors.white,

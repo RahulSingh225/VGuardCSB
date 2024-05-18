@@ -115,7 +115,7 @@ const HomeScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
             style={styles.rightPoint}
             onPress={() => navigation.navigate('Unique Code History')}>
             <Text style={styles.greyText}>{t('strings:number_of_scans')}</Text>
-            <Text style={styles.point}>0</Text>
+            <Text style={styles.point}>{userData?.transaction_count}</Text>
           </TouchableOpacity>
         </View>
         <View style={styles.dashboard}>

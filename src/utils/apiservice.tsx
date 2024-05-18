@@ -16,19 +16,6 @@ export interface Tokens {
   refreshToken: string;
 }
 
-export async function newTokens(token: string) {
-  try {
-    const path = 'user/refreshAccessToken';
-    const response: AxiosResponse = await createPostRequest(path, {
-      refreshToken: token,
-    });
-    const { accessToken, refreshToken } = response.data;
-    api.defaults.headers.common.Authorization = `Bearer ${accessToken}`;
-    return { accessToken, newRefreshToken: refreshToken };
-  } catch (error) {
-    throw new Error('Failed to refresh tokens');
-  }
-}
 
 async function createPostRequest(
   relativeUrl: string,
@@ -40,6 +27,7 @@ async function createPostRequest(
   const response: AxiosResponse = await api.post(relativeUrl, data, {
     headers,
   });
+  
   return response;
 }
 
@@ -48,8 +36,10 @@ async function createGetRequest(relativeUrl: string): Promise<AxiosResponse> {
     const response = await api.get(relativeUrl);
     return response;
   } catch (error) {
-    if (error.status == 401) {
+    console.log(error.response.status)
+    if (error.response.status == 401) {
       getItem('REFRESH_TOKEN').then(token => {
+        console.log(token)
         newTokens(token);
       });
     }
@@ -57,6 +47,25 @@ async function createGetRequest(relativeUrl: string): Promise<AxiosResponse> {
     throw error;
   }
 }
+
+export async function newTokens(token: string) {
+  try {
+    console.log('andar')
+    const path = 'user/refreshAccessToken';
+    const response = await createPostRequest(path, {
+      refreshToken: token,
+    });
+    console.log('bahar')
+    console.log(response)
+    const { accessToken, refreshToken } = response.data;
+    api.defaults.headers.common.Authorization = `Bearer ${accessToken}`;
+    return { accessToken, newRefreshToken: refreshToken };
+  } catch (error) {
+    console.log(error)
+    throw new Error('Failed to refresh tokens');
+  }
+}
+
 
 const update_fcm_token = async () => {
   const path = 'pushNotification/registerToken';
@@ -455,6 +464,11 @@ export function raiseClaim(claim: any) {
   const path = 'claims/raiseClaim';
   return createPostRequest(path, claim);
 }
+export function getClaims() {
+  const path = 'claims/getClaims';
+  return createGetRequest(path);
+}
+
 
 export function getCartItems() {
   const path = 'product/getCartProducts';
@@ -768,8 +782,15 @@ export function validateMobile(mobileNumber: string, dealerCategory: string) {
   return createGetRequest(path);
 }
 
-export function validateRetailerCoupon(couponData: any) {
-  const path = 'coupon/validateRetailerCoupon';
+export function validateCoupon(couponData: any) {
+  const path = 'coupon/scanCode';
+
+  return createPostRequest(path, couponData);
+}
+
+
+export function validateCouponPin(couponData: any) {
+  const path = 'coupon/scanWithPin';
 
   return createPostRequest(path, couponData);
 }

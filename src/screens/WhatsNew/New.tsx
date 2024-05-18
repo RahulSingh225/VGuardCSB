@@ -2,50 +2,56 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, Linking, StyleSheet } from 'react-native';
 
 import { responsiveFontSize } from 'react-native-responsive-dimensions';
-
 import { useTranslation } from 'react-i18next';
+import { getWhatsNew } from '../../utils/apiservice';
 import { Colors } from '../../utils/constants';
-import { getVguardInfoDownloads } from '../../utils/apiservice';
 
-interface VGuardInfoItem {
-  description: string;
-  fileName: string;
-}
 
-const VGuardInfo: React.FC = () => {
+const New = ({ navigation }) => {
+  const [data, setData] = useState([]);
   const { t } = useTranslation();
 
-  const baseURL = 'https://vguardrishta.com/';
-  const [data, setData] = useState<VGuardInfoItem[]>([]);
-
   useEffect(() => {
-    getVguardInfoDownloads()
-      .then(response => response.data)
+    getWhatsNew()
+      .then(response => response)
       .then(responseData => {
-        const updatedData = responseData.map(item => ({
-          ...item,
-          fullURL: baseURL + item.fileName,
-        }));
+        const updatedData = responseData.map(item => {
+          if (item.imagePath.startsWith('img/')) {
+            item.imagePath = `https://www.vguardrishta.com/${item.imagePath}`;
+          }
+          return item;
+        });
         setData(updatedData);
+        console.log("<><<><<><>><", updatedData, "<><<<><><><><><><<><");
       })
       .catch(error => {
         console.error('Error fetching data:', error);
       });
   }, []);
 
+  const handleLinkPress = (item) => {
+    if (item.imagePath === "daily_winner") {
+      // Navigate to the "daily_winner" screen
+      navigation.navigate("Daily Winner");
+    } else {
+      // Open the URL in the browser for other cases
+      Linking.openURL(item.imagePath);
+    }
+  };
+
   return (
     <View style={styles.container}>
       <ScrollView>
-        {data.map((item, index) => (
+        {data && data.map && data.map((item, index) => (
           <TouchableOpacity
             key={index}
             style={styles.listItem}
-            onPress={() => Linking.openURL(item.fullURL)}
+            onPress={() => handleLinkPress(item)}
           >
             <View style={styles.messageContainer}>
-              <Text style={styles.messageText}>{item.description}</Text>
+              <Text style={styles.messageText}>{item.fileName}</Text>
             </View>
-            <Text style={styles.openLinkText}>View</Text>
+            <Text style={styles.openLinkText}>{t('strings:view')}</Text>
           </TouchableOpacity>
         ))}
       </ScrollView>
@@ -57,7 +63,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 15,
-    backgroundColor: Colors.white,
+    backgroundColor: Colors.white
   },
   title: {
     fontSize: responsiveFontSize(2.5),
@@ -78,7 +84,7 @@ const styles = StyleSheet.create({
   },
   messageText: {
     fontSize: responsiveFontSize(2),
-    color: Colors.black,
+    color: Colors.black
   },
   openLinkText: {
     color: Colors.yellow,
@@ -87,4 +93,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default VGuardInfo;
+export default New;

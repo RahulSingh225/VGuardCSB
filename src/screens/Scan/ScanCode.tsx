@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {
   TouchableOpacity,
   View,
@@ -8,21 +8,20 @@ import {
   TextInput,
   ScrollView,
 } from 'react-native';
-import { useTranslation } from 'react-i18next';
+import {useTranslation} from 'react-i18next';
 
 import {
   responsiveFontSize,
   responsiveHeight,
 } from 'react-native-responsive-dimensions';
 
-import { useNavigation } from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 import cameraIcon from '../../assets/images/ic_scan_code_camera.webp';
 import arrowIcon from '../../assets/images/arrow.png';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-
-import { scanQR } from 'react-native-simple-qr-reader';
+import {scanQR} from 'react-native-simple-qr-reader';
 import Buttons from '../../components/Buttons';
 import Loader from '../../components/Loader';
 import NeedHelp from '../../components/NeedHelp';
@@ -30,9 +29,17 @@ import Popup from '../../components/Popup';
 import PopupWithOkAndCancel from '../../components/PopupWithOkAndCancel';
 import PopupWithPin from '../../components/PopupWithPin';
 import RewardBox from '../../components/ScratchCard';
-import { sendScanInCoupon, sendCouponPin, getBonusPoints, validateRetailerCoupon } from '../../utils/apiservice';
-import { Colors } from '../../utils/constants';
+import {
+ 
+  sendCouponPin,
+  getBonusPoints,
+  validateCoupon,
+  validateCouponPin,
+} from '../../utils/apiservice';
+import {Colors} from '../../utils/constants';
 import getLocation from '../../utils/geolocation';
+import { AppContext } from '../../services/ContextService';
+import { CouponData, VguardUser } from '../../types';
 
 interface ScanCodeProps {
   navigation: any;
@@ -44,9 +51,10 @@ interface OkPopupContent {
   okAction: (() => void) | null;
 }
 
-const ScanCode: React.FC<ScanCodeProps> = ({ navigation, route }) => {
-  const type = route?.params?.type;
-  const { t } = useTranslation();
+const ScanCode: React.FC<ScanCodeProps> = ({navigation, route}) => {
+  const {t} = useTranslation();
+
+  const context = useContext(AppContext)
   const [qrCode, setQrcode] = useState<string>('');
   const [scratchCard, showScratchCard] = useState<boolean>(false);
   const [isPopupVisible, setPopupVisible] = useState(false);
@@ -71,7 +79,7 @@ const ScanCode: React.FC<ScanCodeProps> = ({ navigation, route }) => {
       textContent: 'YOU WON',
       fontWeight: '700',
     },
-    text1: { color: 'black', fontSize: 16, textContent: '', fontWeight: '700' },
+    text1: {color: 'black', fontSize: 16, textContent: '', fontWeight: '700'},
     text2: {
       color: 'black',
       fontSize: 16,
@@ -88,7 +96,7 @@ const ScanCode: React.FC<ScanCodeProps> = ({ navigation, route }) => {
       buttonColor: '#F0C300',
       buttonTextColor: 'black',
       buttonText: 'Register Warranty',
-      buttonAction: () => { },
+      buttonAction: () => {},
       fontWeight: '400',
     },
     textInput: false,
@@ -98,37 +106,22 @@ const ScanCode: React.FC<ScanCodeProps> = ({ navigation, route }) => {
     mobileNo: '',
   });
   const [pinData, setPinData] = useState('');
-  const [CouponData, setCouponData] = useState({
-    userMobileNumber: '',
-    couponCode: '',
-    // pin: '',
-    // smsText: '',
-    from: '',
-    userId: 0,
-    apmID: 0,
-    retailerCoupon: false,
-    userCode: '',
-    isAirCooler: 0,
-    latitude: '',
-    longitude: '',
-    geolocation: '',
-    category: 'Customer',
-  });
+  const [couponData, setCouponData] = useState(new CouponData());
 
   var USER: any = null;
   var CouponResponse: any;
 
   useEffect(() => {
-    AsyncStorage.getItem('USER').then(r => {
-      USER = JSON.parse(r || '');
-      setUserData(USER);
+  var user:VguardUser = context.getUserDetails()
+      //setUserData(user);
       setCouponData(prevData => ({
         ...prevData,
         from: 'APP',
-        userMobileNumber: USER?.mobileNo,
-        userCode: USER?.userCode,
-      }));
-    });
+        userMobileNumber: user?.contact,
+        rishtaId:user?.rishta_id,
+        userId:user?.user_id
+  
+    }))
     showLoader(false);
   }, []);
 
@@ -163,7 +156,9 @@ const ScanCode: React.FC<ScanCodeProps> = ({ navigation, route }) => {
   };
 
   async function sendBarcode() {
-    console.log('shuru')
+
+    console.log(couponData)
+    console.log('shuru');
     getUserLocation();
     if (qrCode && qrCode != '') {
       if (qrCode.length < 16) {
@@ -172,62 +167,34 @@ const ScanCode: React.FC<ScanCodeProps> = ({ navigation, route }) => {
         return;
       }
       var apiResponse;
-      console.log('eikhane nai');
-      if (type == 'airCooler') {
-        apiResponse = await isValidBarcode(CouponData, 1, '', 0, null);
-        const r = await apiResponse.data;
-      } else if (type == 'SCAN_IN') {
-        apiResponse = await sendScanInCoupon(CouponData);
-        const r = await apiResponse.data;
-        console.log(r, '<><><');
-        if (r.errorCode == 3) {
-          showLoader(false);
-          setQrcode('');
-          AsyncStorage.setItem('COUPON_RESPONSE', JSON.stringify(r)).then(
-            () => {
-              setOkPopupContent({
-                text: r.errorMsg,
-                okAction: () =>
-                  navigation.navigate('Product Registration Form'),
-              });
-              setOkPopupVisible(true);
-            },
-          );
-        } else {
-          setPopupVisible(true);
-          setPopupContent(r.errorMsg);
-        }
+      apiResponse = await isValidBarcode(couponData, 0, '', 0, null);
+      const r = await apiResponse.data;
+      console.log(r, '<><');
+      const result = await AsyncStorage.setItem(
+        'COUPON_RESPONSE',
+        JSON.stringify(r),
+      );
+      CouponResponse = r;
+      if (r.errorCode == 1) {
+        showLoader(false);
+        setQrcode('');
+        setOkPopupVisible(true);
+        setOkPopupContent({
+          text: t('strings:valid_coupon_please_proceed_to_prod_regi'),
+          okAction: () => navigation.navigate('Add Warranty'),
+        });
+      } else if (r.errorCode == 2) {
+        setPinPopupVisible(true);
+        showLoader(false);
+      } else if (r.errorMsg && r.errorMsg != '') {
+        setPopupVisible(true);
+        setPopupContent(r.errorMsg);
+        showLoader(false);
+        // setPinPopupVisible(true);
       } else {
-        console.log('eikhane asche');
-        apiResponse = await isValidBarcode(CouponData, 0, '', 0, null);
-        const r = await apiResponse.data;
-        console.log(r, '<><');
-        const result = await AsyncStorage.setItem(
-          'COUPON_RESPONSE',
-          JSON.stringify(r),
-        );
-        CouponResponse = r;
-        if (r.errorCode == 1) {
-          showLoader(false);
-          setQrcode('');
-          setOkPopupVisible(true);
-          setOkPopupContent({
-            text: t('strings:valid_coupon_please_proceed_to_prod_regi'),
-            okAction: () => navigation.navigate('Add Warranty'),
-          });
-        } else if (r.errorCode == 2) {
-          setPinPopupVisible(true);
-          showLoader(false);
-        } else if (r.errorMsg && r.errorMsg != '') {
-          setPopupVisible(true);
-          setPopupContent(r.errorMsg);
-          showLoader(false);
-          // setPinPopupVisible(true);
-        } else {
-          setPopupVisible(true);
-          setPopupContent(t('strings:something_wrong'));
-          showLoader(false);
-        }
+        setPopupVisible(true);
+        setPopupContent(t('strings:something_wrong'));
+        showLoader(false);
       }
     } else {
       setPopupVisible(true);
@@ -259,7 +226,7 @@ const ScanCode: React.FC<ScanCodeProps> = ({ navigation, route }) => {
   };
 
   const sendPin = () => {
-    sendCouponPin(CouponData)
+    validateCouponPin(couponData)
       .then(result => result.data)
       .then(jsonResult => {
         setPinPopupVisible(false);
@@ -340,11 +307,11 @@ const ScanCode: React.FC<ScanCodeProps> = ({ navigation, route }) => {
         <TouchableOpacity style={styles.imageContainer} onPress={() => scan()}>
           <Image
             source={require('../../assets/images/ic_scan_code_2.png')}
-            style={{ width: '100%', height: '100%' }}
+            style={{width: '100%', height: '100%'}}
             resizeMode="contain"
           />
         </TouchableOpacity>
-        <View style={[{ height: responsiveHeight(5), width: '100%' }]}>
+        <View style={[{height: responsiveHeight(5), width: '100%'}]}>
           <Buttons
             label={t('strings:click_here_to_scan_a_unique_code')}
             variant="blackButton"
@@ -387,12 +354,12 @@ const ScanCode: React.FC<ScanCodeProps> = ({ navigation, route }) => {
         <View style={styles.rightText}>
           <TouchableOpacity
             onPress={() => navigation.navigate('Unique Code History')}
-            style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+            style={{flexDirection: 'row', alignItems: 'center', gap: 10}}>
             <Text style={styles.smallText}>
               {t('strings:go_to_unique_code_history')}
             </Text>
             <Image
-              style={{ width: 30, height: 30 }}
+              style={{width: 30, height: 30}}
               source={require('../../assets/images/ic_circle_right_arrow_yellow.webp')}
             />
           </TouchableOpacity>
@@ -517,12 +484,12 @@ async function isValidBarcode(
     if (pinFourDigit == '') {
       // result = await captureSale(CouponData);
       console.log('its inside');
-      result = await validateRetailerCoupon(CouponData);
+      result = await validateCoupon(CouponData);
       console.log(result);
       return result;
     } else {
       CouponData.pin = pinFourDigit;
-      result = await validateRetailerCoupon(CouponData);
+      result = await validateCouponPin(CouponData);
       return result;
     }
   } catch (r) {

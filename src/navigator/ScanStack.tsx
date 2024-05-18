@@ -3,7 +3,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import { Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import AddWarranty from '../screens/Scan/AddWarranty';
-import ProductRegistration from '../screens/Scan/ProductRegistration';
+
 import ProductRegistrationForm from '../screens/Scan/ProductRegistrationForm';
 import ScanCode from '../screens/Scan/ScanCode';
 import ScanCodeReg from '../screens/Scan/ScanCodeReg';
@@ -31,13 +31,7 @@ const ScanStack: React.FC = () => {
                     },
                     headerShown: false,
                 }}>
-                <Stack.Screen
-                    name="Product Registratrion"
-                    component={ProductRegistration}
-                    options={{
-                        headerShown: true,
-                    }}
-                />
+               
                 <Stack.Screen
                     name="Scan Code"
                     component={ScanCode}

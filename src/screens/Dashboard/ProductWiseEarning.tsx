@@ -4,6 +4,7 @@ import { Table, Row, Rows } from 'react-native-table-component';
 
 import { responsiveFontSize, responsiveHeight } from 'react-native-responsive-dimensions';
 import { Colors } from '../../utils/constants';
+import { getProdWiseEarning } from '../../utils/apiservice';
 
 
 interface ProductDetails {
@@ -22,6 +23,7 @@ const ProductWiseEarning: React.FC = () => {
     getProdWiseEarning()
       .then(response => response.data)
       .then(responseData => {
+        console.log(responseData)
         setProductDetails(responseData);
       })
       .catch(error => {

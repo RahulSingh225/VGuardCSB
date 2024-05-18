@@ -85,6 +85,7 @@ export interface VguardUser {
   email: string | '';
   selfie: string | '';
   tds_flag: number | 0;
+  transaction_count:number|0;
   tds_percent: number | 20;
   tds_kitty: number | 0.0;
   earned_points: number | 0.0;
@@ -113,6 +114,30 @@ export interface District {
   distId: number | 0;
   districtName: string | '';
 }
+
+
+export class CouponData {
+  userMobileNumber: string | null = null;
+  couponCode: string | null = null;
+  pin: string | null = null;
+  smsText: string | null = null;
+  from: string | null = null;
+  userType: string | null = null;
+  userId: number = 0;
+  apmID: number = 0;
+  rishtaId: string | null = null;
+
+  latitude: string | null = null;
+  longitude: string | null = null;
+  geolocation: string | null = null;
+  category: string | null = null;
+
+  constructor(data?: Partial<CouponData>) {
+      Object.assign(this, data);
+  }
+}
+
+
 export interface CustomerData {
   contactNo: string;
   name: string;

@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import {
   View,
   Text,
@@ -28,11 +28,14 @@ import Snackbar from 'react-native-snackbar';
 import {Button} from 'react-native-paper';
 import {getImageUrl} from '../../utils/fileutils';
 import Loader from '../../components/Loader';
-import {Colors} from '../../utils/constants';
+import Constants, {Colors} from '../../utils/constants';
 import ImagePickerField from '../../components/ImagePickerField';
 import Buttons from '../../components/Buttons';
 import NeedHelp from '../../components/NeedHelp';
 import Popup from '../../components/Popup';
+import {getTicketTypes, sendFile, sendTicket} from '../../utils/apiservice';
+import {AppContext} from '../../services/ContextService';
+import {VguardUser} from '../../types';
 
 const Ticket: React.FC<{navigation: any}> = ({navigation}) => {
   const baseURL = 'https://www.vguardrishta.com/img/appImages/Profile/';
@@ -44,7 +47,6 @@ const Ticket: React.FC<{navigation: any}> = ({navigation}) => {
     userId: '',
     userCode: '',
     userImage: '',
-    userRole: '',
   });
 
   const [profileImage, setProfileImage] = useState('');
@@ -62,21 +64,21 @@ const Ticket: React.FC<{navigation: any}> = ({navigation}) => {
   const [isPopupVisible, setPopupVisible] = useState(false);
   const [popupContent, setPopupContent] = useState('');
   const [loader, showLoader] = useState(true);
+  const context = useContext(AppContext);
 
   useEffect(() => {
-    AsyncStorage.getItem('USER').then(r => {
-      const user = JSON.parse(r);
-      const data = {
-        userName: user.name,
-        userCode: user.userCode,
-        pointsBalance: user.pointsSummary.pointsBalance,
-        redeemedPoints: user.pointsSummary.redeemedPoints,
-        userImage: user.kycDetails.selfie,
-        userRole: user.professionId,
-        userId: user.contactNo,
-      };
-      setUserData(data);
-    });
+    const user: VguardUser = context.getUserDetails();
+    const data = {
+      userName: user.name,
+      userCode: user.rishta_id,
+      pointsBalance: user.balance_points,
+      redeemedPoints: user.redeemded_points,
+      userImage: user.selfie,
+
+      userId: user.contact,
+    };
+    setUserData(data);
+
     getTicketTypes()
       .then(response => response.data)
       .then(data => {
@@ -216,7 +218,7 @@ const Ticket: React.FC<{navigation: any}> = ({navigation}) => {
   }) => {
     if (fileData.uri != '') {
       const formData = new FormData();
-      formData.append('userRole', Constants.RET_USER_TYPE);
+
       formData.append('imageRelated', Constants.Ticket);
       formData.append('file', {
         uri: fileData.uri,

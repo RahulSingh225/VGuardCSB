@@ -6,6 +6,7 @@ import ReusableUrlCarousel from '../../components/ReusableUrlCarousel';
 import CustomTouchableOption from '../../components/CustomTouchableOption';
 import NeedHelp from '../../components/NeedHelp';
 import { Colors } from '../../utils/constants';
+import { getInfoDeskBanners } from '../../utils/apiservice';
 
 const Info: React.FC = () => {
   const { t } = useTranslation();

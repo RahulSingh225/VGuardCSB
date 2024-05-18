@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect, useContext } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
   View,
@@ -21,13 +21,16 @@ import { useTranslation } from 'react-i18next';
 import CustomTouchableOption from '../../components/CustomTouchableOption';
 import NeedHelp from '../../components/NeedHelp';
 import { Colors } from '../../utils/constants';
+import { VguardUser } from '../../types';
+import { AppContext } from '../../services/ContextService';
+import { getMonthWiseEarning } from '../../utils/apiservice';
 
 
 interface UserData {
   userName: string;
   userCode: string;
   userImage: string;
-  userRole: string;
+
 }
 interface PointsData {
   totalPointsEarned: string;
@@ -39,7 +42,7 @@ const Dashboard: React.FC = () => {
   const baseURL = 'https://www.vguardrishta.com/img/appImages/Profile/';
 
   const { t } = useTranslation();
-
+  const context = useContext(AppContext)
   const [date, setDate] = useState(new Date());
   const [show, setShow] = useState(false);
   const [profileImage, setProfileImage] = useState("");
@@ -50,8 +53,8 @@ const Dashboard: React.FC = () => {
   const [userData, setUserData] = useState<UserData>({
     userName: '',
     userCode: '',
-    userImage: '',
-    userRole: ''
+    userImage: ''
+    
   });
   const [pointsData, setPointsData] = useState<PointsData>({
     schemePoints: '',
@@ -73,16 +76,16 @@ const Dashboard: React.FC = () => {
   };
 
   useEffect(() => {
-    AsyncStorage.getItem('USER').then((r) => {
-      const user = JSON.parse(r as string);
+   
+      const user:VguardUser = context.getUserDetails()
       const data: UserData = {
         userName: user.name,
-        userCode: user.userCode,
-        userImage: user.kycDetails.selfie,
-        userRole: user.professionId,
+        userCode: user.rishta_id,
+        userImage: user.selfie,
+        
       };
       setUserData(data);
-    });
+ 
   }, []);
   useEffect(() => {
     getMonthWiseEarning(selectedMonth, selectedYear)
@@ -93,7 +96,7 @@ const Dashboard: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    if (userData.userRole && userData.userImage) {
+    if ( userData.userImage) {
       const getImage = async () => {
         try {
           const profileImageUrl = getImageUrl(userData.userImage, 'Profile');
@@ -104,7 +107,7 @@ const Dashboard: React.FC = () => {
       };
       getImage();
     }
-  }, [userData.userRole, userData.userImage]);
+  }, [userData.userImage]);
 
   return (
     <View style={styles.mainWrapper}>
@@ -285,3 +288,5 @@ const styles = StyleSheet.create({
 });
 
 export default Dashboard;
+
+

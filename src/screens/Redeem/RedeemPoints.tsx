@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import {ScrollView, Image, StyleSheet, Text, View} from 'react-native';
 
 import {useTranslation} from 'react-i18next';
@@ -13,6 +13,8 @@ import ReusableCarousel from '../../components/ReusableCarousel';
 import CustomTouchableOption from '../../components/CustomTouchableOption';
 import NeedHelp from '../../components/NeedHelp';
 import { Colors } from '../../utils/constants';
+import { AppContext } from '../../services/ContextService';
+import { VguardUser } from '../../types';
 
 
 interface PointData {
@@ -23,6 +25,7 @@ interface PointData {
 
 const RedeemPoints: React.FC<{navigation: any}> = ({navigation}) => {
   const {t} = useTranslation();
+  const context = useContext(AppContext)
   const carouselData = [
     {
       imageUrl: require('../../assets/images/banner_redeem_ppoints.webp'),
@@ -40,15 +43,15 @@ const RedeemPoints: React.FC<{navigation: any}> = ({navigation}) => {
   });
 
   useEffect(() => {
-    AsyncStorage.getItem('USER').then(r => {
-      const user = JSON.parse(r);
+   
+     const user:VguardUser = context.getUserDetails()
       const data: PointData = {
-        pointsBalance: user.pointsSummary.pointsBalance || 0,
-        redeemedPoints: user.pointsSummary.redeemedPoints || 0,
-        tdsPoints: user.pointsSummary.tdsPoints || 0,
+        pointsBalance: user.balance_points || 0,
+        redeemedPoints: user.redeemded_points || 0,
+        tdsPoints: user.tds_kitty || 0,
       };
       setPointData(data);
-    });
+    
   }, []);
 
   return (
