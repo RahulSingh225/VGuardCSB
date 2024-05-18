@@ -10,6 +10,8 @@ export default {
         enter_username: 'యూజర్ పేరు నమోదు చేయండి',
         enter_password: 'పాస్వర్డ్ నమోదు చేయండి',
         invalidCredentials: 'చెల్లని యూజర్నేమ్ లేదా పాస్వర్డ్',
+        earned_points:"పాయింట్లు సంపాదించారు",
+        redeemable_points:"రీడీమ్ చేయగల పాయింట్లు",
         no_internet: 'ఇంటర్నెట్ కనెక్షన్ లేదు',
         password: 'పాస్వర్డ్',
         mobile_number: 'మొబైల్ నంబర్',

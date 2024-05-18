@@ -7,6 +7,8 @@ export default {
     enter_password: 'पासवर्ड डालें',
     invalidCredentials: 'गलत यूजरनाम या पासवर्ड',
     no_internet: 'इंटरनेट कनेक्शन नहीं है',
+    earned_points:"अर्जित अंक",
+    redeemable_points:"भुनाने योग्य अंक",
     password: 'पासवर्ड',
     mobile_number: 'मोबाइल नंबर',
     points_redeemed: 'रिडीम किये हुए पॉइंट्स',

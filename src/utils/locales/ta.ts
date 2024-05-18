@@ -13,6 +13,8 @@ export default {
         no_internet: 'இணைய இணைப்பு இல்லை',
         password: 'கடவுச்சொல்',
         mobile_number: 'கைபேசி எண்',
+        earned_points:"பெற்ற புள்ளிகள்",
+        redeemable_points:"மீட்டெடுக்கக்கூடிய புள்ளிகள்",
         points_redeemed: 'புள்ளிகள் மீட்டப்பட்டன',
         points_balance: 'புள்ளிகள் இருப்பு',
         profile: 'சுயவிவரம்',

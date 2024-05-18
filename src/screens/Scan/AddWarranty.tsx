@@ -10,24 +10,27 @@ import {
   TextInput,
   ToastAndroid,
 } from 'react-native';
-import React, { useState, useEffect, useTransition } from 'react';
+import React, {useState, useEffect, useTransition} from 'react';
 
-import { responsiveFontSize } from 'react-native-responsive-dimensions';
-import { useTranslation } from 'react-i18next';
-import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
-import { AsyncStorage } from 'react-native';
+import {responsiveFontSize} from 'react-native-responsive-dimensions';
+import {useTranslation} from 'react-i18next';
+import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
+
 import Buttons from '../../components/Buttons';
 import Loader from '../../components/Loader';
 import Popup from '../../components/Popup';
 import RewardBox from '../../components/ScratchCard';
-import { sendFile, sendCustomerData } from '../../utils/apiservice';
-import Constants, { Colors } from '../../utils/constants';
-import { height } from '../../utils/dimensions';
-import { CustomerData } from '../../types';
+import {sendFile, sendCustomerData} from '../../utils/apiservice';
+import Constants, {Colors} from '../../utils/constants';
+import {height} from '../../utils/dimensions';
+import {CustomerData} from '../../types';
 import getLocation from '../../utils/geolocation';
+import arrowIcon from '../../assets/images/arrow.png';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const AddWarranty = ({ navigation }) => {
-  const { t } = useTranslation();
+
+const AddWarranty = ({navigation}) => {
+  const {t} = useTranslation();
   const [isPopupVisible, setPopupVisible] = useState(false);
   const [latitude, setLatitude] = useState('');
   const [longitude, setLongitude] = useState('');
@@ -35,7 +38,7 @@ const AddWarranty = ({ navigation }) => {
   const [skuDetails, setSkuDetails] = useState('');
   const [purchaseDate, setPurchaseDate] = useState('');
   const [showImagePickerModal, setShowImagePickerModal] = useState(false);
-  const [loader, showLoader] = useState(true);
+  const [loader, showLoader] = useState(false);
   const [scratchCardProps, setScratchCardProps] = useState({
     rewardImage: {
       width: 100,
@@ -48,7 +51,7 @@ const AddWarranty = ({ navigation }) => {
       textContent: 'YOU WON',
       fontWeight: '700',
     },
-    text1: { color: 'black', fontSize: 16, textContent: '', fontWeight: '700' },
+    text1: {color: 'black', fontSize: 16, textContent: '', fontWeight: '700'},
     text2: {
       color: 'black',
       fontSize: 16,
@@ -65,7 +68,7 @@ const AddWarranty = ({ navigation }) => {
       buttonColor: '#F0C300',
       buttonTextColor: 'black',
       buttonText: '',
-      buttonAction: () => { },
+      buttonAction: () => {},
       fontWeight: '400',
     },
     textInput: false,
@@ -96,7 +99,7 @@ const AddWarranty = ({ navigation }) => {
           const parsedCouponResponse = JSON.parse(couponResponse);
           console.log(parsedCouponResponse);
           setCouponResponse(parsedCouponResponse);
-          setQrcode(parsedCouponResponse.copuonCode);
+          setQrcode(parsedCouponResponse.couponCode);
           setSkuDetails(parsedCouponResponse.skuDetail);
         }
 
@@ -195,7 +198,7 @@ const AddWarranty = ({ navigation }) => {
     );
   };
   const triggerApiWithImage = async (
-    fileData: { uri: any; type: any; fileName: any } | null,
+    fileData: {uri: any; type: any; fileName: any} | null,
     documentType: string,
   ) => {
     const formData = new FormData();
@@ -274,8 +277,8 @@ const AddWarranty = ({ navigation }) => {
       addedBy: customerDetails.addedBy,
       dealerNumber: customerDetails.dealerNumber,
       transactId: '',
-      billDetails: selectedBillImageName,
-      warrantyPhoto: selectedWarrantyImageName,
+      billDetails: bill.entityUid,
+      warrantyPhoto: warranty.entityUid,
       sellingPrice: sellingPrice,
       emptStr: '',
       cresp: {
@@ -286,24 +289,23 @@ const AddWarranty = ({ navigation }) => {
         statusType: '',
         balance: '',
         currentPoints: '',
-        couponPoints: '',
+        couponPoints: couponResponse?.couponPoints,
         promotionPoints: '',
         transactId: '',
         schemePoints: '',
-        basePoints: '',
+        basePoints: couponResponse?.basePoints,
         clubPoints: '',
-        scanDate: '',
+        scanDate: new Date(),
         scanStatus: '',
-        couponCode: '',
+        couponCode: qrcode,
         bitEligibleScratchCard: '',
-        pardId: '',
-        partNumber: '',
-        partName: '',
-        couponCode: '',
-        skuDetail: '',
-        purchaseDate: '',
-        categoryId: '',
-        category: '',
+        pardId: couponResponse?.partId,
+        partNumber: couponResponse?.partNumber,
+        partName: couponResponse?.partName,
+        skuDetail: couponResponse?.skuDetail,
+        purchaseDate: couponResponse?.purchaseDate,
+        categoryId: couponResponse?.categoryId,
+        category: couponResponse?.category,
         anomaly: '',
         warranty: '',
       },
@@ -325,8 +327,10 @@ const AddWarranty = ({ navigation }) => {
       geolocation: '',
     };
     const response = await sendCustomerData(postData);
-    const result = await response.data;
     showLoader(false);
+    console.log(response)
+    const result = await response.data;
+    
     if (result.errorCode == 1) {
       var couponPoints = result.couponPoints;
       var basePoints = result.basePoints;
@@ -368,7 +372,7 @@ const AddWarranty = ({ navigation }) => {
           buttonTextColor: Colors.black,
           buttonText: 'Scan Again',
           buttonAction: () =>
-            navigation.reset({ index: 0, routes: [{ name: 'Scan Code' }] }),
+            navigation.reset({index: 0, routes: [{name: 'Scan Code'}]}),
           fontWeight: '400',
         },
         textInput: false,
@@ -388,7 +392,7 @@ const AddWarranty = ({ navigation }) => {
           scratchCardProps={scratchCardProps}
           visible={scratchCard}
           scratchable={scratchable}
-          onClose={() => navigation.reset({ index: 0, routes: [{ name: 'Home' }] })}
+          onClose={() => navigation.reset({index: 0, routes: [{name: 'Home'}]})}
         />
       )}
       {isPopupVisible && (
@@ -438,14 +442,14 @@ const AddWarranty = ({ navigation }) => {
             <View style={styles.inputImage}>
               {selectedBillImage ? (
                 <Image
-                  source={{ uri: selectedBillImage.uri }}
-                  style={{ width: 30, height: 30 }}
+                  source={{uri: selectedBillImage.uri}}
+                  style={{width: 30, height: 30}}
                   resizeMode="cover"
                 />
               ) : (
                 <Image
                   source={require('../../assets/images/ic_attatchment_pin.png')}
-                  style={{ width: 20, height: 20 }}
+                  style={{width: 20, height: 20}}
                   resizeMode="contain"
                 />
               )}
@@ -477,14 +481,14 @@ const AddWarranty = ({ navigation }) => {
             <View style={styles.inputImage}>
               {selectedWarrantyImage ? (
                 <Image
-                  source={{ uri: selectedWarrantyImage.uri }}
-                  style={{ width: 30, height: 30 }}
+                  source={{uri: selectedWarrantyImage.uri}}
+                  style={{width: 30, height: 30}}
                   resizeMode="cover"
                 />
               ) : (
                 <Image
                   source={require('../../assets/images/ic_attatchment_pin.png')}
-                  style={{ width: 20, height: 20 }}
+                  style={{width: 20, height: 20}}
                   resizeMode="contain"
                 />
               )}
@@ -515,7 +519,7 @@ const AddWarranty = ({ navigation }) => {
               style={styles.input}
             />
             <Image
-              style={{ width: 20, height: 20 }}
+              style={{width: 20, height: 20}}
               source={require('../../assets/images/calendar.png')}
               resizeMode="contain"
             />
@@ -546,7 +550,7 @@ const AddWarranty = ({ navigation }) => {
           onPressOut={() => setShowImagePickerModal(false)}
           activeOpacity={1}>
           <View style={styles.modalContent}>
-            <View style={{ flexDirection: 'column', gap: 15, width: '90%' }}>
+            <View style={{flexDirection: 'column', gap: 15, width: '90%'}}>
               <Text style={styles.blackHeading}>Select Action</Text>
               <TouchableOpacity onPress={() => handleCameraUpload()}>
                 <Text style={styles.blackText}>Capture photo from camera</Text>

@@ -181,7 +181,7 @@ const ScanCode: React.FC<ScanCodeProps> = ({navigation, route}) => {
         setOkPopupVisible(true);
         setOkPopupContent({
           text: t('strings:valid_coupon_please_proceed_to_prod_regi'),
-          okAction: () => navigation.navigate('Add Warranty'),
+          okAction: () => navigation.navigate('Product Registration Form'),
         });
       } else if (r.errorCode == 2) {
         setPinPopupVisible(true);

@@ -1,5 +1,5 @@
 /* eslint-disable react-native/no-inline-styles */
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import {
   View,
   TextInput,
@@ -13,8 +13,8 @@ import {
   responsiveFontSize,
   responsiveHeight,
 } from 'react-native-responsive-dimensions';
-import { useTranslation } from 'react-i18next';
-import { Picker } from '@react-native-picker/picker';
+import {useTranslation} from 'react-i18next';
+import {Picker} from '@react-native-picker/picker';
 
 import Snackbar from 'react-native-snackbar';
 
@@ -30,14 +30,15 @@ import {
   validateMobile,
   getCustDetByMobile,
 } from '../../utils/apiservice';
-import { height } from '../../utils/dimensions';
-import { CustomerData } from '../../types';
-import { Colors } from '../../utils/constants';
+import {height} from '../../utils/dimensions';
+import {CustomerData, VguardUser} from '../../types';
+import {Colors} from '../../utils/constants';
 import getLocation from '../../utils/geolocation';
+import {AppContext} from '../../services/ContextService';
 
 var location: {};
-const ProductRegistrationForm: React.FC<{ navigation: any }> = ({ navigation }) => {
-  const { t } = useTranslation();
+const ProductRegistrationForm: React.FC<{navigation: any}> = ({navigation}) => {
+  const {t} = useTranslation();
   const [contactNo, setContactNo] = useState('');
   const [addedBy, setAddedBy] = useState('');
   const [user, setUser] = useState(null);
@@ -66,7 +67,7 @@ const ProductRegistrationForm: React.FC<{ navigation: any }> = ({ navigation }) 
   const [uiSwitch, setUIswitch] = React.useState({
     pincode: false,
   });
-
+  const context = useContext(AppContext);
   const [loader, showLoader] = React.useState(false);
 
   async function processPincode(pincode: string) {
@@ -84,7 +85,7 @@ const ProductRegistrationForm: React.FC<{ navigation: any }> = ({ navigation }) 
         }
       }
     }
-    setCustomerFormData(prevData => ({ ...prevData, pincode: pincode }));
+    setCustomerFormData(prevData => ({...prevData, pincode: pincode}));
   }
   function updateDistrictState(pincode: string) {
     showLoader(true);
@@ -192,30 +193,20 @@ const ProductRegistrationForm: React.FC<{ navigation: any }> = ({ navigation }) 
             productId: '',
             paytmMobileNo: '',
           },
-          latitude: location.latitude,
-          longitude: location.longitude,
+          latitude: location?.latitude,
+          longitude: location?.longitude,
           geolocation: '',
         };
 
         console.log(customerFormData.category);
-        const response = await validateMobile(
-          contactNo,
-          customerFormData.category,
+
+        AsyncStorage.setItem('CUSTOMER_DETAILS', JSON.stringify(postData)).then(
+          r => {
+            navigation.navigate('Add Warranty');
+          },
         );
-        const result = await response.data;
-        if (result.code == 1) {
-          setPopupVisible(true);
-          setPopupContent(result.message);
-        } else {
-          AsyncStorage.setItem(
-            'CUSTOMER_DETAILS',
-            JSON.stringify(postData),
-          ).then(r => {
-            navigation.navigate('Scan In');
-          });
-        }
+
         showLoader(false);
-        return response;
       }
     } catch (error) {
       showLoader(false);
@@ -254,14 +245,7 @@ const ProductRegistrationForm: React.FC<{ navigation: any }> = ({ navigation }) 
           state: customerDetails.state || '',
           district: customerDetails.district || '',
           city: customerDetails.city || '',
-          address: customerDetails.currAdd || '',
-          dealerAddress: customerDetails.dealerAdd || '',
-          dealerCity: customerDetails.dealerCity || '',
-          dealerDistrict: customerDetails.dealerDist || '',
-          dealerName: customerDetails.dealerName || '',
-          dealerContactNo: customerDetails.dealerNumber || '',
-          dealerPinCode: customerDetails.dealerPinCode || '',
-          dealerState: customerDetails.dealerState || '',
+          address: customerDetails.currAdd || ''
         }));
       } else {
         ToastAndroid.show(
@@ -281,20 +265,19 @@ const ProductRegistrationForm: React.FC<{ navigation: any }> = ({ navigation }) 
 
   useEffect(() => {
     getLocation().then(r => (location = r));
-    AsyncStorage.getItem('USER').then(r => {
-      const user = JSON.parse(r || '');
 
-      setAddedBy(user.contactNo);
-      setCustomerFormData({
-        ...customerFormData,
-        dealerName: user.name,
-        dealerAddress: user.currentAddress,
-        dealerCity: user.currCity,
-        dealerContactNo: user.contactNo,
-        dealerDistrict: user.currDist,
-        dealerPincode: user.currPinCode.toString(),
-        dealerState: user.currState,
-      });
+    const user: VguardUser = context.getUserDetails()
+
+    setAddedBy(user.contact);
+    setCustomerFormData({
+      ...customerFormData,
+      dealerName: user.name,
+      dealerAddress: user.currentaddress1,
+      dealerCity: user.city,
+      dealerContactNo: user.contact,
+      dealerDistrict: user.district,
+      dealerPincode: user.pincode.toString(),
+      dealerState: user.state,
     });
   }, []);
 
@@ -332,7 +315,7 @@ const ProductRegistrationForm: React.FC<{ navigation: any }> = ({ navigation }) 
               placeholderTextColor={Colors.grey}
               value={customerFormData.name}
               onChangeText={value =>
-                setCustomerFormData(prevData => ({ ...prevData, name: value }))
+                setCustomerFormData(prevData => ({...prevData, name: value}))
               }
             />
           </View>
@@ -344,7 +327,7 @@ const ProductRegistrationForm: React.FC<{ navigation: any }> = ({ navigation }) 
               value={customerFormData.email}
               placeholderTextColor={Colors.grey}
               onChangeText={value =>
-                setCustomerFormData(prevData => ({ ...prevData, email: value }))
+                setCustomerFormData(prevData => ({...prevData, email: value}))
               }
             />
           </View>
@@ -402,7 +385,7 @@ const ProductRegistrationForm: React.FC<{ navigation: any }> = ({ navigation }) 
               label: item.pinCode,
               value: item.pinCode,
             }))}
-            setOpen={() => setUIswitch({ pincode: !uiSwitch.pincode })}
+            setOpen={() => setUIswitch({pincode: !uiSwitch.pincode})}
             value={customerFormData?.pincode}
             onSelectItem={item => {
               processPincode(`${item.value}`);
@@ -426,7 +409,7 @@ const ProductRegistrationForm: React.FC<{ navigation: any }> = ({ navigation }) 
               value={customerFormData.state}
               placeholderTextColor={Colors.grey}
               onChangeText={value =>
-                setCustomerFormData(prevData => ({ ...prevData, state: value }))
+                setCustomerFormData(prevData => ({...prevData, state: value}))
               }
             />
           </View>
@@ -451,7 +434,7 @@ const ProductRegistrationForm: React.FC<{ navigation: any }> = ({ navigation }) 
               value={customerFormData.city}
               placeholderTextColor={Colors.grey}
               onChangeText={value =>
-                setCustomerFormData(prevData => ({ ...prevData, city: value }))
+                setCustomerFormData(prevData => ({...prevData, city: value}))
               }
             />
           </View>
@@ -462,7 +445,7 @@ const ProductRegistrationForm: React.FC<{ navigation: any }> = ({ navigation }) 
               value={customerFormData.address}
               placeholderTextColor={Colors.grey}
               onChangeText={value =>
-                setCustomerFormData(prevData => ({ ...prevData, address: value }))
+                setCustomerFormData(prevData => ({...prevData, address: value}))
               }
             />
           </View>
@@ -709,7 +692,7 @@ const styles = StyleSheet.create({
     color: Colors.grey,
     fontWeight: 'bold',
   },
-  modalcontainer: { alignSelf: 'center', backgroundColor: 'rgba(0,0,0,0.7)' },
+  modalcontainer: {alignSelf: 'center', backgroundColor: 'rgba(0,0,0,0.7)'},
 });
 
 export default ProductRegistrationForm;

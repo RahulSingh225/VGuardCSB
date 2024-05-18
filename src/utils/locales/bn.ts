@@ -11,6 +11,8 @@ export default {
     no_internet: 'ইন্টারনেট সংযোগ নেই',
     password: 'পাসওয়ার্ড',
     mobile_number: 'মোবাইল নম্বর',
+    earned_points: "অর্জিত পয়েন্ট",
+    redeemable_points: "পয়েন্ট রিডিম করা হয়েছে",
     points_redeemed: 'পয়েন্ট মুক্ত',
     points_balance: 'পয়েন্ট ব্যালেন্স',
     profile: 'প্রোফাইল',

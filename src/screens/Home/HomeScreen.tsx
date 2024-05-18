@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {
   View,
   Text,
@@ -8,6 +8,7 @@ import {
   Image,
   Linking,
   ImageBackground,
+  Pressable,
 } from 'react-native';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -17,14 +18,14 @@ import {
   responsiveHeight,
   responsiveWidth,
 } from 'react-native-responsive-dimensions';
-import { useTranslation } from 'react-i18next';
-import { getFile } from '../../utils/apiservice';
+import {useTranslation} from 'react-i18next';
+import {getFile} from '../../utils/apiservice';
 import CustomTouchableOption from '../../components/CustomTouchableOption';
 import NeedHelp from '../../components/NeedHelp';
-import Constants, { Colors } from '../../utils/constants';
-import { VguardUser } from '../../types';
-import { AppContext } from '../../services/ContextService';
-import { getImageUrl } from '../../utils/fileutils';
+import Constants, {Colors} from '../../utils/constants';
+import {VguardUser} from '../../types';
+import {AppContext} from '../../services/ContextService';
+import {getImageUrl} from '../../utils/fileutils';
 
 interface User {
   userCode: string;
@@ -37,8 +38,8 @@ interface User {
   inAllow: number;
 }
 
-const HomeScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
-  const { t } = useTranslation();
+const HomeScreen: React.FC<{navigation: any}> = ({navigation}) => {
+  const {t} = useTranslation();
   const [userData, setUserData] = useState<VguardUser | null>(null);
   const [profileImage, setProfileImage] = useState('');
   const [disableOptions, setDisableOptions] = useState(false);
@@ -49,9 +50,9 @@ const HomeScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
   }, []);
   useEffect(() => {
     console.log(userData);
-    if (userData?.login_date == null) {
-      navigation.navigate('UpdatePassword');
-    }
+    // if (userData?.login_date == null) {
+    //   navigation.navigate('UpdatePassword');
+    // }
     if (userData?.selfie) {
       const getImage = async () => {
         try {
@@ -69,16 +70,16 @@ const HomeScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
   }, [userData?.selfie]);
   return (
     <ScrollView style={styles.mainWrapper}>
-      <View style={{ padding: 15 }}>
+      <View style={{padding: 15}}>
         <View style={styles.detailContainer}>
           <View style={styles.ImageProfile}>
             <ImageBackground
               source={require('../../assets/images/ic_v_guards_user.png')}
-              style={{ width: '100%', height: '100%', borderRadius: 100 }}
+              style={{width: '100%', height: '100%', borderRadius: 100}}
               resizeMode="contain">
               <Image
-                source={{ uri: profileImage }}
-                style={{ width: '100%', height: '100%', borderRadius: 100 }}
+                source={{uri: profileImage}}
+                style={{width: '100%', height: '100%', borderRadius: 100}}
                 resizeMode="contain"
               />
             </ImageBackground>
@@ -94,29 +95,37 @@ const HomeScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
           </View>
         </View>
         <View style={styles.points}>
-          <TouchableOpacity
-            style={styles.leftPoint}
-            onPress={() => navigation.navigate('Dashboard')}>
-            <Text style={styles.greyText}>{t('strings:points_balance')}</Text>
+          <Pressable
+            onPress={() => navigation.navigate('Unique Code History')}
+            style={styles.leftPoint}>
+            <Text style={styles.greyText}>{t('strings:earned_points')}</Text>
 
             <Text style={styles.point}>
-              {userData?.balance_points ? userData?.balance_points : 0}
+              {Number(userData?.earned_points)?.toFixed(1) || 0}
             </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.middlePoint}
-            onPress={() => navigation.navigate('Redemption History')}>
+          </Pressable>
+          <Pressable style={styles.middlePoint}>
+            <Text style={styles.greyText}>
+              {t('strings:redeemable_points')}
+            </Text>
+            <Text style={styles.point}>
+              {Number(userData?.redeemable_points)?.toFixed(1) || 0}
+            </Text>
+          </Pressable>
+          <Pressable
+            onPress={() => navigation.navigate('Redemption History')}
+            style={styles.middlePoint}>
             <Text style={styles.greyText}>{t('strings:points_redeemed')}</Text>
             <Text style={styles.point}>
-              {userData?.redeemded_points ? userData?.redeemded_points : 0}
+              {Number(userData?.redeemded_points)?.toFixed(1) || 0}
             </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.rightPoint}
-            onPress={() => navigation.navigate('Unique Code History')}>
-            <Text style={styles.greyText}>{t('strings:number_of_scans')}</Text>
-            <Text style={styles.point}>{userData?.transaction_count}</Text>
-          </TouchableOpacity>
+          </Pressable>
+          <Pressable style={styles.rightPoint}>
+            <Text style={styles.greyText}>{'TDS \nKitty'}</Text>
+            <Text style={styles.point}>
+              {Number(userData?.tds_kitty)?.toFixed(1) || 0}
+            </Text>
+          </Pressable>
         </View>
         <View style={styles.dashboard}>
           <View style={styles.row}>

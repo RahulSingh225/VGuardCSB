@@ -11,6 +11,8 @@ export default {
         enter_password: 'पासवर्ड प्रविष्ट करा',
         invalidCredentials: 'अयोग्य वापरकर्तानाव किंवा पासवर्ड',
         no_internet: 'कोणतेही इंटरनेट कनेक्शन नाही',
+        earned_points:"मिळवले गुण",
+        redeemable_points:"पूर्तता करण्यायोग्य गुण",
         password: 'पासवर्ड',
         mobile_number: 'मोबाइल नंबर',
         points_redeemed: 'पॉइंट सुरक्षित',

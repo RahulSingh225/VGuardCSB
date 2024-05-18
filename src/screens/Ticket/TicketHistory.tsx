@@ -17,6 +17,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import moment from 'moment';
 import Loader from '../../components/Loader';
 import { Colors } from '../../utils/constants';
+import { getTicketHistory } from '../../utils/apiservice';
 
 interface TicketItem {
   createdDate: string;

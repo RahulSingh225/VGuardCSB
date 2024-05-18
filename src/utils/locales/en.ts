@@ -434,6 +434,8 @@ export default {
     capture_bill_details: 'Capture bill details picture',
     contact_number_optional: 'Contact Number',
     warranty_detail_optional: 'Warranty Details',
+    earned_points: 'Earned Points',
+    redeemable_points: 'Redeemable\n Points',
     bill_details_optional: 'Bill details',
     please_select_correct_category_from_list:
       'Please select correct category from list. Scanned/Entered coupon code is for ',

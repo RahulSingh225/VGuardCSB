@@ -90,6 +90,7 @@ export interface VguardUser {
   tds_kitty: number | 0.0;
   earned_points: number | 0.0;
   redeemded_points: number | 0.0;
+  redeemable_points:number|0.0
   balance_points: number | 0.0;
   resend_invite_link: boolean | false;
   retrigger_invite: boolean | false;

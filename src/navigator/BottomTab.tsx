@@ -147,7 +147,7 @@ const BottomTab: React.FC = () => {
         />
         <Tab.Screen
           name="Profile"
-          component={Notification}
+          component={ProfileStack}
           options={({route}) => ({
             headerTitle: () => (
               <CustomTabHeader
@@ -160,7 +160,7 @@ const BottomTab: React.FC = () => {
         />
         <Tab.Screen
           name="Contact Us"
-          component={Notification}
+          component={ContactPage}
           options={({route}) => ({
             headerTitle: () => (
               <CustomTabHeader

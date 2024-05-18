@@ -12,6 +12,8 @@ export default {
         invalidCredentials: 'തെറ്റായ ഉപയോക്തൃനാമം അല്ലെങ്കിൽ പാസ്വേഡ്',
         no_internet: 'ഇന്റർനെറ്റ് കണക്ഷൻ ഇല്ല',
         password: 'പാസ്വേഡ്',
+        earned_points:"നേടിയ പോയിൻ്റുകൾ",
+        redeemable_points:"വീണ്ടെടുക്കാവുന്ന പോയിൻ്റുകൾ",
         mobile_number: 'മൊബൈൽ നമ്പർ',
         points_redeemed: 'പോയിന്റുകൾ പുനരുപയോഗിച്ചിരി',
         points_balance: 'പോയിന്റ് ബാലൻസ്',
