@@ -81,9 +81,12 @@ const Bank = ({navigation}) => {
   }
   async function verifyBankDetails(){
     try{
-      var postData:Vgua
-      const result = await verifyBank()
+      var postData:VguardUser = userData;
+      postData.bank_details = bankDetails
+      const result = await verifyBank(postData)
         setPopup({isVisible:true,content:result?.data?.message});
+    }catch(error){
+      
     }
   }
   async function updateProfileData() {
