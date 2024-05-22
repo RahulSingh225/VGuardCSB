@@ -38,7 +38,11 @@ const UpdatePassword = ({navigation}) => {
             setPopup({visible: true, content: res.data.message});
           }
         })
-        .catch(err => console.log(err));
+        .catch(err =>{
+          setLoader(false);
+          console.log(err);
+          setPopup({visible:true,content:'Something went wrong'})
+        });
     }
   }
 

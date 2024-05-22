@@ -19,13 +19,15 @@ import {
   responsiveWidth,
 } from 'react-native-responsive-dimensions';
 import {useTranslation} from 'react-i18next';
-import {getFile} from '../../utils/apiservice';
+import {getFile, getUserProfile} from '../../utils/apiservice';
 import CustomTouchableOption from '../../components/CustomTouchableOption';
 import NeedHelp from '../../components/NeedHelp';
 import Constants, {Colors} from '../../utils/constants';
 import {VguardUser} from '../../types';
 import {AppContext} from '../../services/ContextService';
 import {getImageUrl} from '../../utils/fileutils';
+import {useFocusEffect} from '@react-navigation/native';
+import {StorageItem, addItem} from '../../services/StorageService';
 
 interface User {
   userCode: string;
@@ -40,18 +42,32 @@ interface User {
 
 const HomeScreen: React.FC<{navigation: any}> = ({navigation}) => {
   const {t} = useTranslation();
-  const [userData, setUserData] = useState<VguardUser | null>(null);
+  const appContext = useContext(AppContext);
+  const [userData, setUserData] = useState<VguardUser | null>(
+    appContext.getUserDetails(),
+  );
   const [profileImage, setProfileImage] = useState('');
   const [disableOptions, setDisableOptions] = useState(false);
-  const appContext = useContext(AppContext);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      getUserProfile({user_id: userData?.user_id})
+        .then(res => {
+          if (res.data.status) {
+            const vg: VguardUser = res.data.data;
+            const st: StorageItem = {key: 'USER', value: vg};
+            addItem(st);
+            setUserData(vg);
+          }
+        })
+        .catch(e => console.log(e));
+    }, [navigation]),
+  );
 
   useEffect(() => {
-    setUserData(appContext.getUserDetails());
-  }, []);
-  useEffect(() => {
-    console.log("USERDATA",userData);
+    console.log('USERDATA', userData);
     if (userData?.login_date === null) {
-      console.log(userData?.login_date)
+      console.log(userData?.login_date);
       navigation.navigate('UpdatePassword');
     }
     if (userData?.selfie) {

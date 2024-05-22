@@ -156,7 +156,8 @@ const ScanCode: React.FC<ScanCodeProps> = ({navigation, route}) => {
   };
 
   async function sendBarcode() {
-
+try{
+  showLoader(true);
     console.log(couponData)
     console.log('shuru');
     getUserLocation();
@@ -168,6 +169,7 @@ const ScanCode: React.FC<ScanCodeProps> = ({navigation, route}) => {
       }
       var apiResponse;
       apiResponse = await isValidBarcode(couponData, 0, '', 0, null);
+      
       const r = await apiResponse.data;
       console.log(r, '<><');
       const result = await AsyncStorage.setItem(
@@ -197,9 +199,16 @@ const ScanCode: React.FC<ScanCodeProps> = ({navigation, route}) => {
         showLoader(false);
       }
     } else {
+
       setPopupVisible(true);
       setPopupContent('Please enter Coupon Code or Scan a QR');
     }
+  }catch(error){
+    console.log(error);
+    showLoader(false)
+    setPopupContent(error);
+    setPopupVisible(true)
+  }
   }
 
   const scan = async () => {
@@ -494,6 +503,7 @@ async function isValidBarcode(
     }
   } catch (r) {
     console.log(r);
+    throw r.message
   }
 }
 

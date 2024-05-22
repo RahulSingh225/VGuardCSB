@@ -19,15 +19,21 @@ import {
 import Buttons from '../../components/Buttons';
 import Popup from '../../components/Popup';
 import {width} from '../../utils/dimensions';
+import {useFocusEffect} from '@react-navigation/native';
 
 const Bank = ({navigation}) => {
   const {t} = useTranslation();
   const context = useContext(AppContext);
 
-  useEffect(() => {
-    const user: VguardUser = context.getUserDetails();
-    setUserData(user);
-  }, []);
+  useFocusEffect(
+    React.useCallback(() => {
+      const user: VguardUser = context.getUserDetails();
+      console.log(user);
+      setBankDetail(user?.bank_details);
+      setUserData(user);
+    }, [navigation]),
+  );
+
   const [loader, setLoader] = useState(false);
   const [popup, setPopup] = useState({isVisible: false, content: null});
 
@@ -79,15 +85,20 @@ const Bank = ({navigation}) => {
         console.log(err);
       });
   }
-  async function verifyBankDetails(){
-    try{
-      var postData:VguardUser = userData;
-      postData.bank_details = bankDetails
-      const result = await verifyBank(postData)
-        setPopup({isVisible:true,content:result?.data?.message});
-    }catch(error){
-      
+  async function verfiyUPI() {
+    try {
+      const result = await verifyVPA({mobile_no: userData?.contact});
+    } catch (error) {
+      console.log(error);
     }
+  }
+  async function verifyBankDetails() {
+    try {
+      var postData: VguardUser = userData;
+      postData.bank_details = bankDetails;
+      const result = await verifyBank(postData);
+      setPopup({isVisible: true, content: result?.data?.message});
+    } catch (error) {}
   }
   async function updateProfileData() {
     try {
@@ -137,6 +148,7 @@ const Bank = ({navigation}) => {
           }));
         }}
       />
+
       <InputField
         label={t('strings:lbl_ifsc_code')}
         value={bankDetails?.bank_account_ifsc}
@@ -147,6 +159,17 @@ const Bank = ({navigation}) => {
           }))
         }
       />
+      <InputField
+        disabled={true}
+        label={t('strings:lbl_account_name')}
+        value={bankDetails?.bank_account_name}
+        onChangeText={text => {
+          setBankDetail((prevState: BankDetail) => ({
+            ...prevState,
+            bank_account_number: text,
+          }));
+        }}
+      />
       <View style={styles.button}>
         <Buttons
           label={t('strings:submit')}
@@ -155,21 +178,23 @@ const Bank = ({navigation}) => {
           width="100%"
         />
         <Buttons
+          disabled={userData?.bank_verified == 1 ? true : false}
           label={'Verify'}
           variant="blackButton"
-          onPress={() => verifyBank()}
+          onPress={() => verifyBankDetails()}
           width="100%"
         />
       </View>
       <Text style={styles.subHeading}>{'UPI Verification'}</Text>
       <View style={styles.button}>
         <Buttons
+          disabled={userData?.vpa_verified == 1 ? true : false}
           label={'Verify'}
           variant="blackButton"
-          onPress={() => verifyVPA()}
+          onPress={() => verfiyUPI()}
           width="100%"
         />
-        </View>
+      </View>
     </ScrollView>
   );
 };
@@ -231,6 +256,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   button: {
+    gap: 10,
     marginBottom: 30,
   },
   container: {

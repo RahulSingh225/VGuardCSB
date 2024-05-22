@@ -232,155 +232,171 @@ const AddWarranty = ({navigation}) => {
   };
 
   async function saveData() {
-    showLoader(true);
-    if (!customerDetails?.contactNo) {
-      ToastAndroid.show(
-        t('strings:enter_mandatory_fields'),
-        ToastAndroid.SHORT,
-      );
-      return;
-    }
-    if (
-      selectedBillImage == null &&
-      couponResponse.anomaly == 1 &&
-      customerDetails.dealerCategory != 'Sub-Dealer'
-    ) {
-      ToastAndroid.show(
-        t('strings:enter_mandatory_fields'),
-        ToastAndroid.SHORT,
-      );
-      return;
-    }
-    const bill = await triggerApiWithImage(selectedBillImage, 'bill');
-    const warranty = await triggerApiWithImage(
-      selectedWarrantyImage,
-      'warranty',
-    );
-    const postData = {
-      contactNo: customerDetails.contactNo,
-      name: customerDetails.name,
-      email: customerDetails.email,
-      alternateNo: customerDetails.alternateNo,
-      city: customerDetails.city,
-      district: customerDetails.district,
-      state: customerDetails.state,
-      pinCode: customerDetails.pinCode,
-      landmark: customerDetails.landmark,
-      dealerCategory: customerDetails.dealerCategory,
-      currAdd: customerDetails.currAdd,
-      dealerName: customerDetails.dealerName,
-      dealerAdd: customerDetails.dealerAdd,
-      dealerPinCode: customerDetails.dealerPinCode,
-      dealerState: customerDetails.dealerState,
-      dealerDist: customerDetails.dealerDist,
-      dealerCity: customerDetails.dealerCity,
-      addedBy: customerDetails.addedBy,
-      dealerNumber: customerDetails.dealerNumber,
-      transactId: '',
-      billDetails: bill.entityUid,
-      warrantyPhoto: warranty.entityUid,
-      sellingPrice: sellingPrice,
-      emptStr: '',
-      cresp: {
-        custIdForProdInstall: '',
-        modelForProdInstall: '',
-        errorCode: couponResponse?.errorCode,
-        errorMsg: couponResponse?.errorMsg,
-        statusType: '',
-        balance: '',
-        currentPoints: '',
-        couponPoints: couponResponse?.couponPoints,
-        promotionPoints: '',
-        transactId: '',
-        schemePoints: '',
-        basePoints: couponResponse?.basePoints,
-        clubPoints: '',
-        scanDate: new Date(),
-        scanStatus: '',
-        couponCode: qrcode,
-        bitEligibleScratchCard: '',
-        pardId: couponResponse?.partId,
-        partNumber: couponResponse?.partNumber,
-        partName: couponResponse?.partName,
-        skuDetail: couponResponse?.skuDetail,
-        purchaseDate: couponResponse?.purchaseDate,
-        categoryId: couponResponse?.categoryId,
-        category: couponResponse?.category,
-        anomaly: '',
-        warranty: '',
-      },
-      selectedProd: {
-        specs: '',
-        pointsFormat: '',
-        product: '',
-        productName: '',
-        productCategory: '',
-        productCode: '',
-        points: '',
-        imageUrl: '',
-        userId: '',
-        productId: '',
-        paytmMobileNo: '',
-      },
-      latitude: latitude,
-      longitude: longitude,
-      geolocation: '',
-    };
-    const response = await sendCustomerData(postData);
-    showLoader(false);
-    console.log(response);
-    const result = await response.data;
+    try {
+      showLoader(true);
+      console.log(customerDetails)
+      if (!customerDetails?.contactNo) {
+        ToastAndroid.show(
+          t('strings:enter_mandatory_fields'),
+          ToastAndroid.SHORT,
+        );
+        showLoader(false)
+        return;
+      }
+      if (
+        selectedBillImage == null &&
+        couponResponse.anomaly == 1 &&
+        customerDetails.dealerCategory != 'Sub-Dealer'
+      ) {
+        ToastAndroid.show(
+          t('strings:enter_mandatory_fields'),
+          ToastAndroid.SHORT,
+        );
+        showLoader(false)
+        return;
+      }
+      let bill, warranty;
+      if (selectedBillImage) {
+        bill = await triggerApiWithImage(selectedBillImage, 'bill');
+      }
 
-    if (result.errorCode == 1) {
-      var couponPoints = result.couponPoints;
-      var basePoints = result.basePoints;
-      // var couponPoints = "100";
-      // var basePoints = "200";
-      basePoints ? (basePoints = `Base Points: ${basePoints}`) : null;
-      setScratchCardProps({
-        rewardImage: {
-          width: 100,
-          height: 100,
-          resourceLocation: require('../../assets/images/ic_rewards_gift.png'),
+      if (selectedWarrantyImage) {
+        warranty = await triggerApiWithImage(selectedWarrantyImage, 'warranty');
+      }
+      const postData = {
+        contactNo: customerDetails.contactNo,
+        name: customerDetails.name,
+        email: customerDetails.email,
+        alternateNo: customerDetails.alternateNo,
+        city: customerDetails.city,
+        district: customerDetails.district,
+        state: customerDetails.state,
+        pinCode: customerDetails.pinCode,
+        landmark: customerDetails.landmark,
+        dealerCategory: customerDetails.dealerCategory,
+        currAdd: customerDetails.currAdd,
+        dealerName: customerDetails.dealerName,
+        dealerAdd: customerDetails.dealerAdd,
+        dealerPinCode: customerDetails.dealerPinCode,
+        dealerState: customerDetails.dealerState,
+        dealerDist: customerDetails.dealerDist,
+        dealerCity: customerDetails.dealerCity,
+        addedBy: customerDetails.addedBy,
+        dealerNumber: customerDetails.dealerNumber,
+        transactId: '',
+        billDetails: bill?.entityUid || null,
+        warrantyPhoto: warranty?.entityUid || null,
+        sellingPrice: sellingPrice,
+        emptStr: '',
+        cresp: {
+          custIdForProdInstall: '',
+          modelForProdInstall: '',
+          errorCode: couponResponse?.errorCode,
+          errorMsg: couponResponse?.errorMsg,
+          statusType: '',
+          balance: '',
+          currentPoints: '',
+          couponPoints: couponResponse?.couponPoints,
+          promotionPoints: '',
+          transactId: '',
+          schemePoints: '',
+          basePoints: couponResponse?.basePoints,
+          clubPoints: '',
+          scanDate: new Date(),
+          scanStatus: '',
+          couponCode: qrcode,
+          bitEligibleScratchCard: '',
+          pardId: couponResponse?.partId,
+          partNumber: couponResponse?.partNumber,
+          partName: couponResponse?.partName,
+          skuDetail: couponResponse?.skuDetail,
+          purchaseDate: couponResponse?.purchaseDate,
+          categoryId: couponResponse?.categoryId,
+          category: couponResponse?.category,
+          anomaly: '',
+          warranty: '',
         },
-        rewardResultText: {
-          color: Colors.black,
-          fontSize: 16,
-          textContent: 'YOU WON',
-          fontWeight: '700',
+        selectedProd: {
+          specs: '',
+          pointsFormat: '',
+          product: '',
+          productName: '',
+          productCategory: '',
+          productCode: '',
+          points: '',
+          imageUrl: '',
+          userId: '',
+          productId: '',
+          paytmMobileNo: '',
         },
-        text1: {
-          color: Colors.black,
-          fontSize: 16,
-          textContent: couponPoints,
-          fontWeight: '700',
-        },
-        text2: {
-          color: Colors.black,
-          fontSize: 16,
-          textContent: 'POINTS',
-          fontWeight: '700',
-        },
-        text3: {
-          color: Colors.grey,
-          fontSize: 12,
-          textContent: basePoints,
-          fontWeight: '700',
-        },
-        button: {
-          buttonColor: Colors.yellow,
-          buttonTextColor: Colors.black,
-          buttonText: 'Scan Again',
-          buttonAction: () =>
-            navigation.reset({index: 0, routes: [{name: 'Scan Code'}]}),
-          fontWeight: '400',
-        },
-        textInput: false,
-      });
-      setScratchCard(true);
-    } else {
+        latitude: latitude,
+        longitude: longitude,
+        geolocation: '',
+      };
+      console.log('SSSS')
+      console.log(postData)
+      const response = await sendCustomerData(postData);
+      showLoader(false);
+      console.log(response);
+      const result = await response.data;
+
+      if (result.errorCode == 1) {
+        var couponPoints = result.couponPoints;
+        var basePoints = result.basePoints;
+        // var couponPoints = "100";
+        // var basePoints = "200";
+        basePoints ? (basePoints = `Base Points: ${basePoints}`) : null;
+        setScratchCardProps({
+          rewardImage: {
+            width: 100,
+            height: 100,
+            resourceLocation: require('../../assets/images/ic_rewards_gift.png'),
+          },
+          rewardResultText: {
+            color: Colors.black,
+            fontSize: 16,
+            textContent: 'YOU WON',
+            fontWeight: '700',
+          },
+          text1: {
+            color: Colors.black,
+            fontSize: 16,
+            textContent: couponPoints,
+            fontWeight: '700',
+          },
+          text2: {
+            color: Colors.black,
+            fontSize: 16,
+            textContent: 'POINTS',
+            fontWeight: '700',
+          },
+          text3: {
+            color: Colors.grey,
+            fontSize: 12,
+            textContent: basePoints,
+            fontWeight: '700',
+          },
+          button: {
+            buttonColor: Colors.yellow,
+            buttonTextColor: Colors.black,
+            buttonText: 'Scan Again',
+            buttonAction: () =>
+              navigation.reset({index: 0, routes: [{name: 'Scan Code'}]}),
+            fontWeight: '400',
+          },
+          textInput: false,
+        });
+        setScratchCard(true);
+      } else {
+          
+        setPopupVisible(true);
+        setPopupContent(t('strings:something_wrong'));
+      }
+    } catch (error) {
+      console.log(error);
+      showLoader(false);
       setPopupVisible(true);
-      setPopupContent(t('strings:something_wrong'));
+      setPopupContent(error.response.data.message);
     }
   }
   return (

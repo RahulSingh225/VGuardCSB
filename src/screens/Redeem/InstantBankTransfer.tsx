@@ -33,6 +33,7 @@ import arrowIcon from '../../assets/images/arrow.png';
 import {AppContext} from '../../services/ContextService';
 import {VguardUser} from '../../types';
 import PopupWithButton from '../../components/PopupWithButton';
+import { useFocusEffect } from '@react-navigation/native';
 
 type BankProps = {};
 
@@ -60,14 +61,15 @@ const Bank: React.FC<BankProps> = ({navigation}) => {
   const [user, setUser] = useState<VguardUser | any>();
   const context = useContext(AppContext);
 
-  useEffect(() => {
-    const vguser: VguardUser = context.getUserDetails();
+  useFocusEffect(
+    React.useCallback(() => {
+      const vguser: VguardUser = context.getUserDetails();
     setUser(vguser);
     if (user?.bank_verified == 0) {
       SetOkPopup({visible: true});
     }
-  }, []);
-
+    }, [navigation]),
+  );
   async function handleProceed() {
     try {
       if (points < 150) {

@@ -178,6 +178,8 @@ const FillProfile: React.FC<{navigation: any}> = ({navigation}) => {
       }
     } catch (error) {
       console.log(error);
+      setLoader(false)
+      setPopup({isVisible:true,content:'Something went wrong'})
     }
   }
   const handleInputChange = async (value: string, label: string) => {

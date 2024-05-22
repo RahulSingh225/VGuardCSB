@@ -75,19 +75,21 @@ const ProductRegistrationForm: React.FC<{navigation: any}> = ({navigation}) => {
   useFocusEffect(
     React.useCallback(() => {
       getItem('CUSTOMER_DETAILS').then(r => {
-        if (r.length) {
-          const cdata = JSON.parse(r);
+        console.log(r)
+        if (r!=null) {console.log('succcess')
+          setContactNo(r.contactNo)
           setCustomerFormData(prevData => ({
             ...prevData,
-            name: cdata.name || '',
-            email: cdata.email || '',
-            altContactNo: cdata.alternateNo || '',
-            landmark: cdata.landmark || '',
-            pincode: cdata.pinCode || '',
-            state: cdata.state || '',
-            district: cdata.district || '',
-            city: cdata.city || '',
-            address: cdata.currAdd || '',
+            
+            name: r.name || '',
+            email: r.email || '',
+            altContactNo: r.alternateNo || '',
+            landmark: r.landmark || '',
+            pincode: r.pinCode || '',
+            state: r.state || '',
+            district: r.district || '',
+            city: r.city || '',
+            address: r.currAdd || '',
           }));
         }
       });
