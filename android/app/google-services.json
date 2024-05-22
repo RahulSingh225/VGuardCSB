@@ -1,0 +1,67 @@
+{
+  "project_info": {
+    "project_number": "523184441125",
+    "project_id": "vguard-mobile",
+    "storage_bucket": "vguard-mobile.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:523184441125:android:6d889bc817e82d6d9c3ccc",
+        "android_client_info": {
+          "package_name": "com.spacempact.vguardcs"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAokUM4fbfirxyl7x8jk87vACigAA_-FEY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:523184441125:android:84b2b42277eb58909c3ccc",
+        "android_client_info": {
+          "package_name": "com.tfl.vguardretailer"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAokUM4fbfirxyl7x8jk87vACigAA_-FEY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:523184441125:android:7b4aef6339c299bc9c3ccc",
+        "android_client_info": {
+          "package_name": "com.tfl.vguardrishta"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAokUM4fbfirxyl7x8jk87vACigAA_-FEY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -14,6 +14,7 @@ import {
   getUserProfile,
   updateProfile,
   verifyBank,
+  verifyVPA,
 } from '../../utils/apiservice';
 import Buttons from '../../components/Buttons';
 import Popup from '../../components/Popup';
@@ -77,6 +78,13 @@ const Bank = ({navigation}) => {
         setLoader(false);
         console.log(err);
       });
+  }
+  async function verifyBankDetails(){
+    try{
+      var postData:Vgua
+      const result = await verifyBank()
+        setPopup({isVisible:true,content:result?.data?.message});
+    }
   }
   async function updateProfileData() {
     try {
@@ -143,7 +151,22 @@ const Bank = ({navigation}) => {
           onPress={() => checkValidation()}
           width="100%"
         />
+        <Buttons
+          label={'Verify'}
+          variant="blackButton"
+          onPress={() => verifyBank()}
+          width="100%"
+        />
       </View>
+      <Text style={styles.subHeading}>{'UPI Verification'}</Text>
+      <View style={styles.button}>
+        <Buttons
+          label={'Verify'}
+          variant="blackButton"
+          onPress={() => verifyVPA()}
+          width="100%"
+        />
+        </View>
     </ScrollView>
   );
 };
