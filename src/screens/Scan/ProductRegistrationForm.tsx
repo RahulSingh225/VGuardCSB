@@ -35,6 +35,8 @@ import {CustomerData, VguardUser} from '../../types';
 import {Colors} from '../../utils/constants';
 import getLocation from '../../utils/geolocation';
 import {AppContext} from '../../services/ContextService';
+import {useFocusEffect} from '@react-navigation/native';
+import {getItem} from '../../services/StorageService';
 
 var location: {};
 const ProductRegistrationForm: React.FC<{navigation: any}> = ({navigation}) => {
@@ -69,6 +71,28 @@ const ProductRegistrationForm: React.FC<{navigation: any}> = ({navigation}) => {
   });
   const context = useContext(AppContext);
   const [loader, showLoader] = React.useState(false);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      getItem('CUSTOMER_DETAILS').then(r => {
+        if (r.length) {
+          const cdata = JSON.parse(r);
+          setCustomerFormData(prevData => ({
+            ...prevData,
+            name: cdata.name || '',
+            email: cdata.email || '',
+            altContactNo: cdata.alternateNo || '',
+            landmark: cdata.landmark || '',
+            pincode: cdata.pinCode || '',
+            state: cdata.state || '',
+            district: cdata.district || '',
+            city: cdata.city || '',
+            address: cdata.currAdd || '',
+          }));
+        }
+      });
+    }, []),
+  );
 
   async function processPincode(pincode: string) {
     if (pincode.length > 3) {
@@ -245,7 +269,7 @@ const ProductRegistrationForm: React.FC<{navigation: any}> = ({navigation}) => {
           state: customerDetails.state || '',
           district: customerDetails.district || '',
           city: customerDetails.city || '',
-          address: customerDetails.currAdd || ''
+          address: customerDetails.currAdd || '',
         }));
       } else {
         ToastAndroid.show(
@@ -266,9 +290,9 @@ const ProductRegistrationForm: React.FC<{navigation: any}> = ({navigation}) => {
   useEffect(() => {
     getLocation().then(r => (location = r));
 
-    const user: VguardUser = context.getUserDetails()
+    const user: VguardUser = context.getUserDetails();
 
-    setAddedBy(user.contact);
+    setAddedBy(user.user_id);
     setCustomerFormData({
       ...customerFormData,
       dealerName: user.name,

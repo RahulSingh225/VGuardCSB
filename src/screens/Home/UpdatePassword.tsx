@@ -1,4 +1,4 @@
-import {View, Text, StyleSheet, BackHandler} from 'react-native';
+import {View, Text, StyleSheet, BackHandler, ScrollView} from 'react-native';
 import React, {useContext, useEffect, useState} from 'react';
 import {height, width} from '../../utils/dimensions';
 import InputField from '../../components/InputField';
@@ -14,7 +14,6 @@ const UpdatePassword = ({navigation}) => {
   const context = useContext(AppContext);
   const user: VguardUser = context.getUserDetails();
   useEffect(() => {
-    
     const backHandler = BackHandler.addEventListener(
       'hardwareBackPress',
       () => true,
@@ -34,7 +33,7 @@ const UpdatePassword = ({navigation}) => {
         .then(res => {
           setLoader(false);
           if (res.data.status) {
-            navigation.replace('Profile');
+            navigation.replace('UpdateProfile');
           } else {
             setPopup({visible: true, content: res.data.message});
           }
@@ -44,14 +43,9 @@ const UpdatePassword = ({navigation}) => {
   }
 
   return (
-    <View
-      style={{
-        width: width,
-        height: height * 0.9,
-        flex: 1,
-        flexDirection: 'column',
-        alignItems: 'center',
-      }}>
+    <ScrollView
+      contentContainerStyle={{alignContent: 'center', gap: 10}}
+      style={{width: width * 0.9, alignSelf: 'center'}}>
       {loader && <Loader isLoading={loader} />}
       {popup.visible && (
         <Popup
@@ -87,11 +81,12 @@ const UpdatePassword = ({navigation}) => {
         onPress={() => handleSubmit()}
         width="80%"
       />
-    </View>
+    </ScrollView>
   );
 };
 const style = StyleSheet.create({
   button: {
+    alignSelf:'center',
     marginTop: 200,
   },
   input: {width: width * 0.8, color: Colors.black},

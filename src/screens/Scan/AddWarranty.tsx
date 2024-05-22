@@ -27,7 +27,7 @@ import {CustomerData} from '../../types';
 import getLocation from '../../utils/geolocation';
 import arrowIcon from '../../assets/images/arrow.png';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import {removeItem} from '../../services/StorageService';
 
 const AddWarranty = ({navigation}) => {
   const {t} = useTranslation();
@@ -328,9 +328,9 @@ const AddWarranty = ({navigation}) => {
     };
     const response = await sendCustomerData(postData);
     showLoader(false);
-    console.log(response)
+    console.log(response);
     const result = await response.data;
-    
+
     if (result.errorCode == 1) {
       var couponPoints = result.couponPoints;
       var basePoints = result.basePoints;
@@ -392,7 +392,11 @@ const AddWarranty = ({navigation}) => {
           scratchCardProps={scratchCardProps}
           visible={scratchCard}
           scratchable={scratchable}
-          onClose={() => navigation.reset({index: 0, routes: [{name: 'Home'}]})}
+          onClose={() => {
+            removeItem('CUSTOMER_DETAILS').then(r => {
+              navigation.reset({index: 0, routes: [{name: 'Home'}]});
+            });
+          }}
         />
       )}
       {isPopupVisible && (

@@ -1,11 +1,15 @@
 import React, {useEffect, useState} from 'react';
-import { View, Text, FlatList, StyleSheet, ScrollView } from 'react-native';
-import { useTranslation } from 'react-i18next';
-import { responsiveFontSize, responsiveHeight } from 'react-native-responsive-dimensions';
-import { Colors } from '../../utils/constants';
+import {View, Text, FlatList, StyleSheet, ScrollView} from 'react-native';
+import {useTranslation} from 'react-i18next';
+import {
+  responsiveFontSize,
+  responsiveHeight,
+} from 'react-native-responsive-dimensions';
+import {Colors} from '../../utils/constants';
+import {getRedemptionHistory} from '../../utils/apiservice';
 
 const RedemptionHistory = () => {
-  const { t } = useTranslation();
+  const {t} = useTranslation();
   const [redemptionHistoryData, setRedemptionHistoryData] = useState([]);
   useEffect(() => {
     getRedemptionHistory("''")
@@ -16,41 +20,67 @@ const RedemptionHistory = () => {
       .catch(error => {
         console.error('Error fetching data:', error);
       });
-  }, []); 
+  }, []);
 
-  const renderItem = ({ item }) => (
+  const renderItem = ({item}) => (
     <View style={[styles.item]}>
-            <Text style={[styles.text, item.orderStatus === 'In Process' ? styles.activeText : styles.inactiveText]}>{item.transactDate}</Text>
-            <View style={styles.detail}>
-                <Text style={[styles.text, item.orderStatus === 'In Process' ? styles.activeText : styles.inactiveText]}>{item.productName}</Text>
-                <Text style={[styles.smalltext]}>{t('strings:points')}: {item.points}</Text>
-                <Text style={[styles.smalltext]}>{t('strings:mobile_no')}: {item.mobileNumber}</Text>
-            </View>
-            <Text style={[styles.status, item.orderStatus === 'In Process' ? styles.activeItem : styles.inactiveItem]}>{item.orderStatus}</Text>
-        </View>
+      <Text
+        style={[
+          styles.text,
+          item.orderStatus === 'In Process'
+            ? styles.activeText
+            : styles.inactiveText,
+        ]}>
+        {item.transactDate}
+      </Text>
+      <View style={styles.detail}>
+        <Text
+          style={[
+            styles.text,
+            item.orderStatus === 'In Process'
+              ? styles.activeText
+              : styles.inactiveText,
+          ]}>
+          {item.productName}
+        </Text>
+        <Text style={[styles.smalltext]}>
+          {t('strings:points')}: {item.points}
+        </Text>
+        <Text style={[styles.smalltext]}>
+          {t('strings:mobile_no')}: {item.mobileNumber}
+        </Text>
+      </View>
+      <Text
+        style={[
+          styles.status,
+          item.orderStatus === 'In Process'
+            ? styles.activeItem
+            : styles.inactiveItem,
+        ]}>
+        {item.orderStatus}
+      </Text>
+    </View>
   );
 
   return (
-    
     <ScrollView style={styles.mainWrapper}>
       {redemptionHistoryData.length === 0 ? (
         <View style={styles.middleText}>
-        <Text style={styles.greyText}>No Data</Text>
+          <Text style={styles.greyText}>No Data</Text>
         </View>
       ) : (
-      <FlatList
-        data={redemptionHistoryData}
-        renderItem={renderItem}
-        keyExtractor={(item, index) => index.toString()}
-        ItemSeparatorComponent={() => <View style={styles.separator} />}
-      />
+        <FlatList
+          data={redemptionHistoryData}
+          renderItem={renderItem}
+          keyExtractor={(item, index) => index.toString()}
+          ItemSeparatorComponent={() => <View style={styles.separator} />}
+        />
       )}
     </ScrollView>
   );
-}
+};
 
 const styles = StyleSheet.create({
-  
   greyText: {
     color: Colors.grey,
     fontWeight: 'bold',
@@ -69,8 +99,8 @@ const styles = StyleSheet.create({
   },
   middleText: {
     marginTop: responsiveHeight(40),
-    flex: 1, 
-    justifyContent: 'center', 
+    flex: 1,
+    justifyContent: 'center',
     alignItems: 'center',
   },
   item: {
@@ -78,7 +108,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    display: 'flex'
+    display: 'flex',
   },
   text: {
     flexGrow: 1,
@@ -88,20 +118,20 @@ const styles = StyleSheet.create({
   smalltext: {
     fontSize: responsiveFontSize(1.5),
     flexGrow: 1,
-    color: Colors.black
-},
-detail: {
+    color: Colors.black,
+  },
+  detail: {
     flexGrow: 1,
     width: '40%',
     flexDirection: 'column',
-},
+  },
   activeItem: {
     backgroundColor: Colors.yellow,
     color: Colors.black,
     paddingHorizontal: 10,
     paddingVertical: 5,
     borderRadius: 5,
-    fontWeight: 'bold'
+    fontWeight: 'bold',
   },
   inactiveItem: {
     backgroundColor: Colors.lightGrey,
@@ -109,7 +139,7 @@ detail: {
     paddingHorizontal: 10,
     paddingVertical: 5,
     borderRadius: 5,
-    fontWeight: 'bold'
+    fontWeight: 'bold',
   },
   separator: {
     height: 1,
@@ -121,14 +151,13 @@ detail: {
   },
   inactiveText: {
     color: Colors.grey,
-    fontWeight: 'bold'
+    fontWeight: 'bold',
   },
   status: {
     width: '24%',
     textAlign: 'center',
     fontSize: responsiveFontSize(1.5),
-  }
-
+  },
 });
 
 export default RedemptionHistory;

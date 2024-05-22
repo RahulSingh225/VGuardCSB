@@ -18,6 +18,7 @@ import {Provider as PaperProvider} from 'react-native-paper';
 
 import {useTranslation} from 'react-i18next';
 import {Colors} from '../../utils/constants';
+import ProductCard from '../../components/ProductCard';
 
 const RedeemProducts = ({navigation}) => {
   const {t} = useTranslation();

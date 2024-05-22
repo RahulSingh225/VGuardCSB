@@ -49,10 +49,11 @@ const HomeScreen: React.FC<{navigation: any}> = ({navigation}) => {
     setUserData(appContext.getUserDetails());
   }, []);
   useEffect(() => {
-    console.log(userData);
-    // if (userData?.login_date == null) {
-    //   navigation.navigate('UpdatePassword');
-    // }
+    console.log("USERDATA",userData);
+    if (userData?.login_date === null) {
+      console.log(userData?.login_date)
+      navigation.navigate('UpdatePassword');
+    }
     if (userData?.selfie) {
       const getImage = async () => {
         try {

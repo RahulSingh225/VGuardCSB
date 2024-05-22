@@ -1,335 +1,254 @@
-import React, {useState, useEffect} from 'react';
-import {
-  View,
-  TextInput,
-  Text,
-  StyleSheet,
-  ScrollView,
-  TouchableOpacity,
-  Image,
-  Modal,
-} from 'react-native';
-import {Button} from 'react-native-paper';
+import {View, Text, StyleSheet, ScrollView} from 'react-native';
+import React, {useContext, useEffect, useState} from 'react';
+import InputField from '../../components/InputField';
+import {BankDetail, VguardUser} from '../../types';
+import {useTranslation} from 'react-i18next';
+import {AppContext} from '../../services/ContextService';
 import {
   responsiveFontSize,
   responsiveHeight,
 } from 'react-native-responsive-dimensions';
-import {useTranslation} from 'react-i18next';
+import {Colors} from '../../utils/constants';
+import {StorageItem, addItem} from '../../services/StorageService';
 import {
-  launchCamera,
-  launchImageLibrary,
-  ImagePickerResponse,
-} from 'react-native-image-picker';
-import Snackbar from 'react-native-snackbar';
-import {Picker} from '@react-native-picker/picker';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import Loader from '../../components/Loader';
-import InputField from '../../components/InputField';
+  getUserProfile,
+  updateProfile,
+  verifyBank,
+} from '../../utils/apiservice';
 import Buttons from '../../components/Buttons';
-import ImagePickerField from '../../components/ImagePickerField';
-import PickerField from '../../components/PickerField';
 import Popup from '../../components/Popup';
-import { getany, getBanks, updateBank } from '../../utils/apiservice';
-import Constants, { Colors } from '../../utils/constants';
+import {width} from '../../utils/dimensions';
 
-type BankProps = {};
-
-const Bank: React.FC<BankProps> = () => {
+const Bank = ({navigation}) => {
   const {t} = useTranslation();
-  const [select, setSelect] = useState<string | null>(null);
-  const [accNo, setAccNo] = useState<string>('');
-  const [accHolder, setAccHolder] = useState<string>('');
-  const [accType, setAccType] = useState<string>('');
-  const [bankName, setBankName] = useState<string>('');
-  const [ifscCode, setIfscCode] = useState<string>('');
-  const [entityUid, setEntityUid] = useState<string>('');
-  const [availableBanks, setAvailableBanks] = useState<string[]>([]);
-  const [popupContent, setPopupContent] = useState('');
-  const [isPopupVisible, setPopupVisible] = useState(false);
-  const [loader, showLoader] = useState(false);
+  const context = useContext(AppContext);
 
   useEffect(() => {
-    showLoader(true);
-
-    const getBankDetailsAndCallFileUri = async () => {
-      try {
-        const response = await getany();
-        if (response.status === 200) {
-          const data = response.data;
-          console.log(data);
-          setAccHolder(data.bankAccHolderName);
-          setAccType(data.bankAccType);
-          setBankName(data.bankNameAndBranch);
-          setIfscCode(data.bankIfsc);
-          setAccNo(data.bankAccNo);
-          setEntityUid(data.checkPhoto);
-
-          if (data.errorMessage) {
-            setPopupContent(data.errorMessage);
-            setPopupVisible(true);
-          }
-          showLoader(false);
-        } else {
-          showLoader(false);
-          throw new Error('Failed to get bank details');
-        }
-      } catch (error) {
-        showLoader(false);
-        console.error('API Error:', error);
-      }
-    };
-
-    getBankDetailsAndCallFileUri();
-
-    getBanks()
-      .then(response => {
-        if (response.status === 200) {
-          return response.data;
-        } else {
-          throw new Error('Failed to get bank names');
-        }
-      })
-      .then(responses => {
-        if (Array.isArray(responses)) {
-          const bankOptions = responses.map(bank => ({
-            label: bank.bankNameAndBranch,
-            value: bank.bankNameAndBranch,
-          }));
-          setAvailableBanks(bankOptions);
-        } else {
-          console.error('Invalid response format');
-        }
-      })
-      .catch(error => {
-        console.error('API Error:', error);
-      });
+    const user: VguardUser = context.getUserDetails();
+    setUserData(user);
   }, []);
+  const [loader, setLoader] = useState(false);
+  const [popup, setPopup] = useState({isVisible: false, content: null});
 
-  const handleProceed = () => {
-    showLoader(true);
+  const [bankDetails, setBankDetail] = useState<BankDetail | any>();
+  const [userData, setUserData] = useState<VguardUser | any>();
 
-    const postData = {
-      bankAccNo: accNo,
-      bankAccHolderName: accHolder,
-      bankAccType: accType,
-      bankNameAndBranch: bankName,
-      bankIfsc: ifscCode,
-      checkPhoto: imageUid,
-    };
+  function checkValidation() {
+    console.log(userData);
+    console.log(bankDetails);
+    if (!bankDetails?.bank_account_ifsc) {
+      setPopup({isVisible: true, content: 'Please enter bank details'});
+      return;
+    } else if (!bankDetails?.bank_account_number) {
+      setPopup({isVisible: true, content: 'Please enter bank details'});
 
-    if (
-      postData.bankAccNo !== '' &&
-      postData.bankAccHolderName !== '' &&
-      postData.bankAccType !== '' &&
-      postData.bankNameAndBranch !== '' &&
-      postData.bankIfsc !== '' &&
-      postData.checkPhoto !== ''
-    ) {
-      updateBank(postData)
-        .then(response => {
-          if (response.status === 200) {
-            showLoader(false);
-            return response.data;
-          } else {
-            showLoader(false);
-            setPopupContent('Failed to update Bank Details');
-          }
-        })
-        .then(data => {
-          showLoader(false);
-          setPopupContent(data.message);
-          setPopupVisible(true);
-        })
-        .catch(error => {
-          showLoader(false);
-          console.error('API Error:', error);
-          setPopupContent('An error occurred');
-          setPopupVisible(true);
-        });
+      return;
     } else {
-      showLoader(false);
-      setPopupContent('Enter all the details');
-      setPopupVisible(true);
+      console.log('calling hanlde submmit');
+      handleSubmit();
     }
-  };
+  }
+  async function handleSubmit() {
+    console.log('called');
 
-  const handleImageChange = async (
-    image: string,
-    type: string,
-    imageName: string,
-    label: string,
-  ) => {
-    try {
-      setFileData({
-        uri: image,
-        name: imageName,
-        type: type,
+    var data: VguardUser = userData;
+    data.bank_details = bankDetails;
+    setLoader(true);
+    updateProfile(data)
+      .then(res => {
+        console.log(res);
+        setLoader(false);
+        if (res.status == 200 && res.data.status) {
+          setPopup({
+            isVisible: true,
+            content: () => <Text>{res.data.message}</Text>,
+          });
+          verifyBank(data).then(response => {
+            updateProfileData();
+          });
+        } else {
+          setPopup({
+            isVisible: true,
+            content: () => <Text>Please try again</Text>,
+          });
+        }
+      })
+      .catch(err => {
+        setLoader(false);
+        console.log(err);
       });
+  }
+  async function updateProfileData() {
+    try {
+      const data = await getUserProfile({user_id: userData?.user_id});
+      console.log(data);
+      setLoader(false);
+      if (data.data.status) {
+        const vg: VguardUser = data.data.data;
+        const st: StorageItem = {key: 'USER', value: vg};
+        addItem(st);
+        setUserData(vg);
+        context.signIn(vg);
+        navigation.replace('Home');
+      }
     } catch (error) {
-      console.error('Error handling image change in Raise Ticket:', error);
+      console.log(error);
     }
-  };
-
-  
+  }
 
   return (
-    <ScrollView contentContainerStyle={styles.scrollContainer}>
-      {loader && <Loader isLoading={loader} />}
-
-      <View style={styles.mainWrapper}>
-        <View style={styles.header}>
-          <Text style={styles.textHeader}>{t('strings:bank_details')}</Text>
-          <Text style={styles.textSubHeader}>
-            {t('strings:for_account_tranfer_only')}
-          </Text>
-        </View>
-        <View style={styles.form}>
-          <InputField
-            label={t('strings:lbl_account_number')}
-            value={accNo}
-            onChangeText={value => setAccNo(value)}
-          />
-          <InputField
-            label={t('strings:lbl_account_holder_name')}
-            value={accHolder}
-            onChangeText={value => setAccHolder(value)}
-          />
-          <PickerField
-            label={'Select Bank Name'}
-            selectedValue={bankName}
-            onValueChange={itemValue => setBankName(itemValue)}
-            items={availableBanks}
-          />
-          <InputField
-            label={t('strings:ifsc')}
-            value={ifscCode}
-            onChangeText={value => setIfscCode(value)}
-          />
-          <ImagePickerField
-            label={t('strings:cancelled_cheque_copy')}
-            onImageChange={handleImageChange}
-            imageRelated={Constants.Cheque}
-            initialImage={entityUid}
-            getImageRelated={Constants.Cheque}
-          />
-        </View>
-        <View style={styles.button}>
-          <Buttons
-            label={t('strings:submit')}
-            variant="filled"
-            onPress={() => handleProceed()}
-            width="100%"
-            iconHeight={10}
-            iconWidth={30}
-            iconGap={30}
-            icon={arrowIcon}
-          />
-        </View>
-      </View>
-      {isPopupVisible && (
+    <ScrollView
+      contentContainerStyle={{alignContent: 'center', gap: 10}}
+      style={{width: width * 0.9, alignSelf: 'center'}}>
+      {popup.isVisible && (
         <Popup
-          isVisible={isPopupVisible}
-          onClose={() => setPopupVisible(false)}>
-          {popupContent}
-        </Popup>
+          isVisible={popup.isVisible}
+          onClose={() => setPopup({isVisible: false, content: null})}
+          children={popup.content}
+        />
       )}
+      <Text style={styles.subHeading}>{t('strings:lbl_bank_details')}</Text>
+      <View style={{marginLeft: width * 0.6, width: width}}>
+        <Buttons
+          variant="outlined"
+          label={'Skip'}
+          onPress={() => updateProfileData()}
+          width="30%"
+        />
+      </View>
+      <InputField
+        label={t('strings:lbl_account_number')}
+        value={bankDetails?.bank_account_number}
+        onChangeText={text => {
+          setBankDetail((prevState: BankDetail) => ({
+            ...prevState,
+            bank_account_number: text,
+          }));
+        }}
+      />
+      <InputField
+        label={t('strings:lbl_ifsc_code')}
+        value={bankDetails?.bank_account_ifsc}
+        onChangeText={text =>
+          setBankDetail((prevState: BankDetail) => ({
+            ...prevState,
+            bank_account_ifsc: text,
+          }))
+        }
+      />
+      <View style={styles.button}>
+        <Buttons
+          label={t('strings:submit')}
+          variant="filled"
+          onPress={() => checkValidation()}
+          width="100%"
+        />
+      </View>
     </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
-  scrollContainer: {
-    flexGrow: 1,
-    backgroundColor: Colors.white,
-  },
   mainWrapper: {
     padding: 15,
-  },
-  form: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: 10,
-    marginTop: 20,
-  },
-  header: {
-    display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 5,
-  },
-  inputImage: {
-    height: responsiveHeight(2),
-    width: responsiveHeight(2),
-    marginRight: 5,
-  },
-  textHeader: {
-    fontSize: responsiveFontSize(2.5),
-    color: Colors.black,
-    fontWeight: 'bold',
-  },
-  textSubHeader: {
-    fontSize: responsiveFontSize(1.8),
-    color: Colors.black,
-    fontWeight: 'bold',
-  },
-  container: {
-    height: responsiveHeight(8),
-  },
-  selectedImage: {
-    width: 200,
-    height: 200,
-    marginVertical: 20,
-  },
-  buttonText: {
-    color: Colors.white,
-    width: '100%',
-    textAlign: 'center',
-  },
-  inputContainer: {
-    borderColor: Colors.lightGrey,
-    borderWidth: 2,
-    borderRadius: 5,
-    height: responsiveHeight(5),
-    width: '100%',
-    display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginTop: responsiveHeight(1),
-  },
-  input: {
-    width: '90%',
-    padding: 10,
-    fontSize: responsiveFontSize(1.8),
-    color: Colors.black,
-    // fontWeight: 'bold',
-  },
-  modalContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+    backgroundColor: Colors.white,
   },
-  modalContent: {
-    backgroundColor: 'white',
-    padding: 20,
-    gap: 10,
-    borderRadius: 10,
+  ImageProfile: {
+    height: 50,
+    width: 50,
+    borderRadius: 100,
+  },
+  textName: {
+    color: Colors.black,
+    fontWeight: 'bold',
+    fontSize: responsiveFontSize(3),
+    marginTop: responsiveHeight(2),
+  },
+  label: {
+    color: Colors.grey,
+    fontSize: responsiveFontSize(1.7),
+    marginTop: responsiveHeight(3),
+    fontWeight: 'bold',
+  },
+  textDetail: {
+    color: Colors.black,
+    fontSize: responsiveFontSize(1.7),
+    fontWeight: 'bold',
+  },
+  viewProfile: {
+    color: Colors.yellow,
+    fontWeight: 'bold',
+    fontSize: responsiveFontSize(1.7),
+  },
+  data: {
+    color: Colors.black,
+    fontSize: responsiveFontSize(1.7),
+    marginTop: responsiveHeight(3),
+    textAlign: 'right',
+    fontWeight: 'bold',
+  },
+  flexBox: {
+    display: 'flex',
+    flexDirection: 'row',
     alignItems: 'center',
+    gap: 20,
+  },
+  detailsContainer: {
+    flexDirection: 'column',
+    marginVertical: 30,
+  },
+  subHeading: {
+    color: Colors.grey,
+    fontSize: responsiveFontSize(2.2),
+    fontWeight: 'bold',
+    marginBottom: 20,
   },
   button: {
-    marginTop: 20,
-    alignItems: 'center',
+    marginBottom: 30,
   },
-  picker: {
-    width: '100%',
-    color: Colors.grey,
+  container: {
+    height: 50,
+    marginBottom: 20,
+    borderColor: Colors.lightGrey,
+    borderWidth: 2,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 5,
   },
-  labelPicker: {
-    color: Colors.grey,
+  focusedContainer: {
+    borderColor: Colors.grey,
+  },
+  label: {
+    fontSize: responsiveFontSize(1.7),
     fontWeight: 'bold',
+    color: Colors.black,
+    backgroundColor: Colors.white,
+    paddingHorizontal: 3,
   },
-  modalcontainer: {alignSelf: 'center', backgroundColor: 'rgba(0,0,0,0.7)'},
+  focusedLabel: {
+    position: 'absolute',
+    top: -8,
+    left: 10,
+    fontSize: responsiveFontSize(1.5),
+    color: Colors.black,
+  },
+  input: {
+    color: Colors.black,
+    paddingTop: 10,
+  },
+  disabledInput: {
+    color: Colors.grey,
+  },
+  image: {
+    width: 50,
+    height: 50,
+    borderRadius: 5,
+  },
+  error: {
+    color: 'red',
+    marginTop: 5,
+  },
 });
 
 export default Bank;

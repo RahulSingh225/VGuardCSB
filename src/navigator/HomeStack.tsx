@@ -30,6 +30,7 @@ import ScanStack from './ScanStack';
 import ClaimsStack from './ClaimsStack';
 import UniqueCodeHistory from '../screens/Scan/UniqueCodeHistory';
 import NewStack from './NewStack';
+import FillProfile from '../screens/Home/FillProfile';
 
 const HomeStack: React.FC = () => {
   type HomeStackParams = {
@@ -107,6 +108,20 @@ const HomeStack: React.FC = () => {
         <Stack.Screen
           name="UpdateBank"
           component={Bank}
+          options={({route}) => ({
+            headerBackVisible: false,
+            headerTitle: () => (
+              <CustomTabHeader
+                handleLanguageButtonPress={handleLanguageButtonPress}
+                route={route}
+              />
+            ),
+            headerShown: true,
+          })}
+        />
+         <Stack.Screen
+          name="UpdateProfile"
+          component={FillProfile}
           options={({route}) => ({
             headerBackVisible: false,
             headerTitle: () => (

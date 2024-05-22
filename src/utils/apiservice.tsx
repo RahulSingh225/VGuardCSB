@@ -1,11 +1,11 @@
-import axios, { AxiosError, AxiosInstance, AxiosResponse } from 'axios';
+import axios, {AxiosError, AxiosInstance, AxiosResponse} from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { VguardUser } from '../types';
-import { getItem } from '../services/StorageService';
+import {VguardUser} from '../types';
+import {getItem} from '../services/StorageService';
 
 // const BASE_URL = 'http://192.168.1.37:5000/vguard/api';
-const BASE_URL = 'http://localhost:5000/vguard/api';
-//const BASE_URL = 'https://vguardcsb.spacempact.cloud/vguard/api';
+//const BASE_URL = 'http://localhost:5000/vguard/api';
+const BASE_URL = 'https://vguardcsb.spacempact.cloud/vguard/api';
 
 export const api: AxiosInstance = axios.create({
   baseURL: BASE_URL,
@@ -16,19 +16,31 @@ export interface Tokens {
   refreshToken: string;
 }
 
-
 async function createPostRequest(
   relativeUrl: string,
   data: any,
 ): Promise<AxiosResponse> {
-  const headers = {
-    Accept: 'application/json'
-  };
-  const response: AxiosResponse = await api.post(relativeUrl, data, {
-    headers,
-  });
-  
-  return response;
+  try {
+    const headers = {
+      Accept: 'application/json',
+    };
+    const response: AxiosResponse = await api.post(relativeUrl, data, {
+      headers,
+    });
+
+    return response;
+  } catch (error) {
+    console.log(error);
+    console.log(error?.response);
+    // if (error.response.status == 401) {
+    //   getItem('REFRESH_TOKEN').then(token => {
+    //     console.log(token);
+    //     newTokens(token);
+    //   });
+    // }
+    console.error('Error:', relativeUrl, error);
+    throw error;
+  }
 }
 
 async function createGetRequest(relativeUrl: string): Promise<AxiosResponse> {
@@ -36,10 +48,10 @@ async function createGetRequest(relativeUrl: string): Promise<AxiosResponse> {
     const response = await api.get(relativeUrl);
     return response;
   } catch (error) {
-    console.log(error.response.status)
+    console.log(error.response.status);
     if (error.response.status == 401) {
       getItem('REFRESH_TOKEN').then(token => {
-        console.log(token)
+        console.log(token);
         newTokens(token);
       });
     }
@@ -50,22 +62,20 @@ async function createGetRequest(relativeUrl: string): Promise<AxiosResponse> {
 
 export async function newTokens(token: string) {
   try {
-    console.log('andar')
+    console.log('andar');
     const path = 'user/refreshAccessToken';
     const response = await createPostRequest(path, {
       refreshToken: token,
     });
-    console.log('bahar')
-    console.log(response)
-    const { accessToken, refreshToken } = response.data;
+
+    const {accessToken, refreshToken} = response.data;
     api.defaults.headers.common.Authorization = `Bearer ${accessToken}`;
-    return { accessToken, newRefreshToken: refreshToken };
+    return {accessToken, newRefreshToken: refreshToken};
   } catch (error) {
-    console.log(error)
+    console.log(error);
     throw new Error('Failed to refresh tokens');
   }
 }
-
 
 const update_fcm_token = async () => {
   const path = 'pushNotification/registerToken';
@@ -445,6 +455,8 @@ export function bankTransfer(productOrder: any) {
   return createPostRequest(path, productOrder);
 }
 
+
+
 export function productOrder(productOrder: any) {
   const path = 'order/product';
   return createPostRequest(path, productOrder);
@@ -464,11 +476,15 @@ export function raiseClaim(claim: any) {
   const path = 'claims/raiseClaim';
   return createPostRequest(path, claim);
 }
+export function getClaimDetails(claimno: string) {
+  const path = 'claims/claimDetail';
+  const data = {claim_number: claimno};
+  return createPostRequest(path, data);
+}
 export function getClaims() {
   const path = 'claims/getClaims';
   return createGetRequest(path);
 }
-
 
 export function getCartItems() {
   const path = 'product/getCartProducts';
@@ -583,7 +599,7 @@ export function verifyBank(body: any) {
 }
 export function updatePassword(password: string, user_id: string) {
   const path = 'user/updatePassword';
-  const body = { user_id: user_id, password: password };
+  const body = {user_id: user_id, password: password};
   return createPostRequest(path, body);
 }
 export function getScanCodeHistory() {
@@ -689,7 +705,7 @@ export function logoutUser() {
 
 export function logOut(userId: number) {
   const path = 'user/logout';
-  return createPostRequest(path, { userId });
+  return createPostRequest(path, {userId});
 }
 
 export function getDetailsByPinCode(pinCode: string) {
@@ -787,7 +803,6 @@ export function validateCoupon(couponData: any) {
 
   return createPostRequest(path, couponData);
 }
-
 
 export function validateCouponPin(couponData: any) {
   const path = 'coupon/scanWithPin';

@@ -23,7 +23,7 @@ import {StorageItem, addItem, getItem} from '../../services/StorageService';
 import EntypoIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {getUserProfile, verifyBank, verifyVPA} from '../../utils/apiservice';
 import Loader from '../../components/Loader';
-import { useFocusEffect } from '@react-navigation/native';
+import {useFocusEffect} from '@react-navigation/native';
 
 const Profile: React.FC<{navigation: any}> = ({navigation}) => {
   const {t} = useTranslation();
@@ -37,7 +37,6 @@ const Profile: React.FC<{navigation: any}> = ({navigation}) => {
   const [userData, setUserData] = useState<VguardUser | any>();
   const [profileImage, setProfileImage] = useState('');
 
-
   useFocusEffect(
     React.useCallback(() => {
       getItem('USER').then(res => {
@@ -48,7 +47,7 @@ const Profile: React.FC<{navigation: any}> = ({navigation}) => {
     }, []),
   );
 
-  async function updateProfileData(vg:VguardUser) {
+  async function updateProfileData(vg: VguardUser) {
     try {
       const data = await getUserProfile({user_id: vg?.user_id});
       console.log(data);
@@ -75,6 +74,7 @@ const Profile: React.FC<{navigation: any}> = ({navigation}) => {
     updateProfileData(userData);
   }
   const labels = [
+    'Profile Type',
     'Preferred Language',
     'Gender',
     'Date of Birth',
@@ -87,8 +87,8 @@ const Profile: React.FC<{navigation: any}> = ({navigation}) => {
     'Pan Card',
     'Bank Details',
     'UPI Id',
-    'Activation Status',
-    'Block Status',
+    'Profile Status',
+    'Transaction Status',
   ];
   const renderField = fieldName => {
     const fieldMap = {
@@ -96,12 +96,13 @@ const Profile: React.FC<{navigation: any}> = ({navigation}) => {
       Contact: 'contact',
       WhatsApp: 'alternate_contact',
       Address: 'currentaddress1',
+      'Profile Type': 'cs_type',
 
       'Preferred Language': 'preferred_language',
       Gender: 'gender',
       Email: 'email',
-      'Activation Status': 'activation_status',
-      'Block Status': 'block_status',
+      'Profile Status': 'activation_status',
+      'Transaction Status': 'block_status',
     };
 
     if (fieldName in fieldMap) {

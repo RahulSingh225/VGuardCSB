@@ -153,7 +153,7 @@ const RaiseClaim = ({navigation}) => {
 
   function handleSubmit() {
     if (!claim.start_date || !claim.end_date || !claim.pincode) {
-      console.log(claim)
+      console.log(claim);
       setPopup({
         isPopupVisible: true,
         popupContent: 'Please enter all the details',
@@ -182,17 +182,23 @@ const RaiseClaim = ({navigation}) => {
       }),
     );
     console.log(formData);
-    setLoader(true)
+    setLoader(true);
     raiseClaim(formData)
       .then(res => {
-        console.log(res)
+        console.log(res);
+        setClaim(null);
+        setClaimData([]);
+        setClaimImage([]);
+        setSkuName([]);
+        setSubCategories([]);
+
         setLoader(false);
-        setPopup({isPopupVisible:true,popupContent:res.data.message})
+        setPopup({isPopupVisible: true, popupContent: res.data.message});
       })
       .catch(e => {
-        console.log(e)
+        console.log(e);
         setLoader(false);
-        setPopup({isPopupVisible:true,popupContent:e.response.data.message})
+        setPopup({isPopupVisible: true, popupContent: e.response.data.message});
       });
   }
 
@@ -225,7 +231,11 @@ const RaiseClaim = ({navigation}) => {
               ? new Date(moment().year(), moment().month(), 1)
               : new Date(moment().year(), moment().month() - 1, 1)
           }
-          maximum={new Date()}
+          maximum={
+            new Date().getDate() > 7
+              ? new Date(moment().year(), moment().month(), 30)
+              : new Date(moment().year(), moment().month() - 1, 30)
+          }
           date={claim?.start_date}
           onDateChange={date => setClaim({...claim, start_date: date})}
         />
@@ -237,7 +247,11 @@ const RaiseClaim = ({navigation}) => {
               ? new Date(moment().year(), moment().month(), 1)
               : new Date(moment().year(), moment().month() - 1, 1)
           }
-          maximum={new Date()}
+          maximum={
+            new Date().getDate() > 7
+              ? new Date(moment().year(), moment().month(), 30)
+              : new Date(moment().year(), moment().month() - 1, 30)
+          }
           onDateChange={date => setClaim({...claim, end_date: date})}
         />
         <InputField

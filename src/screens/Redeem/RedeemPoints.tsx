@@ -12,10 +12,9 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import ReusableCarousel from '../../components/ReusableCarousel';
 import CustomTouchableOption from '../../components/CustomTouchableOption';
 import NeedHelp from '../../components/NeedHelp';
-import { Colors } from '../../utils/constants';
-import { AppContext } from '../../services/ContextService';
-import { VguardUser } from '../../types';
-
+import {Colors} from '../../utils/constants';
+import {AppContext} from '../../services/ContextService';
+import {VguardUser} from '../../types';
 
 interface PointData {
   pointsBalance: string;
@@ -25,7 +24,7 @@ interface PointData {
 
 const RedeemPoints: React.FC<{navigation: any}> = ({navigation}) => {
   const {t} = useTranslation();
-  const context = useContext(AppContext)
+  const context = useContext(AppContext);
   const carouselData = [
     {
       imageUrl: require('../../assets/images/banner_redeem_ppoints.webp'),
@@ -43,15 +42,13 @@ const RedeemPoints: React.FC<{navigation: any}> = ({navigation}) => {
   });
 
   useEffect(() => {
-   
-     const user:VguardUser = context.getUserDetails()
-      const data: PointData = {
-        pointsBalance: user.balance_points || 0,
-        redeemedPoints: user.redeemded_points || 0,
-        tdsPoints: user.tds_kitty || 0,
-      };
-      setPointData(data);
-    
+    const user: VguardUser = context.getUserDetails();
+    const data: PointData = {
+      pointsBalance: user?.balance_points || 0,
+      redeemedPoints: user?.redeemded_points || 0,
+      tdsPoints: user?.tds_kitty || 0,
+    };
+    setPointData(data);
   }, []);
 
   return (
@@ -88,9 +85,9 @@ const RedeemPoints: React.FC<{navigation: any}> = ({navigation}) => {
               screenName="Bank Transfer"
             />
             <CustomTouchableOption
-              text="strings:paytm_transfer"
-              iconSource={require('../../assets/images/ic_paytm_transfer.webp')}
-              screenName="Paytm Transfer"
+              text="UPI Transfer"
+              iconSource={require('../../assets/images/upi_transfer.webp')}
+              screenName="UPI Transfer"
             />
             <CustomTouchableOption
               text="strings:redeem_products"
@@ -116,13 +113,6 @@ const RedeemPoints: React.FC<{navigation: any}> = ({navigation}) => {
               text="strings:redemption_history"
               iconSource={require('../../assets/images/ic_redemption_history.webp')}
               screenName="Redemption History"
-            />
-          </View>
-          <View style={styles.lastrow}>
-            <CustomTouchableOption
-              text="UPI Transfer"
-              iconSource={require('../../assets/images/upi_transfer.webp')}
-              screenName="UPI Transfer"
             />
           </View>
         </View>

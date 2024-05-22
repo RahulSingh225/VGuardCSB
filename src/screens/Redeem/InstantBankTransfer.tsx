@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import {
   View,
   TextInput,
@@ -27,8 +27,12 @@ import Loader from '../../components/Loader';
 import InputField from '../../components/InputField';
 import Buttons from '../../components/Buttons';
 import Popup from '../../components/Popup';
-import { Colors } from '../../utils/constants';
-
+import {Colors} from '../../utils/constants';
+import {bankTransfer} from '../../utils/apiservice';
+import arrowIcon from '../../assets/images/arrow.png';
+import {AppContext} from '../../services/ContextService';
+import {VguardUser} from '../../types';
+import PopupWithButton from '../../components/PopupWithButton';
 
 type BankProps = {};
 
@@ -46,95 +50,44 @@ interface BankTransferData {
   bankDetail: BankDetail;
 }
 
-const Bank: React.FC<BankProps> = () => {
+const Bank: React.FC<BankProps> = ({navigation}) => {
   const {t} = useTranslation();
   const [points, setPoints] = useState<string>('');
-  const [accNo, setAccNo] = useState<string>('');
-  const [accHolder, setAccHolder] = useState<string>('');
-  const [accType, setAccType] = useState<string>('');
-  const [bankName, setBankName] = useState<string>('');
-  const [ifscCode, setIfscCode] = useState<string>('');
-  const [entityUid, setEntityUid] = useState<string>('');
+  const [OkPopup, SetOkPopup] = useState({visible: false});
   const [popupContent, setPopupContent] = useState('');
   const [isPopupVisible, setPopupVisible] = useState(false);
-  const [loader, showLoader] = useState(true);
+  const [loader, showLoader] = useState(false);
+  const [user, setUser] = useState<VguardUser | any>();
+  const context = useContext(AppContext);
 
-  const getBankDetailsAndCallFileUri = async () => {
-    try {
-      const response = await getany();
-      showLoader(false);
-      if (response.status === 200) {
-        const data = response.data;
-        setAccHolder(data.bankAccHolderName);
-        setAccType(data.bankAccType);
-        setBankName(data.bankNameAndBranch);
-        setIfscCode(data.bankIfsc);
-        setAccNo(data.bankAccNo);
-        setEntityUid(data.checkPhoto);
-      } else {
-        setPopupContent('Failed to get bank details');
-        setPopupVisible(true);
-        throw new Error('Failed to get bank details');
-      }
-    } catch (error) {
-      setPopupContent('Failed to get bank details');
-      setPopupVisible(true);
-      showLoader(false);
-      console.error('API Error:', error);
-    }
-  };
   useEffect(() => {
-    getBankDetailsAndCallFileUri();
+    const vguser: VguardUser = context.getUserDetails();
+    setUser(vguser);
+    if (user?.bank_verified == 0) {
+      SetOkPopup({visible: true});
+    }
   }, []);
 
-  const handleProceed = async () => {
-    showLoader(true);
+  async function handleProceed() {
     try {
-      const postData: BankTransferData = {
-        amount: points,
-        bankDetail: {
-          bankAccNo: accNo,
-          bankAccHolderName: accHolder,
-          bankAccType: accType,
-          bankNameAndBranch: bankName,
-          bankIfsc: ifscCode,
-          checkPhoto: entityUid,
-        },
-      };
-      if (
-        postData.amount != '' &&
-        postData.bankDetail.bankAccNo != '' &&
-        postData.bankDetail.bankAccHolderName != '' &&
-        postData.bankDetail.bankAccType != '' &&
-        postData.bankDetail.bankAccType != '' &&
-        postData.bankDetail.bankNameAndBranch != '' &&
-        postData.bankDetail.bankIfsc != '' &&
-        postData.bankDetail.checkPhoto != ''
-      ) {
-        try {
-          const bankTransferResponse = await bankTransfer(postData);
-          showLoader(false);
-          const bankTransferResponseData = bankTransferResponse.data;
-          setPopupVisible(true);
-          setPopupContent(bankTransferResponseData.message);
-        } catch (error) {
-          showLoader(false);
-          setPopupVisible(true);
-          setPopupContent('Failed to update Bank Details');
-          console.error('API Error:', error);
-        }
-      } else {
-        showLoader(false);
+      if (points < 150) {
+        setPopupContent('Redemption available on minimum of 150 points.');
         setPopupVisible(true);
-        setPopupContent('Enter Amount to Proceed!');
+        return;
       }
+      showLoader(true);
+      const data = {user_id: user.user_id, amount: points};
+      showLoader(false);
+      const result = await bankTransfer(data);
+      setPopupContent(result.data.message);
+      setPopupVisible(true);
     } catch (error) {
       showLoader(false);
-      console.error('Error: bt', error);
+      console.log(error);
+      setPopupContent('Cannot place request');
       setPopupVisible(true);
-      setPopupContent('An error occurred');
     }
-  };
+  }
 
   return (
     <ScrollView contentContainerStyle={styles.scrollContainer}>
@@ -148,46 +101,50 @@ const Bank: React.FC<BankProps> = () => {
         </View>
         <View style={styles.form}>
           <InputField
-            label={t('strings:enter_points_to_be_redeemed')}
-            value={points}
-            onChangeText={value => setPoints(value)}
-          />
-          <InputField
             label={t('strings:lbl_account_number')}
-            value={accNo}
+            value={user?.bank_details?.bank_account_number}
             disabled={true}
           />
           <InputField
             label={t('strings:lbl_account_holder_name')}
-            value={accHolder}
-            disabled={true}
-          />
-          <InputField
-            label={t('Select Bank Name')}
-            value={bankName}
+            value={user?.bank_details?.bank_account_name}
             disabled={true}
           />
           <InputField
             label={t('strings:ifsc')}
-            value={ifscCode}
+            value={user?.bank_details?.bank_account_ifsc}
             disabled={true}
           />
 
-       
-        </View>
-        <View style={styles.button}>
-          <Buttons
-            label={t('strings:submit')}
-            variant="filled"
-            onPress={() => handleProceed()}
-            width="100%"
-            iconHeight={10}
-            iconWidth={30}
-            iconGap={30}
-            icon={arrowIcon}
+          <InputField
+            label={t('strings:enter_points_to_be_redeemed')}
+            value={points}
+            onChangeText={value => setPoints(value)}
           />
         </View>
+        <View style={styles.button}>
+          {user?.bank_verified == 1 && (
+            <Buttons
+              label={t('strings:submit')}
+              variant="filled"
+              onPress={() => handleProceed()}
+              width="100%"
+              iconHeight={10}
+              iconWidth={30}
+              iconGap={30}
+              icon={arrowIcon}
+            />
+          )}
+        </View>
       </View>
+
+      <PopupWithButton
+        buttonText="Ok"
+        isVisible={OkPopup.visible}
+        onClose={() => SetOkPopup({visible: false})}
+        onConfirm={() => navigation.navigate('Profile')}
+        children="Please update Bank details"
+      />
       {isPopupVisible && (
         <Popup
           isVisible={isPopupVisible}

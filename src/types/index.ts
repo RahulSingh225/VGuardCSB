@@ -179,7 +179,6 @@ export interface CustomerData {
     clubPoints: string;
     scanDate: string;
     scanStatus: string;
-    couponCode: string;
     bitEligibleScratchCard: string;
     pardId: string;
     partNumber: string;
