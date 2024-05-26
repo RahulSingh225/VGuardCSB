@@ -68,15 +68,14 @@ const Bank = ({navigation}) => {
         if (res.status == 200 && res.data.status) {
           setPopup({
             isVisible: true,
-            content: () => <Text>{res.data.message}</Text>,
+            content: res.data.message,
           });
-          verifyBank(data).then(response => {
-            updateProfileData();
-          });
+
+          updateProfileData();
         } else {
           setPopup({
             isVisible: true,
-            content: () => <Text>Please try again</Text>,
+            content: 'Please try again',
           });
         }
       })
@@ -88,8 +87,10 @@ const Bank = ({navigation}) => {
   async function verfiyUPI() {
     try {
       const result = await verifyVPA({mobile_no: userData?.contact});
+      setPopup({isVisible: true, content: 'UPI verified'});
     } catch (error) {
       console.log(error);
+      setPopup({isVisible: true, content: 'Unable to verify UPI'});
     }
   }
   async function verifyBankDetails() {
@@ -98,7 +99,11 @@ const Bank = ({navigation}) => {
       postData.bank_details = bankDetails;
       const result = await verifyBank(postData);
       setPopup({isVisible: true, content: result?.data?.message});
-    } catch (error) {}
+      updateProfileData();
+    } catch (error) {
+      console.log(error);
+      setPopup({isVisible: true, content: 'Unable to verify Bank Details'});
+    }
   }
   async function updateProfileData() {
     try {
@@ -110,8 +115,8 @@ const Bank = ({navigation}) => {
         const st: StorageItem = {key: 'USER', value: vg};
         addItem(st);
         setUserData(vg);
-        context.signIn(vg);
-        navigation.replace('Home');
+        setBankDetail(vg.bank_details);
+        context.updateUser(vg);
       }
     } catch (error) {
       console.log(error);
@@ -134,7 +139,7 @@ const Bank = ({navigation}) => {
         <Buttons
           variant="outlined"
           label={'Skip'}
-          onPress={() => updateProfileData()}
+          onPress={() => navigation.replace('Home')}
           width="30%"
         />
       </View>
@@ -161,7 +166,7 @@ const Bank = ({navigation}) => {
       />
       <InputField
         disabled={true}
-        label={t('strings:lbl_account_name')}
+        label={t('strings:lbl_account_holder_name')}
         value={bankDetails?.bank_account_name}
         onChangeText={text => {
           setBankDetail((prevState: BankDetail) => ({
@@ -192,6 +197,15 @@ const Bank = ({navigation}) => {
           label={'Verify'}
           variant="blackButton"
           onPress={() => verfiyUPI()}
+          width="100%"
+        />
+      </View>
+      <View style={styles.button}>
+        <Buttons
+          disabled={userData?.vpa_verified == 1 ? true : false}
+          label={'Finish'}
+          variant="filled"
+          onPress={() => navigation.replace('Home')}
           width="100%"
         />
       </View>

@@ -149,7 +149,7 @@ const Login: React.FC<{navigation: any}> = ({navigation}) => {
           </View>
           {loader && <Loader isLoading={loader} />}
           <Image
-            source={require('../../assets/images/rishta_retailer_logo.webp')}
+            source={require('../../assets/images/cs_logo.png')}
             style={styles.imageSaathi}
           />
           <Text style={styles.mainHeader}>{t('strings:lbl_welcome')}</Text>
@@ -309,8 +309,8 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   imageSaathi: {
-    width: 100,
-    height: 98,
+    width: 150,
+    height: 130,
     marginBottom: 30,
   },
   imageVguard: {

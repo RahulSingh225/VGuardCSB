@@ -17,6 +17,7 @@ import LanguagePicker from '../components/LanguagePicker';
 import RaiseClaim from '../screens/Claims/RaiseClaim';
 import ClaimList from '../screens/Claims/ClaimList';
 import ClaimDetails from '../screens/Claims/ClaimDetails';
+import ClaimDetailTest from '../screens/Claims/ClaimDetailTest';
 
 const ClaimsStack = () => {
   const Stack = createNativeStackNavigator();
@@ -60,7 +61,7 @@ const ClaimsStack = () => {
         />
         <Stack.Screen
           name="ClaimsDetail"
-          component={ClaimDetails}
+          component={ClaimDetailTest}
           options={{
             headerShown: true,
             headerRight: () => (

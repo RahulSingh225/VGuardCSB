@@ -388,15 +388,15 @@ const AddWarranty = ({navigation}) => {
         });
         setScratchCard(true);
       } else {
-          
+        console.log(result);
         setPopupVisible(true);
-        setPopupContent(t('strings:something_wrong'));
+        setPopupContent(result.errorMe);
       }
     } catch (error) {
       console.log(error);
       showLoader(false);
       setPopupVisible(true);
-      setPopupContent(error.response.data.message);
+      setPopupContent(t('strings:something_wrong'));
     }
   }
   return (

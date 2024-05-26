@@ -1,9 +1,11 @@
 import {View, Text, FlatList, StyleSheet} from 'react-native';
+
 import React, {useEffect, useState} from 'react';
 import {getClaimDetails} from '../../utils/apiservice';
 import {Claims} from '../../types';
 import { width } from '../../utils/dimensions';
 import { Colors } from '../../utils/constants';
+import { ScrollView } from 'react-native-gesture-handler';
 
 const ClaimDetails = ({navigation, route}) => {
   const {claimNo} = route.params;
@@ -19,14 +21,14 @@ const ClaimDetails = ({navigation, route}) => {
   const [claimData, setClaimData] = useState<Claims | any>(new Claims());
 
   const renderItem = ({item}) => (
-    <View style={styles.item}>
+    <ScrollView horizontal={true}  contentContainerStyle={styles.scroll_item}>
       <Text style={styles.text}>{item.category_name}</Text>
       <Text style={styles.text}>{item.subcategory_name}</Text>
       <Text style={styles.text}>{item.sku_name}</Text>
       <Text style={styles.text}>{item.quantity}</Text>
       <Text style={styles.text}>{item.bm_comments}</Text>
       <Text style={styles.text}>{item.rm_comments}</Text>
-    </View>
+    </ScrollView>
   );
 
   return (
@@ -49,19 +51,21 @@ const ClaimDetails = ({navigation, route}) => {
       </View>
       <View style={styles.item}>
       <Text style={styles.text}>Start Date</Text>
-      <Text style={styles.text}>{claimData.start_date}</Text>
+      <Text style={styles.text}>{claimData.end_date}</Text>
       </View>
       <View style={styles.item}>
       <Text style={styles.text}>End Date</Text>
-      <Text style={styles.text}>{claimData.end_date}</Text>
+      <Text style={styles.text}>{claimData.start_date}</Text>
       </View>
       <Text style={{alignSelf:'center',fontSize:18,fontWeight:'bold',color:'black',marginVertical:10}}>Claim Details</Text>
-      <View style={styles.item}>
+      <ScrollView  horizontal>
         <Text style={styles.text}>Category</Text>
-        <Text style={styles.text}>Sub-Category</Text>
+        <Text style={styles.text}>SubCategory</Text>
         <Text style={styles.text}>SKU</Text>
         <Text style={styles.text}>Qty</Text>
-      </View>
+        <Text style={styles.text}>BM</Text>
+        <Text style={styles.text}>RM</Text>
+      </ScrollView>
       <FlatList
         data={claimData.claim_data}
         renderItem={renderItem}
@@ -93,11 +97,28 @@ const styles = StyleSheet.create({
     color: Colors.grey,
   },
   item: {
-    padding: 10,
+    width:width,
+  
+    padding: 5,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    display: 'flex',
+  },
+  scroll_item: {
+    maxWidth:width,
+    padding: 5,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     display: 'flex',
+
+    
+  },
+  separator: {
+    color:'red',
+    height: 10,
+    backgroundColor: Colors.primary_light,
   },
   text: {
     flexGrow: 1,
@@ -106,7 +127,8 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   status: {
-    width: '24%',
+    flexGrow:1,
+    width: '30%',
     textAlign: 'center',
     backgroundColor: Colors.yellow,
     color: Colors.black,

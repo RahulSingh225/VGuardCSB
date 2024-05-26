@@ -30,7 +30,6 @@ import PopupWithOkAndCancel from '../../components/PopupWithOkAndCancel';
 import PopupWithPin from '../../components/PopupWithPin';
 import RewardBox from '../../components/ScratchCard';
 import {
- 
   sendCouponPin,
   getBonusPoints,
   validateCoupon,
@@ -38,8 +37,8 @@ import {
 } from '../../utils/apiservice';
 import {Colors} from '../../utils/constants';
 import getLocation from '../../utils/geolocation';
-import { AppContext } from '../../services/ContextService';
-import { CouponData, VguardUser } from '../../types';
+import {AppContext} from '../../services/ContextService';
+import {CouponData, VguardUser} from '../../types';
 
 interface ScanCodeProps {
   navigation: any;
@@ -54,7 +53,7 @@ interface OkPopupContent {
 const ScanCode: React.FC<ScanCodeProps> = ({navigation, route}) => {
   const {t} = useTranslation();
 
-  const context = useContext(AppContext)
+  const context = useContext(AppContext);
   const [qrCode, setQrcode] = useState<string>('');
   const [scratchCard, showScratchCard] = useState<boolean>(false);
   const [isPopupVisible, setPopupVisible] = useState(false);
@@ -112,16 +111,15 @@ const ScanCode: React.FC<ScanCodeProps> = ({navigation, route}) => {
   var CouponResponse: any;
 
   useEffect(() => {
-  var user:VguardUser = context.getUserDetails()
-      //setUserData(user);
-      setCouponData(prevData => ({
-        ...prevData,
-        from: 'APP',
-        userMobileNumber: user?.contact,
-        rishtaId:user?.rishta_id,
-        userId:user?.user_id
-  
-    }))
+    var user: VguardUser = context.getUserDetails();
+    //setUserData(user);
+    setCouponData(prevData => ({
+      ...prevData,
+      from: 'APP',
+      userMobileNumber: user?.contact,
+      rishtaId: user?.rishta_id,
+      userId: user?.user_id,
+    }));
     showLoader(false);
   }, []);
 
@@ -156,59 +154,65 @@ const ScanCode: React.FC<ScanCodeProps> = ({navigation, route}) => {
   };
 
   async function sendBarcode() {
-try{
-  showLoader(true);
-    console.log(couponData)
-    console.log('shuru');
-    getUserLocation();
-    if (qrCode && qrCode != '') {
-      if (qrCode.length < 16) {
-        setPopupContent('Please enter valid 16 character barcode');
+    try {
+      const userDetails: VguardUser = context.getUserDetails();
+
+      if(userDetails.pincode==null||userDetails.pincode==''){
+        setPopupContent('Please update address details')
         setPopupVisible(true);
-        return;
+        return
       }
-      var apiResponse;
-      apiResponse = await isValidBarcode(couponData, 0, '', 0, null);
-      
-      const r = await apiResponse.data;
-      console.log(r, '<><');
-      const result = await AsyncStorage.setItem(
-        'COUPON_RESPONSE',
-        JSON.stringify(r),
-      );
-      CouponResponse = r;
-      if (r.errorCode == 1) {
-        showLoader(false);
-        setQrcode('');
-        setOkPopupVisible(true);
-        setOkPopupContent({
-          text: t('strings:valid_coupon_please_proceed_to_prod_regi'),
-          okAction: () => navigation.navigate('Product Registration Form'),
-        });
-      } else if (r.errorCode == 2) {
-        setPinPopupVisible(true);
-        showLoader(false);
-      } else if (r.errorMsg && r.errorMsg != '') {
-        setPopupVisible(true);
-        setPopupContent(r.errorMsg);
-        showLoader(false);
-        // setPinPopupVisible(true);
+      showLoader(true);
+      console.log(couponData);
+      console.log('shuru');
+      getUserLocation();
+      if (qrCode && qrCode != '') {
+        if (qrCode.length < 16) {
+          setPopupContent('Please enter valid 16 character barcode');
+          setPopupVisible(true);
+          return;
+        }
+        var apiResponse;
+        apiResponse = await isValidBarcode(couponData, 0, '', 0, null);
+
+        const r = await apiResponse.data;
+        console.log(r, '<><');
+        const result = await AsyncStorage.setItem(
+          'COUPON_RESPONSE',
+          JSON.stringify(r),
+        );
+        CouponResponse = r;
+        if (r.errorCode == 1) {
+          showLoader(false);
+          setQrcode('');
+          setOkPopupVisible(true);
+          setOkPopupContent({
+            text: t('strings:valid_coupon_please_proceed_to_prod_regi'),
+            okAction: () => navigation.navigate('Product Registration Form'),
+          });
+        } else if (r.errorCode == 2) {
+          setPinPopupVisible(true);
+          showLoader(false);
+        } else if (r.errorMsg && r.errorMsg != '') {
+          setPopupVisible(true);
+          setPopupContent(r.errorMsg);
+          showLoader(false);
+          // setPinPopupVisible(true);
+        } else {
+          setPopupVisible(true);
+          setPopupContent(t('strings:something_wrong'));
+          showLoader(false);
+        }
       } else {
         setPopupVisible(true);
-        setPopupContent(t('strings:something_wrong'));
-        showLoader(false);
+        setPopupContent('Please enter Coupon Code or Scan a QR');
       }
-    } else {
-
+    } catch (error) {
+      console.log(error);
+      showLoader(false);
+      setPopupContent(error);
       setPopupVisible(true);
-      setPopupContent('Please enter Coupon Code or Scan a QR');
     }
-  }catch(error){
-    console.log(error);
-    showLoader(false)
-    setPopupContent(error);
-    setPopupVisible(true)
-  }
   }
 
   const scan = async () => {
@@ -503,7 +507,7 @@ async function isValidBarcode(
     }
   } catch (r) {
     console.log(r);
-    throw r.message
+    throw r.message;
   }
 }
 

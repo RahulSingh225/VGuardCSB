@@ -793,8 +793,8 @@ export function getCustDetByMobile(mobileNo: string) {
   return createGetRequest(path);
 }
 
-export function validateMobile(mobileNumber: string, dealerCategory: string) {
-  const path = `user/checkRetailerMobile/${mobileNumber}/${dealerCategory}`;
+export function validateMobile(mobileNumber: string) {
+  const path = `user/checkMobile/${mobileNumber}`;
   return createGetRequest(path);
 }
 

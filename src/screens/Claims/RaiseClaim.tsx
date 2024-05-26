@@ -103,6 +103,22 @@ const RaiseClaim = ({navigation}) => {
     setClaimData(newArr);
   }
   function handleSKUChange(index: number, position: number) {
+    const selectedSKU = skuName[position][index];
+
+    // Check for duplicate SKU entry
+    const isDuplicate = claimData.some(
+      (claim, pos) =>
+        claim.sku_id === selectedSKU.PartNumber && pos !== position,
+    );
+
+    if (isDuplicate) {
+      setPopup({
+        isPopupVisible: true,
+        popupContent: 'Duplicate SKU entry detected!',
+      });
+      return;
+    }
+
     let newArr = [...claimData];
     newArr[position].sku_id = skuName[position][index].PartNumber;
     newArr[position].sku_name = skuName[position][index].PartDescription;
@@ -158,8 +174,14 @@ const RaiseClaim = ({navigation}) => {
         isPopupVisible: true,
         popupContent: 'Please enter all the details',
       });
+      return;
     }
-
+    if (claimImage.length < 1) {
+      setPopup({
+        isPopupVisible: true,
+        popupContent: 'Please upload atleast one proof of sale',
+      });
+    }
     const user: VguardUser = context.getUserDetails();
     console.log(user);
     var postData: Claims = new Claims();
@@ -187,7 +209,7 @@ const RaiseClaim = ({navigation}) => {
       .then(res => {
         console.log(res);
         setClaim(null);
-        setClaimData([]);
+        setClaimData([new ClaimsData()]);
         setClaimImage([]);
         setSkuName([]);
         setSubCategories([]);
@@ -233,8 +255,12 @@ const RaiseClaim = ({navigation}) => {
           }
           maximum={
             new Date().getDate() > 7
-              ? new Date(moment().year(), moment().month(), 30)
-              : new Date(moment().year(), moment().month() - 1, 30)
+              ? new Date()
+              : new Date(
+                  moment().year(),
+                  moment().month() - 1,
+                  moment().subtract(1, 'month').endOf('month').date(),
+                )
           }
           date={claim?.start_date}
           onDateChange={date => setClaim({...claim, start_date: date})}
@@ -249,8 +275,12 @@ const RaiseClaim = ({navigation}) => {
           }
           maximum={
             new Date().getDate() > 7
-              ? new Date(moment().year(), moment().month(), 30)
-              : new Date(moment().year(), moment().month() - 1, 30)
+              ? new Date()
+              : new Date(
+                  moment().year(),
+                  moment().month() - 1,
+                  moment().subtract(1, 'month').endOf('month').date(),
+                )
           }
           onDateChange={date => setClaim({...claim, end_date: date})}
         />

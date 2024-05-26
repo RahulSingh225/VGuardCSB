@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {
   View,
   Text,
@@ -24,6 +24,8 @@ import EntypoIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {getUserProfile, verifyBank, verifyVPA} from '../../utils/apiservice';
 import Loader from '../../components/Loader';
 import {useFocusEffect} from '@react-navigation/native';
+import {AppContext} from '../../services/ContextService';
+import Popup from '../../components/Popup';
 
 const Profile: React.FC<{navigation: any}> = ({navigation}) => {
   const {t} = useTranslation();
@@ -36,6 +38,9 @@ const Profile: React.FC<{navigation: any}> = ({navigation}) => {
   const [loader, setLoader] = useState(false);
   const [userData, setUserData] = useState<VguardUser | any>();
   const [profileImage, setProfileImage] = useState('');
+  const [popup, setPopup] = useState({visible: false, content: ''});
+
+  const context = useContext(AppContext);
 
   useFocusEffect(
     React.useCallback(() => {
@@ -56,22 +61,37 @@ const Profile: React.FC<{navigation: any}> = ({navigation}) => {
         const vg: VguardUser = data.data.data;
         const st: StorageItem = {key: 'USER', value: vg};
         addItem(st);
+        context.updateUser(vg);
         setUserData(vg);
       }
     } catch (error) {
       console.log(error);
+      //setPopup({visible: true, content: 'UPI not available'});
     }
   }
   async function VerifyUpi() {
     setLoader(true);
-    const body = {mobile_no: userData.contact};
-    await verifyVPA(body);
-    updateProfileData(userData);
+    try {
+      const body = {mobile_no: userData.contact};
+      const result = await verifyVPA(body);
+      //console.log(result);
+      updateProfileData(userData);
+    } catch (err) {
+      setLoader(false);
+      console.log('error happend');
+      console.log(err);
+      setPopup({visible: true, content: 'UPI ID not available'});
+    }
   }
   async function VerifyBank() {
     setLoader(true);
-    await verifyBank(userData);
-    updateProfileData(userData);
+    try {
+      const result = await verifyBank(userData);
+      updateProfileData(userData);
+    } catch (error) {
+      setLoader(false);
+      setPopup({visible: true, content: 'Bank details cannot be verified'});
+    }
   }
   const labels = [
     'Profile Type',
@@ -128,6 +148,13 @@ const Profile: React.FC<{navigation: any}> = ({navigation}) => {
       return (
         <>
           <View>
+            {popup.visible && (
+              <Popup
+                isVisible={popup.visible}
+                onClose={() => setPopup({visible: false, content: ''})}
+                children={popup.content}
+              />
+            )}
             <View style={styles.databox}>
               <Text style={styles.yesorno}>{hasAdhaar ? 'Yes' : 'No'}</Text>
               {hasAdhaar && (

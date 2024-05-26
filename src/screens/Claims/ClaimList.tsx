@@ -22,6 +22,15 @@ const ClaimList = ({navigation}) => {
   }, []);
   const [claimdata, setClaimData] = useState([]);
   const [loader, setLoader] = useState(false);
+  const headerComponent = ()=>(
+    <View style={styles.item}>
+     
+    <Text style={styles.text}>Date</Text>
+    <Text style={styles.text}>Claim No</Text>
+    <Text style={styles.text}>Status</Text>
+ 
+</View>
+  )
   const renderItem = ({item}) => (
     <TouchableOpacity
     onPress={() =>
@@ -40,10 +49,11 @@ const ClaimList = ({navigation}) => {
     <ScrollView style={{height: height, width: width}}>
       <Loader isLoading={loader} />
       <FlatList
+      ListHeaderComponent={headerComponent}
         data={claimdata}
         renderItem={renderItem}
         keyExtractor={(item, index) => index.toString()}
-        ItemSeparatorComponent={() => <View style={styles.separator} />}
+        ItemSeparatorComponent={() => <View style={styles.separator1} />}
       />
     </ScrollView>
   );
@@ -77,9 +87,10 @@ const styles = StyleSheet.create({
     display: 'flex',
   },
   text: {
-    flexGrow: 1,
+   textAlign:'center',
     width: '30%',
     color: Colors.black,
+  
     fontWeight: 'bold',
   },
   status: {
@@ -92,5 +103,11 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     fontWeight: 'bold',
   },
+  separator1: {
+    height: 2,
+    width: width * 0.9,
+    alignSelf: 'center',
+    backgroundColor: Colors.primary_light,
+  }
 });
 export default ClaimList;

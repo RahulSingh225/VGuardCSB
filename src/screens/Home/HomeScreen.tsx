@@ -44,32 +44,38 @@ const HomeScreen: React.FC<{navigation: any}> = ({navigation}) => {
   const {t} = useTranslation();
   const appContext = useContext(AppContext);
   const [userData, setUserData] = useState<VguardUser | null>(
-    appContext.getUserDetails(),
+    
   );
   const [profileImage, setProfileImage] = useState('');
   const [disableOptions, setDisableOptions] = useState(false);
 
   useFocusEffect(
     React.useCallback(() => {
-      getUserProfile({user_id: userData?.user_id})
+      const user:VguardUser = appContext.getUserDetails()
+      console.log('USERDATA', user);
+       getUserProfile({user_id: user?.user_id})
         .then(res => {
           if (res.data.status) {
             const vg: VguardUser = res.data.data;
             const st: StorageItem = {key: 'USER', value: vg};
             addItem(st);
+            //appContext.updateUser(vg);
             setUserData(vg);
           }
         })
         .catch(e => console.log(e));
-    }, [navigation]),
+      
+    }, []),
   );
 
   useEffect(() => {
-    console.log('USERDATA', userData);
-    if (userData?.login_date === null) {
-      console.log(userData?.login_date);
+    const user:VguardUser = appContext.getUserDetails()
+      console.log('USERDATA', user);
+    if (user?.login_date === null) {
+      console.log("first time user")
       navigation.navigate('UpdatePassword');
     }
+
     if (userData?.selfie) {
       const getImage = async () => {
         try {

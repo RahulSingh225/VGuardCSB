@@ -151,7 +151,7 @@ const ProductRegistrationForm: React.FC<{navigation: any}> = ({navigation}) => {
         );
         setPopupVisible(true);
         return;
-      } else {
+      }else {
         showLoader(true);
         const postData: CustomerData = {
           contactNo: contactNo,
@@ -241,6 +241,22 @@ const ProductRegistrationForm: React.FC<{navigation: any}> = ({navigation}) => {
       console.error('Error sending customer details', error);
     }
   };
+
+  async function ValidateContact(){
+    showLoader(true)
+    try{
+    const result = await validateMobile(contactNo)
+      handleProceed()
+    }catch(err){
+      showLoader(false);
+      console.log(err);
+      setPopupContent('Please use valid customer mobile number')
+      setPopupVisible(true)
+    }
+
+  }
+
+  
   const getDetails = async () => {
     showLoader(true);
     try {
@@ -604,7 +620,7 @@ const ProductRegistrationForm: React.FC<{navigation: any}> = ({navigation}) => {
           <Buttons
             label={t('strings:submit')}
             variant="filled"
-            onPress={() => handleProceed()}
+            onPress={() => ValidateContact()}
             width="100%"
             iconHeight={10}
             iconWidth={30}
