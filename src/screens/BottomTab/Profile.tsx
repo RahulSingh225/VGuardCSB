@@ -39,6 +39,7 @@ const Profile: React.FC<{navigation: any}> = ({navigation}) => {
   const [userData, setUserData] = useState<VguardUser | any>();
   const [profileImage, setProfileImage] = useState('');
   const [popup, setPopup] = useState({visible: false, content: ''});
+  const [showCategories, setShowCategories] = useState(false);
 
   const context = useContext(AppContext);
 
@@ -103,6 +104,7 @@ const Profile: React.FC<{navigation: any}> = ({navigation}) => {
     'Email',
     'Address',
     'Selfie',
+    'Categories',
     'ID Document',
     'Pan Card',
     'Bank Details',
@@ -143,6 +145,40 @@ const Profile: React.FC<{navigation: any}> = ({navigation}) => {
       } else {
         return 'No';
       }
+    } else if (fieldName === 'Categories') {
+      return (
+        <>
+          <View>
+            <View style={styles.databox}>
+              <Text style={styles.yesorno}>Show</Text>
+              
+                <TouchableOpacity
+                  style={{marginLeft: 5}}
+                  onPress={() => setShowCategories(!showCategories)}>
+                  <Image
+                    source={require('../../assets/images/ic_ticket_drop_down2.png')}
+                    style={{width: 20, height: 20}}
+                  />
+                </TouchableOpacity>
+             
+            </View>
+            {showCategories && (
+              <View style={styles.smallDataBox}>
+                {userData?.tagged_categories?.map(i => (
+                  <View style={styles.smallDataRow}>
+                    <Text style={styles.dataSmallLabel}>{i.Category}</Text>
+                    <Text style={styles.dataSmall}>{i.BlockStatus}</Text>
+                  </View>
+                ))}
+               
+
+               
+               
+              </View>
+            )}
+          </View>
+        </>
+      );
     } else if (fieldName === 'ID Document') {
       const hasAdhaar = userData && userData?.aadhar;
       return (

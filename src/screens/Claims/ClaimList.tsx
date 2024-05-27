@@ -6,12 +6,16 @@ import {
   FlatList,
   Touchable,
   TouchableOpacity,
+  Modal,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {getClaims} from '../../utils/apiservice';
 import {height, width} from '../../utils/dimensions';
 import {Colors} from '../../utils/constants';
 import Loader from '../../components/Loader';
+import Icon from 'react-native-vector-icons/SimpleLineIcons';
+import OptionsMenu from 'react-native-options-menu';
+import {Pressable} from 'react-native';
 
 const ClaimList = ({navigation}) => {
   useEffect(() => {
@@ -22,34 +26,61 @@ const ClaimList = ({navigation}) => {
   }, []);
   const [claimdata, setClaimData] = useState([]);
   const [loader, setLoader] = useState(false);
-  const headerComponent = ()=>(
+  const [modal, setModal] = useState({visible: false, data: ''});
+  const headerComponent = () => (
     <View style={styles.item}>
-     
-    <Text style={styles.text}>Date</Text>
-    <Text style={styles.text}>Claim No</Text>
-    <Text style={styles.text}>Status</Text>
- 
-</View>
-  )
-  const renderItem = ({item}) => (
-    <TouchableOpacity
-    onPress={() =>
-      navigation.navigate('ClaimsDetail', {claimNo: item.ClaimNo})
-    }>
-    <View style={styles.item}>
-     
-        <Text style={styles.text}>{item.CreatedDate}</Text>
-        <Text style={styles.text}>{item.ClaimNo}</Text>
-        <Text style={styles.status}>{item.ClaimStatus}</Text>
-     
+      <Text style={styles.text}>Date</Text>
+      <Text style={styles.text}>Claim No</Text>
+      <Text style={styles.text}>Status</Text>
     </View>
-    </TouchableOpacity>
+  );
+ 
+  const renderItem = ({item}) => (
+    <View style={styles.item}>
+      <Text style={styles.text}>{item.CreatedDate}</Text>
+      <Text style={styles.text}>{item.ClaimNo}</Text>
+      <Text style={styles.status}>{item.ClaimStatus}</Text>
+      <TouchableOpacity onPress={()=>setModal({visible:true,data:item.ClaimNo})}>
+      <Icon name="options-vertical" />
+      </TouchableOpacity>
+    </View>
   );
   return (
     <ScrollView style={{height: height, width: width}}>
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modal.visible}
+        onRequestClose={() => setModal({visible: false, data: ''})}>
+        <View style={styles.modalBackground}>
+          <View style={styles.modalContent}>
+            <Pressable
+              style={styles.option}
+              onPress={() =>{
+                
+                navigation.navigate('EditClaim', {claimNo: modal.data})
+              }
+              }>
+              <Text style={styles.optionText}>Edit</Text>
+            </Pressable>
+            <Pressable
+              style={styles.option}
+              onPress={() =>
+                navigation.navigate('ClaimsDetail', {claimNo: modal.data})
+              }>
+              <Text style={styles.optionText}>Details</Text>
+            </Pressable>
+            <Pressable
+              style={styles.option}
+              onPress={() => setModal({visible: false, data: ''})}>
+              <Text style={[styles.optionText, {color: 'red'}]}>Cancel</Text>
+            </Pressable>
+          </View>
+        </View>
+      </Modal>
       <Loader isLoading={loader} />
       <FlatList
-      ListHeaderComponent={headerComponent}
+        ListHeaderComponent={headerComponent}
         data={claimdata}
         renderItem={renderItem}
         keyExtractor={(item, index) => index.toString()}
@@ -87,10 +118,10 @@ const styles = StyleSheet.create({
     display: 'flex',
   },
   text: {
-   textAlign:'center',
+    textAlign: 'center',
     width: '30%',
     color: Colors.black,
-  
+
     fontWeight: 'bold',
   },
   status: {
@@ -108,6 +139,24 @@ const styles = StyleSheet.create({
     width: width * 0.9,
     alignSelf: 'center',
     backgroundColor: Colors.primary_light,
-  }
+  },
+  modalBackground: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'flex-end',
+  },
+  modalContent: {
+    backgroundColor: 'white',
+    paddingVertical: 20,
+  },
+  option: {
+    padding: 20,
+    alignItems: 'center',
+    borderTopWidth: 1,
+    borderTopColor: '#ccc',
+  },
+  optionText: {
+    fontSize: 18,
+  },
 });
 export default ClaimList;

@@ -18,6 +18,7 @@ import RaiseClaim from '../screens/Claims/RaiseClaim';
 import ClaimList from '../screens/Claims/ClaimList';
 import ClaimDetails from '../screens/Claims/ClaimDetails';
 import ClaimDetailTest from '../screens/Claims/ClaimDetailTest';
+import EditClaims from '../screens/Claims/EditClaims';
 
 const ClaimsStack = () => {
   const Stack = createNativeStackNavigator();
@@ -62,6 +63,20 @@ const ClaimsStack = () => {
         <Stack.Screen
           name="ClaimsDetail"
           component={ClaimDetailTest}
+          options={{
+            headerShown: true,
+            headerRight: () => (
+              <Image
+                style={{width: 70, height: 50}} // Adjust width and height as needed
+                resizeMode="contain"
+                source={require('../assets/images/group_910.png')}
+              />
+            ),
+          }}
+        />
+         <Stack.Screen
+          name="EditClaim"
+          component={EditClaims}
           options={{
             headerShown: true,
             headerRight: () => (

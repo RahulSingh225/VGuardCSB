@@ -16,7 +16,7 @@ import {Colors} from '../utils/constants';
 
 interface InputFieldProps {
   label: string;
-  value: string;
+  value: any;
   errorMessage?: string;
   disabled?: boolean;
   isImage?: boolean;

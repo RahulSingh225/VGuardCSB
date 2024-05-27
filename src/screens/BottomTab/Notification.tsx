@@ -30,6 +30,7 @@ const Notification: React.FC = () => {
     showLoader(true);
 
     getNotifications().then(async response => {
+      console.log(response)
       const result = await response.data;
       setNotifications(result);
       showLoader(false);

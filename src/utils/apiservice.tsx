@@ -1,11 +1,11 @@
 import axios, {AxiosError, AxiosInstance, AxiosResponse} from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {VguardUser} from '../types';
-import {getItem} from '../services/StorageService';
+import {StorageItem, addItem, getItem} from '../services/StorageService';
 
 // const BASE_URL = 'http://192.168.1.37:5000/vguard/api';
-const BASE_URL = 'http://localhost:5000/vguard/api';
-//const BASE_URL = 'https://vguardcsb.spacempact.cloud/vguard/api';
+//const BASE_URL = 'http://localhost:5000/vguard/api';
+const BASE_URL = 'https://vguardcsb.spacempact.cloud/vguard/api';
 
 export const api: AxiosInstance = axios.create({
   baseURL: BASE_URL,
@@ -69,6 +69,8 @@ export async function newTokens(token: string) {
     });
 
     const {accessToken, refreshToken} = response.data;
+    const item: StorageItem = {key: 'REFRESH_TOKEN', value: refreshToken};
+    await addItem(item);
     api.defaults.headers.common.Authorization = `Bearer ${accessToken}`;
     return {accessToken, newRefreshToken: refreshToken};
   } catch (error) {
@@ -455,8 +457,6 @@ export function bankTransfer(productOrder: any) {
   return createPostRequest(path, productOrder);
 }
 
-
-
 export function productOrder(productOrder: any) {
   const path = 'order/product';
   return createPostRequest(path, productOrder);
@@ -474,6 +474,11 @@ export function paytmTransferForAirCooler(productOrder: any) {
 
 export function raiseClaim(claim: any) {
   const path = 'claims/raiseClaim';
+  return createPostRequest(path, claim);
+}
+
+export function editClaim(claim: any) {
+  const path = 'claims/editClaim';
   return createPostRequest(path, claim);
 }
 export function getClaimDetails(claimno: string) {

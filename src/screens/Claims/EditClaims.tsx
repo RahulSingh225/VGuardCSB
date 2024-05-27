@@ -1,116 +1,155 @@
-import {View, Text, ScrollView, TouchableOpacity} from 'react-native';
+import {
+  View,
+  Text,
+  ScrollView,
+  TouchableOpacity,
+  StyleSheet,
+} from 'react-native';
 import React, {useEffect, useState} from 'react';
-import {StyleSheet} from 'react-native';
-import {Colors} from '../../utils/constants';
-import DatePickerField from '../../components/DatePickerField';
-import {Claims, ClaimsData, VguardUser} from '../../types';
-import InputField from '../../components/InputField';
-import ImagePickerField from '../../components/ImagePickerField';
-import {Picker} from '@react-native-picker/picker';
 import {
-  getCategoryList,
-  getSubCategoryList,
-  raiseClaim,
-} from '../../utils/apiservice';
-import Buttons from '../../components/Buttons';
-import {height, width} from '../../utils/dimensions';
-import moment from 'moment';
-import {
-  launchCamera,
   launchImageLibrary,
   ImagePickerResponse,
 } from 'react-native-image-picker';
-import {AppContext} from '../../services/ContextService';
-import Popup from '../../components/Popup';
+import {Claims, ClaimsData, VguardUser} from '../../types';
+import {
+    editClaim,
+  getCategoryList,
+  getClaimDetails,
+  getSubCategoryList,
+  raiseClaim,
+} from '../../utils/apiservice';
+import {Picker} from '@react-native-picker/picker';
+import moment from 'moment';
+import {Colors} from 'react-native/Libraries/NewAppScreen';
+import Buttons from '../../components/Buttons';
+import DatePickerField from '../../components/DatePickerField';
+import InputField from '../../components/InputField';
 import Loader from '../../components/Loader';
+import Popup from '../../components/Popup';
+import {AppContext} from '../../services/ContextService';
+import {height, width} from '../../utils/dimensions';
 
-const RaiseClaim = ({navigation}) => {
+const EditClaims = ({navigation, route}) => {
   const context = React.useContext(AppContext);
-  useEffect(() => {
-    setLoader(true);
-    getCategoryList()
-      .then(res => {
-        setLoader(false);
-        let cat = [{label: 'Select Category', value: 0}];
 
-        res.data.data.map(r => {
-          cat.push({label: r, value: r});
-        });
-        setCategories(cat);
-      })
-      .catch(e => {
-        setLoader(false);
-        setPopup({isPopupVisible: true, popupContent: e.message});
-      });
-  }, []);
+  const {claimNo} = route.params;
+
   const [loader, setLoader] = useState(false);
   const [categories, setCategories] = useState([]);
   const [subCategories, setSubCategories] = useState([]);
   const [skuName, setSkuName] = useState([]);
   const [claim, setClaim] = useState(new Claims());
   const [claimImage, setClaimImage] = useState([]);
-  const [claimData, setClaimData] = useState([new ClaimsData()]);
+  const [claimData, setClaimData] = useState([]);
   const [claimDataCount, setClaimDataCount] = useState(1);
   const [popup, setPopup] = useState({isPopupVisible: false, popupContent: ''});
 
-  function handleCategoryChange(index: number, position: number) {
-    console.log(categories[index].label);
+  useEffect(() => {
     setLoader(true);
-    getSubCategoryList({category: categories[index].value})
+    getCategoryList()
       .then(res => {
-        setLoader(false);
-        const data = res.data.data;
-        let subcat = data.subCategories;
-        subcat.unshift({
-          subcategory_name: 'Select Sub-Category',
-          subcategory_id: 0,
+        let cat = [{label: 'Select Category', value: 0}];
+
+        res.data.data.map(r => {
+          cat.push({label: r, value: r});
         });
-        let newSubArr = [...subCategories];
-        newSubArr[position] = subcat;
-        setSubCategories(newSubArr);
-        let sku = data.skulist;
-        sku.unshift({PartDescription: 'Select SKU', PartNumber: 0});
-        let newSKU = [...skuName];
-        newSKU[position] = sku;
-        setSkuName(newSKU);
-        let newArr = [...claimData];
-        newArr[position].category_id = categories[index].value;
-        newArr[position].category_name = categories[index].label;
-        setClaimData(newArr);
+        setCategories(cat);
+        setLoader(false);
+      })
+      .then(res => {
+        console.log(res);
+        getClaimDetails(claimNo).then(res => {
+          var claim = res.data;
+          console.log(claim);
+          claim.claim_data = JSON.parse(claim.claim_data);
+
+          setClaimData(claim.claim_data);
+          setClaim(claim);
+        });
       })
       .catch(e => {
         setLoader(false);
         setPopup({isPopupVisible: true, popupContent: e.message});
       });
-  }
+  }, []);
 
-  function handleSubCategoryChange(index: number, position: number) {
+  useEffect(() => {
+    
+    const fetchData = async () => {
+        try {
+          await fillData();
+          // Any additional logic after fillData completes successfully
+        } catch (error) {
+          console.error('Error filling data:', error);
+          // Handle the error (e.g., display an error message to the user)
+        }
+      };
+    
+      if(claimData.length>1) fetchData();
+  }, [claim]);
+
+  const handleCategoryChange = async (index, position) => {
+    console.log(categories[index].label);
+    setLoader(true);
+    try {
+      const response = await getSubCategoryList({
+        category: categories[index].value,
+      });
+      setLoader(false);
+      const data = response.data.data;
+      let subcat = data.subCategories;
+      subcat.unshift({
+        subcategory_name: 'Select Sub-Category',
+        subcategory_id: 0,
+      });
+      let newSubArr = [...subCategories];
+      newSubArr[position] = subcat;
+      setSubCategories(newSubArr);
+
+      let sku = data.skulist;
+      sku.unshift({PartDescription: 'Select SKU', PartNumber: 0});
+      let newSKU = [...skuName];
+      newSKU[position] = sku;
+      setSkuName(newSKU);
+
+      let newArr = [...claimData];
+      newArr[position] = {
+        ...newArr[position],
+        category_id: categories[index].value,
+        category_name: categories[index].label,
+      };
+      setClaimData(newArr);
+      console.log('cat change done');
+    } catch (error) {
+      setLoader(false);
+      setPopup({isPopupVisible: true, popupContent: error.message});
+      throw error;
+    }
+  };
+
+  const handleSubCategoryChange = async (index, position) => {
     console.log(subCategories);
-    const filtersku = skuName[position].filter(s => {
-      if (s.SubCategoryId == subCategories[position][index].subcategory_id) {
-        return s;
-      }
+    const filtersku = skuName[position]?.filter(s => {
+      return s.SubCategoryId == subCategories[position][index].subcategory_id;
     });
     let s = [...skuName];
     s[position] = filtersku;
     setSkuName(s);
     let newArr = [...claimData];
-    newArr[position].subcategory_id =
-      subCategories[position][index].subcategory_id;
-    newArr[position].subcategory_name =
-      subCategories[position][index].subcategory_name;
-
+    newArr[position] = {
+      ...newArr[position],
+      subcategory_id: subCategories[position][index].subcategory_id,
+      subcategory_name: subCategories[position][index].subcategory_name,
+    };
     setClaimData(newArr);
-  }
-  function handleSKUChange(index: number, position: number) {
-    const selectedSKU = skuName[position][index];
+  };
 
-    // Check for duplicate SKU entry
+  const handleSKUChange = (index, position) => {
+    const selectedSKU = skuName?.[position]?.[index];
     const isDuplicate = claimData.some(
       (claim, pos) =>
-        claim.sku_id === selectedSKU.PartNumber && pos !== position,
+        claim.sku_id === selectedSKU?.PartNumber && pos !== position,
     );
-
     if (isDuplicate) {
       setPopup({
         isPopupVisible: true,
@@ -118,13 +157,36 @@ const RaiseClaim = ({navigation}) => {
       });
       return;
     }
-
     let newArr = [...claimData];
-    newArr[position].sku_id = skuName[position][index].PartNumber;
-    newArr[position].sku_name = skuName[position][index].PartDescription;
+    newArr[position] = {
+      ...newArr[position],
+      sku_id: selectedSKU?.PartNumber,
+      sku_name: selectedSKU?.PartDescription,
+    };
     setClaimData(newArr);
     console.log(claimData);
-  }
+  };
+
+  const fillData = async () => {
+    console.log('filing data');
+    console.log(claimData);
+    let categories = []
+    let subcat=[]
+    let sku=[]
+    await Promise.all(
+      claimData.map(async (cl, position) => {
+       
+        categories.push([{label:cl.category_name,value:cl.category_name}])
+        subcat.push([{subcategory_name:cl.subcategory_name,subcategory_id:cl.sub_category_id}])
+        sku.push([{PartDescription:cl.sku_name,PartNumber:cl.sku_code}])
+      })
+    );
+    //setCategories(categories);
+    setSubCategories(subcat)
+    setSkuName(sku)
+    console.log('DONE');
+  };
+
   function handleqtyChange(value: string, postion: number) {
     let newArr = [...claimData];
     newArr[postion].quantity = value;
@@ -206,7 +268,7 @@ const RaiseClaim = ({navigation}) => {
     );
     console.log(formData);
     setLoader(true);
-    raiseClaim(formData)
+    editClaim(formData)
       .then(res => {
         console.log(res);
         setClaim(null);
@@ -238,14 +300,7 @@ const RaiseClaim = ({navigation}) => {
         </Popup>
       )}
       <View style={styles.mainView}>
-        <Buttons
-          btnStyle={{alignSelf: 'center'}}
-          label="View Claims History"
-          onPress={() => navigation.navigate('ClaimsList')}
-          width="90%"
-          variant="outlined"
-        />
-        <Text style={styles.label1}>Raise new claim</Text>
+        <Text style={styles.label1}>Edit Claim</Text>
 
         <DatePickerField
           label="Start Date"
@@ -287,7 +342,7 @@ const RaiseClaim = ({navigation}) => {
         />
         <InputField
           label="Pincode"
-          value={claim?.pincode}
+          value={claim?.pincode?.toString()}
           onChangeText={t => setClaim({...claim, pincode: t})}
         />
         <TouchableOpacity onPress={() => handleGalleryUpload()}>
@@ -298,7 +353,7 @@ const RaiseClaim = ({navigation}) => {
           />
         </TouchableOpacity>
         <Text style={styles.label1}>Claim Details</Text>
-        {claimData.map((cl, position) => (
+        {claimData?.map((cl, position) => (
           <>
             <View
               style={{
@@ -362,7 +417,7 @@ const RaiseClaim = ({navigation}) => {
 
               <InputField
                 label="Quantity"
-                value={cl?.quantity}
+                value={cl.quantity.toString()}
                 numeric={true}
                 onChangeText={t => handleqtyChange(t, position)}
               />
@@ -392,7 +447,6 @@ const RaiseClaim = ({navigation}) => {
     </ScrollView>
   );
 };
-
 const styles = StyleSheet.create({
   label1: {
     color: Colors.black,
@@ -417,4 +471,4 @@ const styles = StyleSheet.create({
     alignItems: 'stretch',
   },
 });
-export default RaiseClaim;
+export default EditClaims;
