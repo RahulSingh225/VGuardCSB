@@ -379,7 +379,7 @@ const AddWarranty = ({navigation}) => {
           button: {
             buttonColor: Colors.yellow,
             buttonTextColor: Colors.black,
-            buttonText: 'Scan Again',
+            buttonText: 'Scan Again for same Customer',
             buttonAction: () =>
               navigation.reset({index: 0, routes: [{name: 'Scan Code'}]}),
             fontWeight: '400',

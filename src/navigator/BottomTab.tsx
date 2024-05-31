@@ -108,7 +108,7 @@ const BottomTab: React.FC = () => {
   };
 
   const confirmLogout = () => {
-    removeItem('USER');
+   
     appContext.signOut();
     hideLogoutPopup();
   };

@@ -177,20 +177,20 @@ const Bank = ({navigation}) => {
       />
       <View style={styles.button}>
         <Buttons
-          label={t('strings:submit')}
-          variant="filled"
-          onPress={() => checkValidation()}
-          width="100%"
-        />
-        <Buttons
           disabled={userData?.bank_verified == 1 ? true : false}
           label={'Verify'}
           variant="blackButton"
-          onPress={() => verifyBankDetails()}
+          onPress={() => checkValidation()}
           width="100%"
         />
       </View>
       <Text style={styles.subHeading}>{'UPI Verification'}</Text>
+      <InputField
+        label='UPI Id'
+        value={userData?.vpa_id}
+        disabled={true}
+       
+      />
       <View style={styles.button}>
         <Buttons
           disabled={userData?.vpa_verified == 1 ? true : false}

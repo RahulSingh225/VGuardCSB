@@ -34,14 +34,15 @@ const ClaimList = ({navigation}) => {
       <Text style={styles.text}>Status</Text>
     </View>
   );
- 
+
   const renderItem = ({item}) => (
     <View style={styles.item}>
       <Text style={styles.text}>{item.CreatedDate}</Text>
       <Text style={styles.text}>{item.ClaimNo}</Text>
       <Text style={styles.status}>{item.ClaimStatus}</Text>
-      <TouchableOpacity onPress={()=>setModal({visible:true,data:item.ClaimNo})}>
-      <Icon name="options-vertical" />
+      <TouchableOpacity
+        onPress={() => setModal({visible: true, data: item.ClaimNo})}>
+        <Icon name="options-vertical" />
       </TouchableOpacity>
     </View>
   );
@@ -56,18 +57,17 @@ const ClaimList = ({navigation}) => {
           <View style={styles.modalContent}>
             <Pressable
               style={styles.option}
-              onPress={() =>{
-                
-                navigation.navigate('EditClaim', {claimNo: modal.data})
-              }
-              }>
+              onPress={() => {
+                navigation.navigate('EditClaim', {claimNo: modal.data});
+              }}>
               <Text style={styles.optionText}>Edit</Text>
             </Pressable>
             <Pressable
               style={styles.option}
-              onPress={() =>
-                navigation.navigate('ClaimsDetail', {claimNo: modal.data})
-              }>
+              onPress={() => {
+                setModal({visible: false});
+                navigation.navigate('ClaimsDetail', {claimNo: modal.data});
+              }}>
               <Text style={styles.optionText}>Details</Text>
             </Pressable>
             <Pressable

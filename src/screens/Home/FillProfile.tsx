@@ -1,9 +1,10 @@
-import {View, Text, StyleSheet, ScrollView} from 'react-native';
+import {View, Text, StyleSheet, ScrollView, Modal} from 'react-native';
 import React, {useContext, useEffect, useState} from 'react';
 import {t, use} from 'i18next';
 import InputField from '../../components/InputField';
 import {useTranslation} from 'react-i18next';
 import {
+  checkTDS,
   getCities,
   getDetailsByPinCode,
   getPincodeList,
@@ -12,7 +13,6 @@ import {
 } from '../../utils/apiservice';
 import {Cities, VguardUser} from '../../types';
 import DropDownPicker from 'react-native-dropdown-picker';
-import {Colors} from 'react-native/Libraries/NewAppScreen';
 import PickerField from '../../components/PickerField';
 import {AppContext} from '../../services/ContextService';
 import {StorageItem, addItem} from '../../services/StorageService';
@@ -22,8 +22,12 @@ import {
   responsiveHeight,
 } from 'react-native-responsive-dimensions';
 import Buttons from '../../components/Buttons';
+import {Colors, TDS_CONSENT_MESSAGE} from '../../utils/constants';
+
 import Popup from '../../components/Popup';
 import Loader from '../../components/Loader';
+import {Avatar, TextInput} from 'react-native-paper';
+import TDSPopup from '../../components/TDSPopup';
 
 const FillProfile: React.FC<{navigation: any}> = ({navigation}) => {
   const appContext = useContext(AppContext);
@@ -37,10 +41,17 @@ const FillProfile: React.FC<{navigation: any}> = ({navigation}) => {
   const [userData, setUserData] = useState<VguardUser | any>();
   const [popup, setPopup] = useState({isVisible: false, content: null});
   const [pincode_suggestions, setPincode_Suggestions] = React.useState([]);
+  const [tdsValue,setTDSValue] = useState(20)
   const [cities, setCities] = useState<Cities | any>();
   const [uiSwitch, setUIswitch] = React.useState({
     currentpincode: false,
     pincode: false,
+  });
+  const [initialPopup, setInitialPopup] = useState({
+    tdsPopup: false,
+    tdsContent:
+      'The TDS percentage cannot be changed during the financial year hence,\n I authorize and confirm.',
+    tdschecked: false,
   });
   const {t} = useTranslation();
 
@@ -137,6 +148,7 @@ const FillProfile: React.FC<{navigation: any}> = ({navigation}) => {
       handleSubmit();
     }
   }
+
   async function handleSubmit() {
     console.log('called');
 
@@ -152,7 +164,7 @@ const FillProfile: React.FC<{navigation: any}> = ({navigation}) => {
             content: () => <Text>{res.data.message}</Text>,
           });
           updateProfileData();
-          navigation.replace("UpdateBank")
+          navigation.replace('UpdateBank');
         } else {
           setPopup({
             isVisible: true,
@@ -165,6 +177,7 @@ const FillProfile: React.FC<{navigation: any}> = ({navigation}) => {
         console.log(err);
       });
   }
+
   async function updateProfileData() {
     try {
       const data = await getUserProfile({user_id: userData?.user_id});
@@ -178,8 +191,23 @@ const FillProfile: React.FC<{navigation: any}> = ({navigation}) => {
       }
     } catch (error) {
       console.log(error);
-      setLoader(false)
-      setPopup({isVisible:true,content:'Something went wrong'})
+      setLoader(false);
+      setPopup({isVisible: true, content: 'Something went wrong'});
+    }
+  }
+
+  async function verifyTDS() {
+    try {
+      const result = await checkTDS({unique_id: userData?.unique_id});
+      console.log(result.data);
+      setInitialPopup({
+        ...initialPopup,
+        tdsContent: result.data.message,
+        tdschecked: true,
+      });
+      setTDSValue(result.data.entity);
+    } catch (error) {
+      console.log(error);
     }
   }
   const handleInputChange = async (value: string, label: string) => {
@@ -220,6 +248,32 @@ const FillProfile: React.FC<{navigation: any}> = ({navigation}) => {
       contentContainerStyle={{alignContent: 'center', gap: 10}}
       style={{width: width * 0.9, alignSelf: 'center'}}>
       {loader && <Loader isLoading={loader} />}
+      <View
+        style={{
+          backgroundColor: 'transparent',
+          height: height / 8,
+          margin: 20,
+          flexDirection: 'row',
+          width: width / 2.1,
+          justifyContent: 'space-evenly',
+          alignItems: 'center',
+          padding: 20,
+        }}>
+        <Avatar.Image
+          size={84}
+          source={require('../../assets/images/ac_icon.png')}
+        />
+        <View
+          style={{
+            margin: 20,
+            flexDirection: 'column',
+            padding: 10,
+            height: height / 10,
+          }}>
+          <Text style={{color: 'grey'}}>Contact: {userData?.contact}</Text>
+          <Text style={{color: 'grey'}}>Unique ID: {userData?.unique_id}</Text>
+        </View>
+      </View>
       <InputField
         label={t('strings:alternate_contact_number')}
         value={userData?.alternate_contact}
@@ -241,6 +295,94 @@ const FillProfile: React.FC<{navigation: any}> = ({navigation}) => {
           value: city,
         }))}
       />
+      {initialPopup.tdsPopup && (
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={initialPopup.tdsPopup}
+          onDismiss={() => setInitialPopup({...initialPopup, tdsPopup: false})}>
+          <View
+            style={{
+              width: width * 0.7,
+              maxHeight: height * 0.4,
+              alignSelf: 'center',
+              backgroundColor: Colors.activity_bg_color,
+              flex: 1,
+              marginTop: 200,
+              borderRadius: 10,
+              elevation: 10,
+              justifyContent: 'center',
+              gap: 10,
+              flexDirection: 'column',
+            }}>
+            <Text
+              style={{
+                color: 'black',
+                fontWeight: 'bold',
+                fontSize: 24,
+                textAlign: 'center',
+                marginBottom: 50,
+              }}>
+              TDS Consent
+            </Text>
+            <Text
+              style={{
+                fontWeight: '500',
+                color: Colors.grey,
+                textAlign: 'center',
+              }}>
+              {initialPopup.tdsContent}
+            </Text>
+            {!initialPopup.tdschecked && (
+              <Buttons
+                btnStyle={{width: '50%', alignSelf: 'center', marginTop: 50}}
+                onPress={() => verifyTDS()}
+                variant="filled"
+                label="Agree"
+              />
+            )}
+            <Buttons
+              btnStyle={{width: '50%', alignSelf: 'center'}}
+              onPress={() =>
+                setInitialPopup({...initialPopup, tdsPopup: false})
+              }
+              variant="filled"
+              label={initialPopup.tdschecked ? 'OK' : 'Cancel'}
+            />
+          </View>
+        </Modal>
+      )}
+      <View
+        style={{
+          justifyContent: 'space-between',
+
+          borderWidth: 2,
+          borderColor: 'grey',
+          borderRadius: 5,
+        }}>
+        <Text style={{marginLeft: 10, color: 'black', fontWeight: 'bold'}}>
+          TDS Slab
+        </Text>
+        <View style={{flexDirection: 'row', marginTop: -20}}>
+          <TextInput
+            contentStyle={{textAlign: 'justify'}}
+            style={{flex: 2, maxWidth: '70%', backgroundColor: 'transparent'}}
+            textColor="black"
+            disabled={true}
+            value={tdsValue + '%'}
+          />
+          {!initialPopup.tdschecked &&
+          <Buttons
+            btnStyle={{flex: 1}}
+            label="Verify"
+            onPress={() =>
+              setInitialPopup((prev: any) => ({...prev, tdsPopup: true}))
+            }
+            variant="filled"
+          />}
+        </View>
+      </View>
+
       <Text style={styles.subHeading}>{t('strings:permanent_address')}</Text>
       <InputField
         label={t('strings:lbl_permanent_address_mandatory')}

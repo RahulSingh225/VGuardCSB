@@ -474,12 +474,21 @@ export function paytmTransferForAirCooler(productOrder: any) {
 
 export function raiseClaim(claim: any) {
   const path = 'claims/raiseClaim';
-  return createPostRequest(path, claim);
+
+  const headers = {
+    Accept: 'application/json',
+    'Content-Type': 'multipart/form-data',
+  };
+  return api.post(path, claim, {headers});
 }
 
 export function editClaim(claim: any) {
   const path = 'claims/editClaim';
-  return createPostRequest(path, claim);
+  const headers = {
+    Accept: 'application/json',
+    'Content-Type': 'multipart/form-data',
+  };
+  return api.post(path, claim, {headers});
 }
 export function getClaimDetails(claimno: string) {
   const path = 'claims/claimDetail';
@@ -896,6 +905,10 @@ export function getFiscalYear() {
 export function getMonth() {
   const path = 'user/getMonth';
   return createGetRequest(path);
+}
+export function checkTDS(data: any) {
+  const path = 'user/checkTDS';
+  return createPostRequest(path, data);
 }
 
 export function getTdsStatementList(month: any) {

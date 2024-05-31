@@ -33,7 +33,7 @@ import arrowIcon from '../../assets/images/arrow.png';
 import {AppContext} from '../../services/ContextService';
 import {VguardUser} from '../../types';
 import PopupWithButton from '../../components/PopupWithButton';
-import { useFocusEffect } from '@react-navigation/native';
+import {useFocusEffect} from '@react-navigation/native';
 
 type BankProps = {};
 
@@ -58,16 +58,18 @@ const Bank: React.FC<BankProps> = ({navigation}) => {
   const [popupContent, setPopupContent] = useState('');
   const [isPopupVisible, setPopupVisible] = useState(false);
   const [loader, showLoader] = useState(false);
+  const [apiSucess, setAPIsucess] = useState(false);
   const [user, setUser] = useState<VguardUser | any>();
   const context = useContext(AppContext);
 
   useFocusEffect(
     React.useCallback(() => {
       const vguser: VguardUser = context.getUserDetails();
-    setUser(vguser);
-    if (user?.bank_verified == 0) {
-      SetOkPopup({visible: true});
-    }
+      setUser(vguser);
+      console.log(vguser);
+      if (user?.bank_verified == 0) {
+        SetOkPopup({visible: true});
+      }
     }, [navigation]),
   );
   async function handleProceed() {
@@ -81,6 +83,9 @@ const Bank: React.FC<BankProps> = ({navigation}) => {
       const data = {user_id: user.user_id, amount: points};
       showLoader(false);
       const result = await bankTransfer(data);
+      if (result.data.code == 200) {
+        setAPIsucess(true);
+      }
       setPopupContent(result.data.message);
       setPopupVisible(true);
     } catch (error) {
@@ -150,7 +155,12 @@ const Bank: React.FC<BankProps> = ({navigation}) => {
       {isPopupVisible && (
         <Popup
           isVisible={isPopupVisible}
-          onClose={() => setPopupVisible(false)}>
+          onClose={() => {
+            setPopupVisible(false);
+            if (apiSucess) {
+              navigation.pop();
+            }
+          }}>
           {popupContent}
         </Popup>
       )}

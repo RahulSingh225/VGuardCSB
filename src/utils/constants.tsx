@@ -118,6 +118,20 @@ export const Colors = {
   blue: '#3F51B5',
   white_translucent: '#70ffffff',
 };
+export const TDS_CONSENT_MESSAGE: any = {
+  EMPTY: 'empty',
+  YES: 'yes',
+  NO: 'no',
+  UPLOADED: 'uploaded',
+  INVALID: 'invalid',
+  AGREED:'agreed',
+  ACCEPT: 'accept',
+  VERIFIED: 'verified',
+  NOT_LINKED: 'notLinked',
+  EMPTY_IT: 'emptyIt',
+  PREVIEW: 'preview',
+  NOT_APPROVED: 'notApproved',
+};
 
 export const baseUrl = 'http://34.100.133.239:18092/vguard/api/';
 export const imageUrl = 'https://vguardrishta.com/';

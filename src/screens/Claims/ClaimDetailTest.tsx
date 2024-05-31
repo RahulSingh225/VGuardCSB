@@ -113,12 +113,16 @@ const ClaimDetailTest = ({navigation, route}) => {
         <Text style={styles.text}>{item.sku_name}</Text>
       </View>
       <View style={styles.item}>
-        <Text style={styles.text}>Quantity</Text>
+        <Text style={styles.text}>Claimed Quantity</Text>
         <Text style={styles.text}>{item.quantity}</Text>
       </View>
       <View style={styles.item}>
+        <Text style={styles.text}>Claimed Points</Text>
+        <Text style={styles.text}>{item.claimed_points}</Text>
+      </View>
+      <View style={styles.item}>
         <Text style={styles.text}>BM Approved Qty</Text>
-        <Text style={styles.text}>{item.quantity}</Text>
+        <Text style={styles.text}>{item.bm_qty}</Text>
       </View>
       <View style={styles.item}>
         <Text style={styles.text}>BM Comments</Text>
@@ -126,12 +130,16 @@ const ClaimDetailTest = ({navigation, route}) => {
       </View>
       <View style={styles.item}>
         <Text style={styles.text}>RM Approved Qty</Text>
-        <Text style={styles.text}>{item.quantity}</Text>
+        <Text style={styles.text}>{item.rm_qty}</Text>
       </View>
      
       <View style={styles.item}>
         <Text style={styles.text}>RM Comments</Text>
         <Text style={styles.text}>{item.rm_comments}</Text>
+      </View>
+      <View style={styles.item}>
+        <Text style={styles.text}>Approved Points</Text>
+        <Text style={styles.text}>{item.approved_points}</Text>
       </View>
     </>
   );

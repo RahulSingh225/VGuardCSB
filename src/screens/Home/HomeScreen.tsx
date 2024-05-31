@@ -43,17 +43,15 @@ interface User {
 const HomeScreen: React.FC<{navigation: any}> = ({navigation}) => {
   const {t} = useTranslation();
   const appContext = useContext(AppContext);
-  const [userData, setUserData] = useState<VguardUser | null>(
-    
-  );
+  const [userData, setUserData] = useState<VguardUser | null>();
   const [profileImage, setProfileImage] = useState('');
   const [disableOptions, setDisableOptions] = useState(false);
 
   useFocusEffect(
     React.useCallback(() => {
-      const user:VguardUser = appContext.getUserDetails()
+      const user: VguardUser = appContext.getUserDetails();
       console.log('USERDATA', user);
-       getUserProfile({user_id: user?.user_id})
+      getUserProfile({user_id: user?.user_id})
         .then(res => {
           if (res.data.status) {
             const vg: VguardUser = res.data.data;
@@ -64,15 +62,14 @@ const HomeScreen: React.FC<{navigation: any}> = ({navigation}) => {
           }
         })
         .catch(e => console.log(e));
-      
     }, []),
   );
 
   useEffect(() => {
-    const user:VguardUser = appContext.getUserDetails()
-      console.log('USERDATA', user);
+    const user: VguardUser = appContext.getUserDetails();
+    console.log('USERDATA', user);
     if (user?.login_date === null) {
-      console.log("first time user")
+      console.log('first time user');
       navigation.navigate('UpdatePassword');
     }
 
@@ -110,7 +107,8 @@ const HomeScreen: React.FC<{navigation: any}> = ({navigation}) => {
           <View>
             <Text style={styles.name}>{userData?.name}</Text>
             <Text style={styles.code}>{userData?.rishta_id}</Text>
-            <TouchableOpacity onPress={() => navigation.navigate('Profile')}>
+            <TouchableOpacity
+              onPress={() => navigation.navigate('UpdateProfile')}>
               <Text style={styles.viewProfile}>
                 {t('strings:view_profile')}
               </Text>

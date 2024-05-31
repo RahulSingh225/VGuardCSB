@@ -115,11 +115,8 @@ const styles = StyleSheet.create({
 
     
   },
-  separator: {
-    color:'red',
-    height: 10,
-    backgroundColor: Colors.primary_light,
-  },
+ 
+  
   text: {
     flexGrow: 1,
     width: '30%',

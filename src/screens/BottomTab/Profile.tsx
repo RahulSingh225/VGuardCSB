@@ -96,7 +96,7 @@ const Profile: React.FC<{navigation: any}> = ({navigation}) => {
   }
   const labels = [
     'Profile Type',
-    'Preferred Language',
+    'Categories',
     'Gender',
     'Date of Birth',
     'Contact',
@@ -104,7 +104,7 @@ const Profile: React.FC<{navigation: any}> = ({navigation}) => {
     'Email',
     'Address',
     'Selfie',
-    'Categories',
+    
     'ID Document',
     'Pan Card',
     'Bank Details',
@@ -479,7 +479,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   smallDataBox: {
-    backgroundColor: Colors.yellow,
+    backgroundColor: Colors.lightYellow,
     padding: 5,
     borderRadius: 5,
     marginTop: 5,
