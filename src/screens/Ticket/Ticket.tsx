@@ -190,6 +190,7 @@ const Ticket: React.FC<{navigation: any}> = ({navigation}) => {
           console.error('API Error:', error);
         });
     } else {
+      showLoader(false)
       setPopupContent('Enter All Details');
       setPopupVisible(true);
     }

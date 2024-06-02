@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import {
   View,
   Text,
@@ -16,8 +16,10 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import moment from 'moment';
 import Loader from '../../components/Loader';
-import { Colors } from '../../utils/constants';
-import { getTicketHistory } from '../../utils/apiservice';
+import {Colors} from '../../utils/constants';
+import {getTicketHistory} from '../../utils/apiservice';
+import {AppContext} from '../../services/ContextService';
+import {VguardUser} from '../../types';
 
 interface TicketItem {
   createdDate: string;
@@ -38,39 +40,25 @@ const TicketHistory: React.FC = () => {
   });
   const {t} = useTranslation();
   const [loader, setLoader] = useState(true);
-  useEffect(() => {
-    const getImage = async () => {
-      try {
-        const profileImageUrl = await getImageUrl(
-          userData.userImage,
-          'Profile',
-        );
-        setProfileImage(profileImageUrl);
-      } catch (error) {
-        console.error('Error while fetching profile image:', error);
-      }
-    };
+  const context = useContext(AppContext);
 
-    getImage();
-  }, [userData.userImage]);
   useEffect(() => {
-    AsyncStorage.getItem('USER').then(r => {
-      const user = JSON.parse(r);
-      const data = {
-        userName: user.name,
-        userCode: user.userCode,
-        pointsBalance: user.pointsSummary.pointsBalance,
-        redeemedPoints: user.pointsSummary.redeemedPoints,
-        userImage: user.kycDetails.selfie,
-        userRole: user.professionId,
-        userId: user.contactNo,
-      };
-      setUserData(data);
-    });
+    const user: VguardUser = context.getUserDetails();
+    const data = {
+      userName: user.name,
+      userCode: user.rishta_id,
+      pointsBalance: user.balance_points,
+      redeemedPoints: user.redeemded_points,
+      userImage: user.selfie,
+
+      userId: user.contact,
+    };
+    setUserData(data);
 
     getTicketHistory()
       .then(response => response.data)
       .then((responseData: TicketItem[]) => {
+        console.log(responseData);
         const sortedData = responseData.sort((a, b) => {
           const dateA = moment(a.createdDate, 'DD MMM YYYY');
           const dateB = moment(b.createdDate, 'DD MMM YYYY');

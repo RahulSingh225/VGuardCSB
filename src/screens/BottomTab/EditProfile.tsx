@@ -209,9 +209,6 @@ const EditProfile: React.FC<{ navigation: any }> = ({ navigation }) => {
     } else if (!userData?.currentaddress2) {
       showError('Please enter address details');
       return;
-    } else if (!userData?.currentaddress3) {
-      showError('Please enter address details');
-      return;
     } else if (!userData?.pincode) {
       showError('Please enter pincode');
       return;
@@ -319,6 +316,7 @@ const EditProfile: React.FC<{ navigation: any }> = ({ navigation }) => {
         <InputField
           label={t('strings:retailer_name')}
           value={userData?.name}
+          disabled={true}
           onChangeText={text => handleInputChange(text, 'name')}
         />
         <InputField
@@ -335,6 +333,7 @@ const EditProfile: React.FC<{ navigation: any }> = ({ navigation }) => {
         <DatePickerField
           label={t('strings:lbl_date_of_birth_mandatory')}
           date={userData?.dob}
+          
           onDateChange={date => handleInputChange(date, 'dob')}
         />
         <InputField
@@ -474,6 +473,7 @@ const EditProfile: React.FC<{ navigation: any }> = ({ navigation }) => {
         />
         <InputField
           label={t('strings:lbl_ifsc_code')}
+          maxLength={11}
           value={bankDetails?.bank_account_ifsc}
           onChangeText={text =>
             setBankDetail((prevState: BankDetail) => ({

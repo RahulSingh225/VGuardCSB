@@ -233,7 +233,6 @@ const AddWarranty = ({navigation}) => {
 
   async function saveData() {
     try {
-      showLoader(true);
       console.log(customerDetails)
       if (!customerDetails?.contactNo) {
         ToastAndroid.show(
@@ -255,6 +254,8 @@ const AddWarranty = ({navigation}) => {
         showLoader(false)
         return;
       }
+      showLoader(true);
+
       let bill, warranty;
       if (selectedBillImage) {
         bill = await triggerApiWithImage(selectedBillImage, 'bill');
@@ -522,6 +523,7 @@ const AddWarranty = ({navigation}) => {
               editable
               onChangeText={text => setSellingPrice(text)}
               value={sellingPrice}
+              keyboardType='decimal-pad'
               style={styles.input}
               placeholder={t('strings:enter_selling_price')}
               placeholderTextColor={Colors.grey}

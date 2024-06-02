@@ -112,13 +112,13 @@ const Login: React.FC<{navigation: any}> = ({navigation}) => {
       showLoader(false);
       if (response.status === 200) {
         const responseData = response.data;
-        console.log(responseData)
+        console.log(responseData);
         if (responseData.status) {
           const vg: VguardUser = responseData.data;
           appContext.signIn(vg);
-        }else{
+        } else {
           setIsPopupVisible(!isPopupVisible);
-        setPopupContent(responseData.message);
+          setPopupContent(responseData.message);
         }
       } else {
         setIsPopupVisible(!isPopupVisible);
@@ -170,6 +170,8 @@ const Login: React.FC<{navigation: any}> = ({navigation}) => {
                 placeholder={t('strings:lbl_registered_mobile_number_login')}
                 placeholderTextColor={placeholderColor}
                 value={username}
+                keyboardType='number-pad'
+                maxLength={10}
                 onChangeText={text => setUsername(text)}
               />
             </View>
@@ -185,12 +187,12 @@ const Login: React.FC<{navigation: any}> = ({navigation}) => {
                 placeholderTextColor={placeholderColor}
                 secureTextEntry={true}
                 value={password}
+                maxLength={8}
                 onChangeText={text => setPassword(text)}
               />
             </View>
 
             <View style={styles.updateAndForgot}>
-
               <TouchableOpacity
                 onPress={() => navigation.navigate('forgotPassword')}
                 style={styles.forgotPasswordContainer}>

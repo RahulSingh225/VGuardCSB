@@ -483,7 +483,7 @@ const ProductRegistrationForm: React.FC<{navigation: any}> = ({navigation}) => {
           <View style={styles.inputContainer}>
             <TextInput
               style={styles.input}
-              placeholder={t('strings:address_mandatory')}
+              placeholder={t('strings:address_non_mandatory')}
               value={customerFormData.address}
               placeholderTextColor={Colors.grey}
               onChangeText={value =>

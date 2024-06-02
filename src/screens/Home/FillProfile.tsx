@@ -35,13 +35,13 @@ const FillProfile: React.FC<{navigation: any}> = ({navigation}) => {
     const user: VguardUser = appContext.getUserDetails();
     setUserData(user);
   }, []);
-  const gender = ['Male', 'Female', 'Other'];
+  const gender = ['Select Gender', 'Male', 'Female', 'Other'];
 
   const [loader, setLoader] = useState(false);
   const [userData, setUserData] = useState<VguardUser | any>();
   const [popup, setPopup] = useState({isVisible: false, content: null});
   const [pincode_suggestions, setPincode_Suggestions] = React.useState([]);
-  const [tdsValue,setTDSValue] = useState(20)
+  const [tdsValue, setTDSValue] = useState(20);
   const [cities, setCities] = useState<Cities | any>();
   const [uiSwitch, setUIswitch] = React.useState({
     currentpincode: false,
@@ -371,15 +371,16 @@ const FillProfile: React.FC<{navigation: any}> = ({navigation}) => {
             disabled={true}
             value={tdsValue + '%'}
           />
-          {!initialPopup.tdschecked &&
-          <Buttons
-            btnStyle={{flex: 1}}
-            label="Verify"
-            onPress={() =>
-              setInitialPopup((prev: any) => ({...prev, tdsPopup: true}))
-            }
-            variant="filled"
-          />}
+          {!initialPopup.tdschecked && (
+            <Buttons
+              btnStyle={{flex: 1}}
+              label="Verify"
+              onPress={() =>
+                setInitialPopup((prev: any) => ({...prev, tdsPopup: true}))
+              }
+              variant="filled"
+            />
+          )}
         </View>
       </View>
 

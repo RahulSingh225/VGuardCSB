@@ -254,28 +254,16 @@ const RaiseClaim = ({navigation}) => {
               ? new Date(moment().year(), moment().month(), 1)
               : new Date(moment().year(), moment().month() - 1, 1)
           }
-          maximum={
-            new Date().getDate() > 7
-              ? new Date()
-              : new Date(
-                  moment().year(),
-                  moment().month() - 1,
-                  moment().subtract(1, 'month').endOf('month').date(),
-                )
-          }
+          maximum={new Date()}
           date={claim?.start_date}
           onDateChange={date => setClaim({...claim, start_date: date})}
         />
         <DatePickerField
           label="End Date"
           date={claim?.end_date}
-          minimum={
-            new Date().getDate() > 7
-              ? new Date(moment().year(), moment().month(), 1)
-              : new Date(moment().year(), moment().month() - 1, 1)
-          }
+          minimum={claim?.start_date ? new Date(claim.start_date) : undefined}
           maximum={
-            new Date().getDate() > 7
+            new Date(claim?.start_date).getMonth() == new Date().getMonth()
               ? new Date()
               : new Date(
                   moment().year(),
