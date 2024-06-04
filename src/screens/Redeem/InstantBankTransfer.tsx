@@ -78,6 +78,7 @@ const Bank: React.FC<BankProps> = ({navigation}) => {
       if (points > user.redeemable_points) {
         setPopupContent('Insufficient Balance');
         setPopupVisible(true);
+        return;
       }
       if (points < 150) {
         setPopupContent('Redemption available on minimum of 150 points.');

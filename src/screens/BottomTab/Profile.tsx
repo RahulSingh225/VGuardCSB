@@ -291,12 +291,7 @@ const Profile: React.FC<{navigation: any}> = ({navigation}) => {
                     {userData.bank_details.bank_account_name}
                   </Text>
                 </View>
-                <View style={styles.smallDataRow}>
-                  <Text style={styles.dataSmallLabel}>Bank Acc Type: </Text>
-                  <Text style={styles.dataSmall}>
-                    {userData.bank_details.bank_account_type}
-                  </Text>
-                </View>
+               
 
                 <View style={styles.smallDataRow}>
                   <Text style={styles.dataSmallLabel}>IFSC code: </Text>
@@ -474,6 +469,7 @@ const styles = StyleSheet.create({
   },
   dataSmallLabel: {
     color: Colors.grey,
+    marginRight:5,
     fontSize: responsiveFontSize(1.5),
     textAlign: 'right',
     fontWeight: 'bold',

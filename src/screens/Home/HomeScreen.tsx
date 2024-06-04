@@ -47,23 +47,6 @@ const HomeScreen: React.FC<{navigation: any}> = ({navigation}) => {
   const [profileImage, setProfileImage] = useState('');
   const [disableOptions, setDisableOptions] = useState(false);
 
-  useFocusEffect(
-    React.useCallback(() => {
-      const user: VguardUser = appContext.getUserDetails();
-      console.log('USERDATA', user);
-      getUserProfile({user_id: user?.user_id})
-        .then(res => {
-          if (res.data.status) {
-            const vg: VguardUser = res.data.data;
-            const st: StorageItem = {key: 'USER', value: vg};
-            addItem(st);
-            //appContext.updateUser(vg);
-            setUserData(vg);
-          }
-        })
-        .catch(e => console.log(e));
-    }, []),
-  );
 
   useEffect(() => {
     const user: VguardUser = appContext.getUserDetails();
@@ -88,6 +71,33 @@ const HomeScreen: React.FC<{navigation: any}> = ({navigation}) => {
       getImage();
     }
   }, [userData?.selfie]);
+  
+  useFocusEffect(
+    React.useCallback(() => {
+      const user: VguardUser = appContext.getUserDetails();
+      if (user?.login_date === null) {
+        console.log('first time user');
+        navigation.navigate('UpdatePassword');
+      } else {
+        getUserProfile({user_id: user?.user_id})
+          .then(res => {
+            if (res.data.status) {
+              const vg: VguardUser = res.data.data;
+              if (vg.contact != user.contact) {
+                appContext.signOut();
+              }
+              const st: StorageItem = {key: 'USER', value: vg};
+              addItem(st);
+              //appContext.updateUser(vg);
+              setUserData(vg);
+            }
+          })
+          .catch(e => console.log(e));
+      }
+    }, []),
+  );
+  
+
   return (
     <ScrollView style={styles.mainWrapper}>
       <View style={{padding: 15}}>
@@ -107,8 +117,7 @@ const HomeScreen: React.FC<{navigation: any}> = ({navigation}) => {
           <View>
             <Text style={styles.name}>{userData?.name}</Text>
             <Text style={styles.code}>{userData?.rishta_id}</Text>
-            <TouchableOpacity
-              onPress={() => navigation.navigate('Profile')}>
+            <TouchableOpacity onPress={() => navigation.navigate('Profile')}>
               <Text style={styles.viewProfile}>
                 {t('strings:view_profile')}
               </Text>

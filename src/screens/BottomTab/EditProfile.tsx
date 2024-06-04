@@ -310,11 +310,7 @@ const EditProfile: React.FC<{ navigation: any }> = ({ navigation }) => {
         </View>
       </View>
       <View style={styles.detailsContainer}>
-        <InputField
-          label={t('strings:preferred_language')}
-          value={userData?.preferredLanguage}
-          disabled={true}
-        />
+      
         <InputField
           label={t('strings:retailer_name')}
           value={userData?.name}

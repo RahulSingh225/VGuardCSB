@@ -158,12 +158,7 @@ const Dashboard: React.FC = () => {
 
           <Text style={styles.point}>{pointsData?.totalPointsEarned ? pointsData?.totalPointsEarned : 0}</Text>
         </View>
-        <View style={styles.middlePoint}>
-          <Text style={styles.greyText}>{t('strings:usp_scheme_points')}</Text>
-          <Text style={styles.point}>
-            {pointsData?.schemePoints ? pointsData?.schemePoints : 0}
-          </Text>
-        </View>
+        
         <View style={styles.rightPoint}>
           <Text style={styles.greyText}>{t('strings:points_redeemed')}</Text>
           <Text style={styles.point}>{pointsData?.totalPointsRedeemed ? pointsData?.totalPointsRedeemed : 0}</Text>
@@ -171,7 +166,6 @@ const Dashboard: React.FC = () => {
         </View>
       </View>
 
-      <Text style={{ color: Colors.grey, fontSize: responsiveFontSize(1.5), textAlign: 'center', marginTop: 5 }}>*DUPS Scheme Points are non-redeemable</Text>
 
       <View style={styles.options}>
         <CustomTouchableOption
@@ -235,6 +229,7 @@ const styles = StyleSheet.create({
     fontSize: responsiveFontSize(1.7),
   },
   points: {
+    
     width: '100%',
     display: 'flex',
     flexDirection: 'row',
@@ -242,7 +237,7 @@ const styles = StyleSheet.create({
     marginTop: 30,
   },
   leftPoint: {
-    width: responsiveWidth(30),
+    width: responsiveWidth(45),
     height: responsiveHeight(15),
     backgroundColor: Colors.lightYellow,
     borderTopLeftRadius: 50,
@@ -251,14 +246,14 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   middlePoint: {
-    width: responsiveWidth(30),
+    width: responsiveWidth(45),
     height: responsiveHeight(15),
     backgroundColor: Colors.lightYellow,
     alignItems: 'center',
     justifyContent: 'center',
   },
   rightPoint: {
-    width: responsiveWidth(30),
+    width: responsiveWidth(45),
     height: responsiveHeight(15),
     backgroundColor: Colors.lightYellow,
     borderTopRightRadius: 50,
