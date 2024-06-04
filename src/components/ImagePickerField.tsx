@@ -113,9 +113,9 @@ const ImagePickerField: React.FC<ImagePickerFieldProps> = ({
       console.error('Image picker error: ', response.error);
     } else {
         
-      // setSelectedImage(response?.assets[0]?.uri);
-      // setSelectedImageName(response?.assets[0]?.fileName || 'Image');
-      // setIsImageSelected(true);
+      setSelectedImage(response?.assets[0]?.uri);
+      setSelectedImageName(response?.assets[0]?.fileName || 'Image');
+      setIsImageSelected(true);
 
       try {
         // const apiResponse = await triggerApiWithImage(fileData);

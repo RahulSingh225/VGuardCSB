@@ -491,25 +491,7 @@ const ProductRegistrationForm: React.FC<{navigation: any}> = ({navigation}) => {
               }
             />
           </View>
-          <View style={styles.inputContainer}>
-            <Picker
-              dropdownIconColor={Colors.black}
-              selectedValue={customerFormData.category}
-              onValueChange={value =>
-                setCustomerFormData(prevData => ({
-                  ...prevData,
-                  category: value,
-                }))
-              }
-              style={styles.picker}>
-              <Picker.Item key={'Customer'} label={'Customer'} value={'1'} />
-              <Picker.Item
-                key={'Sub-Dealer'}
-                label={'Sub-Dealer'}
-                value={'2'}
-              />
-            </Picker>
-          </View>
+          
           <View style={styles.inputContainer}>
             <TextInput
               editable={false}
@@ -535,6 +517,7 @@ const ProductRegistrationForm: React.FC<{navigation: any}> = ({navigation}) => {
               onChangeText={value =>
                 setCustomerFormData(prevData => ({
                   ...prevData,
+                  
                   dealerAddress: value,
                 }))
               }

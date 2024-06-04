@@ -103,7 +103,7 @@ const Profile: React.FC<{navigation: any}> = ({navigation}) => {
     'WhatsApp',
     'Email',
     'Address',
-    'Selfie',
+    
     
     'ID Document',
     'Pan Card',

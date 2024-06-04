@@ -108,7 +108,7 @@ const HomeScreen: React.FC<{navigation: any}> = ({navigation}) => {
             <Text style={styles.name}>{userData?.name}</Text>
             <Text style={styles.code}>{userData?.rishta_id}</Text>
             <TouchableOpacity
-              onPress={() => navigation.navigate('UpdateProfile')}>
+              onPress={() => navigation.navigate('Profile')}>
               <Text style={styles.viewProfile}>
                 {t('strings:view_profile')}
               </Text>

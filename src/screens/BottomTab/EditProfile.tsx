@@ -247,6 +247,8 @@ const EditProfile: React.FC<{ navigation: any }> = ({ navigation }) => {
       })
       .catch(err => {
         showLoader(false);
+        setPopupContent(() => <Text>{err.response.data.message}</Text>);
+        setPopupVisible(true);
         console.log(err);
       });
   }
@@ -464,6 +466,7 @@ const EditProfile: React.FC<{ navigation: any }> = ({ navigation }) => {
         <InputField
           label={t('strings:lbl_account_number')}
           value={bankDetails?.bank_account_number}
+          numeric={true}
           onChangeText={text => {
             setBankDetail((prevState: BankDetail) => ({
               ...prevState,

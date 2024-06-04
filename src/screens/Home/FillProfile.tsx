@@ -1,4 +1,4 @@
-import {View, Text, StyleSheet, ScrollView, Modal} from 'react-native';
+import {View, Text, StyleSheet, ScrollView, Modal, BackHandler} from 'react-native';
 import React, {useContext, useEffect, useState} from 'react';
 import {t, use} from 'i18next';
 import InputField from '../../components/InputField';
@@ -35,6 +35,13 @@ const FillProfile: React.FC<{navigation: any}> = ({navigation}) => {
     const user: VguardUser = appContext.getUserDetails();
     setUserData(user);
   }, []);
+  useEffect(() => {
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      () => true,
+    );
+    return () => backHandler.remove();
+  });
   const gender = ['Select Gender', 'Male', 'Female', 'Other'];
 
   const [loader, setLoader] = useState(false);
@@ -186,6 +193,7 @@ const FillProfile: React.FC<{navigation: any}> = ({navigation}) => {
       if (data.data.status) {
         const vg: VguardUser = data.data.data;
         const st: StorageItem = {key: 'USER', value: vg};
+        appContext.updateUser(vg)
         addItem(st);
         setUserData(vg);
       }
@@ -198,7 +206,9 @@ const FillProfile: React.FC<{navigation: any}> = ({navigation}) => {
 
   async function verifyTDS() {
     try {
+      setLoader(true)
       const result = await checkTDS({unique_id: userData?.unique_id});
+      setLoader(false)
       console.log(result.data);
       setInitialPopup({
         ...initialPopup,
@@ -207,6 +217,7 @@ const FillProfile: React.FC<{navigation: any}> = ({navigation}) => {
       });
       setTDSValue(result.data.entity);
     } catch (error) {
+      setLoader(false)
       console.log(error);
     }
   }
@@ -277,6 +288,7 @@ const FillProfile: React.FC<{navigation: any}> = ({navigation}) => {
       <InputField
         label={t('strings:alternate_contact_number')}
         value={userData?.alternate_contact}
+        numeric={true}
         onChangeText={text => handleInputChange(text, 'alternate_contact')}
       />
 

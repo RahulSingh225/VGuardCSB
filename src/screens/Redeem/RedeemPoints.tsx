@@ -15,6 +15,7 @@ import NeedHelp from '../../components/NeedHelp';
 import {Colors} from '../../utils/constants';
 import {AppContext} from '../../services/ContextService';
 import {VguardUser} from '../../types';
+import { useFocusEffect } from '@react-navigation/native';
 
 interface PointData {
   pointsBalance: string;
@@ -41,15 +42,17 @@ const RedeemPoints: React.FC<{navigation: any}> = ({navigation}) => {
     tdsPoints: '',
   });
 
-  useEffect(() => {
-    const user: VguardUser = context.getUserDetails();
-    const data: PointData = {
-      pointsBalance: user?.balance_points || 0,
-      redeemedPoints: user?.redeemded_points || 0,
-      tdsPoints: user?.tds_kitty || 0,
-    };
-    setPointData(data);
-  }, []);
+  useFocusEffect(
+    React.useCallback(() => {
+      const user: VguardUser = context.getUserDetails();
+      const data: PointData = {
+        pointsBalance: user?.redeemable_points || 0,
+        redeemedPoints: user?.redeemded_points || 0,
+        tdsPoints: user?.tds_deducted || 0,
+      };
+      setPointData(data);
+    }, []),
+  );
 
   return (
     <ScrollView contentContainerStyle={styles.scrollViewContainer}>
@@ -59,7 +62,7 @@ const RedeemPoints: React.FC<{navigation: any}> = ({navigation}) => {
         </View>
         <View style={styles.points}>
           <View style={styles.leftPoint}>
-            <Text style={styles.greyText}>{t('strings:points_balance')}</Text>
+            <Text style={styles.greyText}>{t('strings:redeemable_points')}</Text>
             <Text style={styles.point}>
               {pointData.pointsBalance ? pointData.pointsBalance : '0'}
             </Text>

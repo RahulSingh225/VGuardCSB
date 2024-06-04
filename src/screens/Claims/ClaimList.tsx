@@ -58,6 +58,7 @@ const ClaimList = ({navigation}) => {
             <Pressable
               style={styles.option}
               onPress={() => {
+                setModal({visible: false});
                 navigation.navigate('EditClaim', {claimNo: modal.data});
               }}>
               <Text style={styles.optionText}>Edit</Text>

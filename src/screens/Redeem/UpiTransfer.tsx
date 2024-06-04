@@ -21,7 +21,7 @@ import arrowIcon from '../../assets/images/arrow.png';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Colors} from '../../utils/constants';
-import {checkVPA, verifyVPA} from '../../utils/apiservice';
+import {checkVPA, upiTransfer, verifyVPA} from '../../utils/apiservice';
 import Buttons from '../../components/Buttons';
 import Popup from '../../components/Popup';
 import PopupWithButton from '../../components/PopupWithButton';
@@ -36,7 +36,7 @@ const UpiTransfer = () => {
   const [isUpiNotFound, setUpiNotFound] = useState(false);
   const [upiSelected, setUpiSelected] = useState(true);
   const [popupContent, setPopupContent] = useState('');
-  const [upiId, setUpiId] = useState('');
+  const [upiId, setUpiId] = useState(null);
   const [points, setPoints] = useState(0);
   const context = useContext(AppContext);
 
@@ -44,22 +44,44 @@ const UpiTransfer = () => {
     setUpiSelected(!upiSelected);
   };
   const handleProceed = async () => {
-    if (!upiSelected) {
+    try {
+      console.log('clicked');
+      console.log(upiId);
+      if (!upiSelected) {
+        setNormalPopupVisible(true);
+        setPopupContent('Please select Wallet');
+      } else if (!upiId) {
+        setNormalPopupVisible(true);
+        setPopupContent('No UPI-VPA linked. Please Contact Admin.');
+      } else if (points == 0 || points < 150 || points > 5000) {
+        setNormalPopupVisible(true);
+        setPopupContent('Kindly enter points between 150-5000');
+      } else if (
+        upiId != null &&
+        upiSelected &&
+        points != 0 &&
+        points >= 250 &&
+        points <= 5000
+      ) {
+        const user: VguardUser = context.getUserDetails();
+
+        const data = {
+          userId: user.user_id,
+          mobileNo: user.contact,
+          amount: points,
+          upi: upiId,
+          userName: user.name,
+          userCode: user.rishta_id,
+          roleId: '11',
+        };
+        const result = await upiTransfer(data);
+        setNormalPopupVisible(true);
+        setPopupContent(result.data.message);
+      }
+    } catch (error) {
+      console.log(error);
       setNormalPopupVisible(true);
-      setPopupContent('Please select Wallet');
-    } else if (upiId == '') {
-      setNormalPopupVisible(true);
-      setPopupContent('No UPI-VPA linked. Please Contact Admin.');
-    } else if (points == 0 || points < 150 || points > 5000) {
-      setNormalPopupVisible(true);
-      setPopupContent('Kindly enter points between 150-5000');
-    } else if (
-      upiId != '' &&
-      upiSelected &&
-      points != 0 &&
-      points >= 250 &&
-      points <= 5000
-    ) {
+      setPopupContent('Internal error occured');
     }
   };
   const [pointData, setPointData] = useState({
@@ -70,13 +92,17 @@ const UpiTransfer = () => {
 
   useEffect(() => {
     const user: VguardUser = context.getUserDetails();
+    console.log(user);
+
     const data = {
       pointsBalance: user.balance_points,
       redeemedPoints: user.redeemded_points,
       numberOfScan: user.transaction_count,
     };
     setPointData(data);
-    setUpiId(user.vpa_id);
+    if (user.vpa_id) {
+      setUpiId(user.vpa_id);
+    }
 
     checkVPA()
       .then(response => response.data)

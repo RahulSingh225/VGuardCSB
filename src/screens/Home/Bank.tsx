@@ -80,6 +80,7 @@ const Bank = ({navigation}) => {
         }
       })
       .catch(err => {
+        setPopup({isVisible: true, content: 'Unable to verify bank details'});
         setLoader(false);
         console.log(err);
       });
@@ -87,6 +88,7 @@ const Bank = ({navigation}) => {
   async function verfiyUPI() {
     try {
       const result = await verifyVPA({mobile_no: userData?.contact});
+      console.log(result);
       setPopup({isVisible: true, content: 'UPI verified'});
     } catch (error) {
       console.log(error);
@@ -114,9 +116,10 @@ const Bank = ({navigation}) => {
         const vg: VguardUser = data.data.data;
         const st: StorageItem = {key: 'USER', value: vg};
         addItem(st);
+        context.updateUser(vg);
         setUserData(vg);
         setBankDetail(vg.bank_details);
-        context.updateUser(vg);
+       
       }
     } catch (error) {
       console.log(error);
@@ -179,30 +182,24 @@ const Bank = ({navigation}) => {
         <Buttons
           disabled={userData?.bank_verified == 1 ? true : false}
           label={'Verify'}
-          variant="blackButton"
+          variant={userData?.bank_verified == 1 ? 'disabled' : 'blackButton'}
           onPress={() => checkValidation()}
           width="100%"
         />
       </View>
       <Text style={styles.subHeading}>{'UPI Verification'}</Text>
-      <InputField
-        label='UPI Id'
-        value={userData?.vpa_id}
-        disabled={true}
-       
-      />
+      <InputField label="UPI Id" value={userData?.vpa_id} disabled={true} />
       <View style={styles.button}>
         <Buttons
           disabled={userData?.vpa_verified == 1 ? true : false}
           label={'Verify'}
-          variant="blackButton"
+          variant={userData?.vpa_verified == 1 ? 'disabled' : 'blackButton'}
           onPress={() => verfiyUPI()}
           width="100%"
         />
       </View>
       <View style={styles.button}>
         <Buttons
-          disabled={userData?.vpa_verified == 1 ? true : false}
           label={'Finish'}
           variant="filled"
           onPress={() => navigation.replace('Home')}

@@ -88,6 +88,7 @@ export interface VguardUser {
   transaction_count:number|0;
   tds_percent: number | 20;
   tds_kitty: number | 0.0;
+  tds_deducted:number|0.0;
   earned_points: number | 0.0;
   redeemded_points: number | 0.0;
   redeemable_points:number|0.0

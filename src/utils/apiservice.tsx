@@ -1,11 +1,12 @@
 import axios, {AxiosError, AxiosInstance, AxiosResponse} from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import messaging from '@react-native-firebase/messaging';
 import {VguardUser} from '../types';
 import {StorageItem, addItem, getItem} from '../services/StorageService';
 
 // const BASE_URL = 'http://192.168.1.37:5000/vguard/api';
-const BASE_URL = 'http://localhost:5000/vguard/api';
-//const BASE_URL = 'https://vguardcsb.spacempact.cloud/vguard/api';
+//const BASE_URL = 'http://localhost:5000/vguard/api';
+const BASE_URL = 'https://vguardcsb.spacempact.cloud/vguard/api';
 
 export const api: AxiosInstance = axios.create({
   baseURL: BASE_URL,
@@ -80,7 +81,7 @@ export async function newTokens(token: string) {
 }
 
 const update_fcm_token = async () => {
-  const path = 'pushNotification/registerToken';
+  const path = 'user/registerToken';
   try {
     let fcmtoken = await messaging().getToken();
     if (fcmtoken) {
@@ -455,6 +456,11 @@ export function removeFromCart(productDetail: any) {
 export function bankTransfer(productOrder: any) {
   const path = 'order/bankTransfer';
   return createPostRequest(path, productOrder);
+}
+
+export function upiTransfer(order: any) {
+  const path = 'order/upiTransfer';
+  return createPostRequest(path, order);
 }
 
 export function productOrder(productOrder: any) {

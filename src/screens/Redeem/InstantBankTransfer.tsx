@@ -28,12 +28,13 @@ import InputField from '../../components/InputField';
 import Buttons from '../../components/Buttons';
 import Popup from '../../components/Popup';
 import {Colors} from '../../utils/constants';
-import {bankTransfer} from '../../utils/apiservice';
+import {bankTransfer, getUserProfile} from '../../utils/apiservice';
 import arrowIcon from '../../assets/images/arrow.png';
 import {AppContext} from '../../services/ContextService';
 import {VguardUser} from '../../types';
 import PopupWithButton from '../../components/PopupWithButton';
 import {useFocusEffect} from '@react-navigation/native';
+import {StorageItem, addItem} from '../../services/StorageService';
 
 type BankProps = {};
 
@@ -74,6 +75,10 @@ const Bank: React.FC<BankProps> = ({navigation}) => {
   );
   async function handleProceed() {
     try {
+      if (points > user.redeemable_points) {
+        setPopupContent('Insufficient Balance');
+        setPopupVisible(true);
+      }
       if (points < 150) {
         setPopupContent('Redemption available on minimum of 150 points.');
         setPopupVisible(true);
@@ -93,6 +98,20 @@ const Bank: React.FC<BankProps> = ({navigation}) => {
       console.log(error);
       setPopupContent('Cannot place request');
       setPopupVisible(true);
+    }
+  }
+  async function updateProfileData() {
+    try {
+      const data = await getUserProfile({user_id: user?.user_id});
+
+      if (data.data.status) {
+        const vg: VguardUser = data.data.data;
+        const st: StorageItem = {key: 'USER', value: vg};
+        context.updateUser(vg);
+        addItem(st);
+      }
+    } catch (error) {
+      console.log(error);
     }
   }
 
@@ -126,6 +145,7 @@ const Bank: React.FC<BankProps> = ({navigation}) => {
           <InputField
             label={t('strings:enter_points_to_be_redeemed')}
             value={points}
+            numeric={true}
             onChangeText={value => setPoints(value)}
           />
         </View>
@@ -158,6 +178,7 @@ const Bank: React.FC<BankProps> = ({navigation}) => {
           onClose={() => {
             setPopupVisible(false);
             if (apiSucess) {
+              updateProfileData();
               navigation.pop();
             }
           }}>

@@ -201,6 +201,7 @@ const Ticket: React.FC<{navigation: any}> = ({navigation}) => {
     imageName: string,
     label: string,
   ) => {
+    console.log(image)
     try {
       setFileData({
         uri: image,

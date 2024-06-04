@@ -233,8 +233,9 @@ const AddWarranty = ({navigation}) => {
 
   async function saveData() {
     try {
+
       console.log(customerDetails)
-      if (!customerDetails?.contactNo) {
+      if (!customerDetails?.contactNo || !sellingPrice) {
         ToastAndroid.show(
           t('strings:enter_mandatory_fields'),
           ToastAndroid.SHORT,
@@ -371,12 +372,7 @@ const AddWarranty = ({navigation}) => {
             textContent: 'POINTS',
             fontWeight: '700',
           },
-          text3: {
-            color: Colors.grey,
-            fontSize: 12,
-            textContent: basePoints,
-            fontWeight: '700',
-          },
+          
           button: {
             buttonColor: Colors.yellow,
             buttonTextColor: Colors.black,
