@@ -28,6 +28,7 @@ import {AppContext} from '../../services/ContextService';
 import {getImageUrl} from '../../utils/fileutils';
 import {useFocusEffect} from '@react-navigation/native';
 import {StorageItem, addItem} from '../../services/StorageService';
+import OpenPopupOnOpeningApp from '../../components/OpenPopupOnOpeningApp';
 
 interface User {
   userCode: string;
@@ -46,7 +47,6 @@ const HomeScreen: React.FC<{navigation: any}> = ({navigation}) => {
   const [userData, setUserData] = useState<VguardUser | null>();
   const [profileImage, setProfileImage] = useState('');
   const [disableOptions, setDisableOptions] = useState(false);
-
 
   useEffect(() => {
     const user: VguardUser = appContext.getUserDetails();
@@ -71,7 +71,7 @@ const HomeScreen: React.FC<{navigation: any}> = ({navigation}) => {
       getImage();
     }
   }, [userData?.selfie]);
-  
+
   useFocusEffect(
     React.useCallback(() => {
       const user: VguardUser = appContext.getUserDetails();
@@ -96,11 +96,11 @@ const HomeScreen: React.FC<{navigation: any}> = ({navigation}) => {
       }
     }, []),
   );
-  
 
   return (
     <ScrollView style={styles.mainWrapper}>
       <View style={{padding: 15}}>
+        <OpenPopupOnOpeningApp onClose={()=>console.log("jojo")} />
         <View style={styles.detailContainer}>
           <View style={styles.ImageProfile}>
             <ImageBackground

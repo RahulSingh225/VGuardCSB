@@ -89,6 +89,7 @@ const Bank = ({navigation}) => {
     try {
       const result = await verifyVPA({mobile_no: userData?.contact});
       console.log(result);
+      updateProfileData();
       setPopup({isVisible: true, content: 'UPI verified'});
     } catch (error) {
       console.log(error);
@@ -119,7 +120,6 @@ const Bank = ({navigation}) => {
         context.updateUser(vg);
         setUserData(vg);
         setBankDetail(vg.bank_details);
-       
       }
     } catch (error) {
       console.log(error);
@@ -142,7 +142,7 @@ const Bank = ({navigation}) => {
         <Buttons
           variant="outlined"
           label={'Skip'}
-          onPress={() => navigation.replace('Home')}
+          onPress={() => navigation.reset({index: 0, routes: [{name: 'Home'}]})}
           width="30%"
         />
       </View>
@@ -202,7 +202,7 @@ const Bank = ({navigation}) => {
         <Buttons
           label={'Finish'}
           variant="filled"
-          onPress={() => navigation.replace('Home')}
+          onPress={() => navigation.reset({index: 0, routes: [{name: 'Home'}]})}
           width="100%"
         />
       </View>
