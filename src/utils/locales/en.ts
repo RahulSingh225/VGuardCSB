@@ -126,7 +126,7 @@ export default {
     calendar_icon: 'Calendar icon',
     lbl_contact_number_mandatory: 'Contact Number*',
     lbl_whats_app_number: 'WhatsApp Number',
-    lbl_permanent_address_mandatory: 'Address* House/Flat/Block No.',
+    lbl_permanent_address_mandatory: 'Address House/Flat/Block No. *',
     lbl_delivery_address_mandatory: 'Delivery Address* House/Flat/Block No.',
     lbl_current_address_mandatory: 'Current Address* House/Flat/Block No.',
     lbl_street_locality: 'Street/Colony/Locality Name*',

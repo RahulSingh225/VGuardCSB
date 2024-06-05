@@ -235,7 +235,14 @@ const AddWarranty = ({navigation}) => {
     try {
 
       console.log(customerDetails)
-      if (!customerDetails?.contactNo || !sellingPrice) {
+      if(!sellingPrice || Number(sellingPrice) < 1){
+        ToastAndroid.show(
+          "Please enter the valid selling price",
+          ToastAndroid.SHORT,
+        );
+        return;
+      }
+      if (!customerDetails?.contactNo || !sellingPrice ) {
         ToastAndroid.show(
           t('strings:enter_mandatory_fields'),
           ToastAndroid.SHORT,
@@ -245,7 +252,7 @@ const AddWarranty = ({navigation}) => {
       }
       if (
         selectedBillImage == null &&
-        couponResponse.anomaly == 1 &&
+        couponResponse?.anomaly == 1 &&
         customerDetails.dealerCategory != 'Sub-Dealer'
       ) {
         ToastAndroid.show(

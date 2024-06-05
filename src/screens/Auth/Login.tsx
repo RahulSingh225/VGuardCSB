@@ -30,6 +30,7 @@ import Popup from '../../components/Popup';
 import {loginUser} from '../../utils/apiservice';
 import {VguardUser} from '../../types';
 import {AppContext} from '../../services/ContextService';
+import { mobileNoValidation } from '../../utils/pattern';
 
 const Login: React.FC<{navigation: any}> = ({navigation}) => {
   const {t, i18n} = useTranslation();
@@ -90,8 +91,18 @@ const Login: React.FC<{navigation: any}> = ({navigation}) => {
   // };
 
   const handleLogin = async () => {
-    if (!username.trim().length || !password.trim().length) {
-      showSnackbar('Please enter a username and password.');
+    if (!username.trim().length) {
+      showSnackbar('Please enter a mobile number.');
+      return;
+    }
+
+    if(!mobileNoValidation(username.trim())){
+      showSnackbar('Please enter the valid mobile number');
+      return;
+    }
+
+    if (!password) {
+      showSnackbar('Please enter the password.');
       return;
     }
 
@@ -167,7 +178,7 @@ const Login: React.FC<{navigation: any}> = ({navigation}) => {
               />
               <TextInput
                 style={styles.input}
-                placeholder={t('strings:lbl_registered_mobile_number_login')}
+                placeholder={t('strings:registered_mobile_no')}
                 placeholderTextColor={placeholderColor}
                 value={username}
                 keyboardType='number-pad'

@@ -112,7 +112,7 @@ export default {
         calendar_icon: 'క్యాలెండర్ చిహ్నం',
         lbl_contact_number_mandatory: 'సంప్రదించడానికి మొబైల్ నంబర్*',
         lbl_whats_app_number: 'WhatsApp నంబర్',
-        lbl_permanent_address_mandatory: 'స్థాయి చిరునామా* హౌస్/ఫ్లాట్/బ్లాక్ నం.',
+        lbl_permanent_address_mandatory: 'స్థాయి చిరునామా హౌస్/ఫ్లాట్/బ్లాక్ నం. *',
         lbl_delivery_address_mandatory: 'డెలివరీ చిరునామా* హౌస్/ఫ్లాట్/బ్లాక్ నం.',
         lbl_current_address_mandatory: 'ప్రస్తుత చిరునామా* హౌస్/ఫ్లాట్/బ్లాక్ నం.',
         lbl_street_locality: 'స్ట్రీట్/కాలనీ/స్థలం పేరు*',

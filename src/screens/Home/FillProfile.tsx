@@ -1,4 +1,4 @@
-import {View, Text, StyleSheet, ScrollView, Modal, BackHandler} from 'react-native';
+import {View, Text, StyleSheet, ScrollView, Modal, BackHandler, ToastAndroid} from 'react-native';
 import React, {useContext, useEffect, useState} from 'react';
 import {t, use} from 'i18next';
 import InputField from '../../components/InputField';
@@ -28,6 +28,7 @@ import Popup from '../../components/Popup';
 import Loader from '../../components/Loader';
 import {Avatar, TextInput} from 'react-native-paper';
 import TDSPopup from '../../components/TDSPopup';
+import { mailValidation, mobileNoValidation } from '../../utils/pattern';
 
 const FillProfile: React.FC<{navigation: any}> = ({navigation}) => {
   const appContext = useContext(AppContext);
@@ -46,7 +47,7 @@ const FillProfile: React.FC<{navigation: any}> = ({navigation}) => {
 
   const [loader, setLoader] = useState(false);
   const [userData, setUserData] = useState<VguardUser | any>();
-  const [popup, setPopup] = useState({isVisible: false, content: null});
+  const [popup, setPopup] = useState<any>({isVisible: false, content: ""});
   const [pincode_suggestions, setPincode_Suggestions] = React.useState([]);
   const [tdsValue, setTDSValue] = useState(20);
   const [cities, setCities] = useState<Cities | any>();
@@ -137,23 +138,32 @@ const FillProfile: React.FC<{navigation: any}> = ({navigation}) => {
   }
   function checkValidation() {
     console.log(userData);
+
+    if(userData.alternate_contact && !mobileNoValidation(userData.alternate_contact)){
+      ToastAndroid.show("Please enter the valid alternate number",ToastAndroid.SHORT)
+      return 
+    }
+
+    if(userData.email && !mailValidation(userData.email)){
+      ToastAndroid.show("Please enter the valid E-mail",ToastAndroid.SHORT)
+      return 
+    }
+    
     if (!userData?.currentaddress1) {
-      setPopup({isVisible: true, content: 'Please enter address details'});
+      ToastAndroid.show("Please enter the house/ flat/ block no",ToastAndroid.SHORT)
       return;
-    } else if (!userData?.currentaddress2) {
-      setPopup({isVisible: true, content: 'Please enter address details'});
-
+    }
+    if (!userData?.currentaddress2) {
+      ToastAndroid.show("Please enter the street/ colony/ locality",ToastAndroid.SHORT)
       return;
-    } else if (!userData?.currentaddress3) {
-      setPopup({isVisible: true, content: 'Please enter address details'});
-
-      return;
-    } else if (!userData?.pincode) {
+    } 
+    
+    if (!userData?.pincode) {
       setPopup({isVisible: true, content: 'Please enter pincode'});
       return;
-    } else {
-      handleSubmit();
     }
+    
+    handleSubmit();
   }
 
   async function handleSubmit() {
@@ -256,8 +266,10 @@ const FillProfile: React.FC<{navigation: any}> = ({navigation}) => {
   };
   return (
     <ScrollView
+    style={styles.mainWrapper}
       contentContainerStyle={{alignContent: 'center', gap: 10}}
-      style={{width: width * 0.9, alignSelf: 'center'}}>
+      // style={{width: width * 0.9, alignSelf: 'center'}}
+      >
       {loader && <Loader isLoading={loader} />}
       <View
         style={{
@@ -289,6 +301,7 @@ const FillProfile: React.FC<{navigation: any}> = ({navigation}) => {
         label={t('strings:alternate_contact_number')}
         value={userData?.alternate_contact}
         numeric={true}
+        maxLength={10}
         onChangeText={text => handleInputChange(text, 'alternate_contact')}
       />
 
@@ -385,7 +398,7 @@ const FillProfile: React.FC<{navigation: any}> = ({navigation}) => {
           />
           {!initialPopup.tdschecked && (
             <Buttons
-              btnStyle={{flex: 1}}
+              btnStyle={{flex: 1,height:"70%",width:"100%",alignSelf:"center",right:10}}
               label="Verify"
               onPress={() =>
                 setInitialPopup((prev: any) => ({...prev, tdsPopup: true}))

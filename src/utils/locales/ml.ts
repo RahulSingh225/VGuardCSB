@@ -112,7 +112,7 @@ export default {
         calendar_icon: 'കലണ്ടർ ഐകോൺ',
         lbl_contact_number_mandatory: 'സമ്പർക്ക നമ്പർ*',
         lbl_whats_app_number: 'WhatsApp നമ്പർ',
-        lbl_permanent_address_mandatory: 'സ്ഥായിക വിലാസം* ഹൗസ്/ഫ്ലാറ്റ്/ബ്ലോക്ക് നമ്പർ',
+        lbl_permanent_address_mandatory: 'സ്ഥായിക വിലാസം ഹൗസ്/ഫ്ലാറ്റ്/ബ്ലോക്ക് നമ്പർ *',
         lbl_delivery_address_mandatory: 'ഡെലിവറി വിലാസം* ഹൗസ്/ഫ്ലാറ്റ്/ബ്ലോക്ക് നമ്പർ',
         lbl_current_address_mandatory: 'നിലവിലെ വിലാസം* ഹൗസ്/ഫ്ലാറ്റ്/ബ്ലോക്ക് നമ്പർ',
         lbl_street_locality: 'സ്ട്രീറ്റ്/കോളനി/സ്ഥല പേര്*',

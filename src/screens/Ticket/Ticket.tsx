@@ -239,6 +239,10 @@ const Ticket: React.FC<{navigation: any}> = ({navigation}) => {
     }
     return '';
   };
+  const handleClose = () =>{
+    setPopupVisible(false)
+    navigation.pop()
+  }
 
   return (
     <ScrollView style={styles.mainWrapper}>
@@ -352,7 +356,7 @@ const Ticket: React.FC<{navigation: any}> = ({navigation}) => {
       {isPopupVisible && (
         <Popup
           isVisible={isPopupVisible}
-          onClose={() => setPopupVisible(false)}>
+          onClose={() => handleClose()}>
           {popupContent}
         </Popup>
       )}

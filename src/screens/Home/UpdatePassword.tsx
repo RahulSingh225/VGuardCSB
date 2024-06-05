@@ -25,31 +25,37 @@ const UpdatePassword = ({navigation}) => {
   const [popup, setPopup] = useState({visible: false, content: ''});
   const [loader, setLoader] = useState(false);
   function handleSubmit() {
+    if (password.trim().length != 8) {
+      setPopup({visible: true, content: 'Password should contain 8 digits'});
+      return 
+    } 
     if (confirmPassword !== password) {
       setPopup({visible: true, content: 'Password does not match'});
-    } else {
-      setLoader(true);
-      updatePassword(password, user.user_id)
-        .then(res => {
-          setLoader(false);
-          if (res.data.status) {
-            navigation.replace('UpdateProfile');
-          } else {
-            setPopup({visible: true, content: res.data.message});
-          }
-        })
-        .catch(err =>{
-          setLoader(false);
-          console.log(err);
-          setPopup({visible:true,content:'Something went wrong'})
-        });
-    }
+      return 
+    } 
+    setLoader(true);
+    updatePassword(password, user.user_id)
+      .then(res => {
+        setLoader(false);
+        if (res.data.status) {
+          navigation.replace('UpdateProfile');
+        } else {
+          setPopup({visible: true, content: res.data.message});
+        }
+      })
+      .catch(err =>{
+        setLoader(false);
+        console.log(err);
+        setPopup({visible:true,content:'Something went wrong'})
+      });
   }
 
   return (
     <ScrollView
       contentContainerStyle={{alignContent: 'center', gap: 10}}
-      style={{width: width * 0.9, alignSelf: 'center'}}>
+      // style={{width: width * 0.9, alignSelf: 'center'}}
+      style={style.mainWrapper}
+      >
       {loader && <Loader isLoading={loader} />}
       {popup.visible && (
         <Popup
@@ -89,6 +95,11 @@ const UpdatePassword = ({navigation}) => {
   );
 };
 const style = StyleSheet.create({
+  mainWrapper: {
+    padding: 15,
+    flex: 1,
+    backgroundColor: Colors.white,
+  },
   button: {
     alignSelf:'center',
     marginTop: 200,

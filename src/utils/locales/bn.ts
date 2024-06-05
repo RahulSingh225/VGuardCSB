@@ -107,7 +107,7 @@ export default {
     lbl_contact_number_mandatory: 'যোগাযোগ নম্বর*',
     lbl_whats_app_number: 'WhatsApp নম্বর',
     lbl_permanent_address_mandatory:
-      '<b>স্থায়ী ঠিকানা*</b> বাড়ি/ফ্ল্যাট/ব্লক নম্বর',
+      '<b>স্থায়ী ঠিকানা</b> বাড়ি/ফ্ল্যাট/ব্লক নম্বর *',
     lbl_delivery_address_mandatory:
       '<b>ডেলিভারি ঠিকানা*</b> বাড়ি/ফ্ল্যাট/ব্লক নম্বর',
     lbl_current_address_mandatory:

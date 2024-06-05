@@ -117,6 +117,7 @@ export const Colors = {
   login_box_divider: '#B7BDBDBD',
   blue: '#3F51B5',
   white_translucent: '#70ffffff',
+  input_label_transparent:"#f2f2f2"
 };
 export const TDS_CONSENT_MESSAGE: any = {
   EMPTY: 'empty',

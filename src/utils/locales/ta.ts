@@ -112,7 +112,7 @@ export default {
         calendar_icon: 'காலண்டர் ஐகான்',
         lbl_contact_number_mandatory: 'தொடர்பு எண்*',
         lbl_whats_app_number: 'WhatsApp எண்',
-        lbl_permanent_address_mandatory: 'நிரந்தர முகவரி* வீடு/பிரதிஷ்டானம்/பிளாட் எண்',
+        lbl_permanent_address_mandatory: 'நிரந்தர முகவரி வீடு/பிரதிஷ்டானம்/பிளாட் எண் *',
         lbl_delivery_address_mandatory: 'விநியோக முகவரி* வீடு/பிரதிஷ்டானம்/பிளாட் எண்',
         lbl_current_address_mandatory: 'தற்போதைய முகவரி* வீடு/பிரதிஷ்டானம்/பிளாட் எண்',
         lbl_street_locality: 'தெரு/காரிகை/பரவளம் பெயர்*',

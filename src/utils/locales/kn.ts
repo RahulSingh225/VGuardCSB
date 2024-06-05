@@ -106,7 +106,7 @@ export default {
         calendar_icon: 'ಕ್ಯಾಲೆಂಡರ್ ಐಕಾನ್',
         lbl_contact_number_mandatory: 'ಸಂಪರ್ಕ ಸಂಖ್ಯೆ*',
         lbl_whats_app_number: 'ವಾಟ್ಸಾಪ್ ಸಂಖ್ಯೆ',
-        lbl_permanent_address_mandatory: 'ಖಾಯಮ್ ವಿಳಾಸ* ಮನೆ/ಫ್ಲಾಟ್/ಬ್ಲಾಕ್ ಸಂ.',
+        lbl_permanent_address_mandatory: 'ಖಾಯಮ್ ವಿಳಾಸ ಮನೆ/ಫ್ಲಾಟ್/ಬ್ಲಾಕ್ ಸಂ. *',
         lbl_delivery_address_mandatory:
             'ತಲುಪಿಸುವ ವಿಳಾಸ* ಮನೆ / ಫ್ಲಾಟ್ / ಬ್ಲಾಕ್ ಸಂಖ್ಯೆ. ',
         lbl_current_address_mandatory:

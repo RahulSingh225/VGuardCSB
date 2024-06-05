@@ -1,28 +1,19 @@
 // InputField.tsx
 
-import React, {useState, useRef} from 'react';
-import {
-  View,
-  Text,
-  TextInput,
-  StyleSheet,
-  Image,
-  TouchableOpacity,
-  ImageBackground,
-} from 'react-native';
-
-import {responsiveFontSize} from 'react-native-responsive-dimensions';
-import {Colors} from '../utils/constants';
+import React, { useState, useRef } from 'react';
+import { View, Text, TextInput, StyleSheet, Image, TouchableOpacity, ImageBackground } from 'react-native';
+// import Colors from '.';
+import { responsiveFontSize } from 'react-native-responsive-dimensions';
+import { Colors } from '../utils/constants';
 
 interface InputFieldProps {
   label: string;
-  value: any;
   errorMessage?: string;
   disabled?: boolean;
   isImage?: boolean;
   imageSource?: string;
   onPressImage?: () => void;
-  onChangeText?: (value: string) => void;
+  onChangeText: (value: string) => void;
   numeric?: boolean;
   maxLength?: number;
   imageName?: string;
@@ -39,7 +30,6 @@ const InputField: React.FC<InputFieldProps> = ({
   onChangeText,
   numeric,
   maxLength,
-  value,
   ...rest
 }) => {
   const [isFocused, setIsFocused] = useState(false);
@@ -55,35 +45,26 @@ const InputField: React.FC<InputFieldProps> = ({
     }
   };
 
+
   return (
-    <View
-      style={[
-        styles.container,
-        isFocused || hasInput || isImage ? styles.focusedContainer : null,
-      ]}>
-      <Text
-        style={[
-          styles.label,
-          isFocused || hasInput || isImage ? styles.focusedLabel : null,
-        ]}>
-        {label}
-      </Text>
+    <View style={[styles.container, isFocused || hasInput || isImage ? styles.focusedContainer : null]}>
+      <Text style={[styles.label, isFocused || hasInput || isImage ? styles.focusedLabel : null]}>{label}</Text>
       {isImage ? (
-        <View style={{flexDirection: 'row'}}>
+        <View style={{ flexDirection: 'row' }}>
           <TextInput
-            style={[styles.input, styles.disabledInput, {flex: 1}]}
+            style={[styles.input, styles.disabledInput, { flex: 1 }]}
             editable={false}
-            placeholder={label}
-            value={value}
+            value={label}
             {...rest}
           />
           <TouchableOpacity onPress={onPressImage}>
             <ImageBackground
               source={require('../assets/images/no_image.webp')}
               style={styles.image}
-              resizeMode="cover">
+              resizeMode="cover"
+            >
               <Image
-                source={{uri: imageSource}}
+                source={{ uri: imageSource }}
                 style={styles.image}
                 resizeMode="cover"
               />
@@ -99,7 +80,6 @@ const InputField: React.FC<InputFieldProps> = ({
           onChangeText={onChangeText}
           keyboardType={numeric ? 'numeric' : 'default'}
           maxLength={maxLength}
-          value={value}
           {...rest}
         />
       )}
@@ -125,8 +105,9 @@ const styles = StyleSheet.create({
     fontSize: responsiveFontSize(1.7),
     fontWeight: 'bold',
     color: Colors.black,
-    backgroundColor: 'transparent',
+    backgroundColor: Colors.white,
     paddingHorizontal: 3,
+    top:7
   },
   focusedLabel: {
     position: 'absolute',
