@@ -68,7 +68,9 @@ const Bank: React.FC<BankProps> = ({navigation}) => {
       const vguser: VguardUser = context.getUserDetails();
       setUser(vguser);
       console.log(vguser);
-      if (user?.bank_verified == 0 ||!user?.bank_verified) {
+      if (vguser?.bank_verified != 1 ) {
+        console.log(vguser?.bank_verified)
+
         SetOkPopup({visible: true});
       }
     }, [navigation]),

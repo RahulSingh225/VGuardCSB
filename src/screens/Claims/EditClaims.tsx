@@ -12,7 +12,7 @@ import {
 } from 'react-native-image-picker';
 import {Claims, ClaimsData, VguardUser} from '../../types';
 import {
-    editClaim,
+  editClaim,
   getCategoryList,
   getClaimDetails,
   getSubCategoryList,
@@ -45,6 +45,16 @@ const EditClaims = ({navigation, route}) => {
   const [popup, setPopup] = useState({isPopupVisible: false, popupContent: ''});
 
   useEffect(() => {
+    const fetchData = async (data) => {
+      try {
+        console.log('filling data');
+        await fillData(data);
+        // Any additional logic after fillData completes successfully
+      } catch (error) {
+        console.error('Error filling data:', error);
+        // Handle the error (e.g., display an error message to the user)
+      }
+    };
     setLoader(true);
     getCategoryList()
       .then(res => {
@@ -61,7 +71,10 @@ const EditClaims = ({navigation, route}) => {
         getClaimDetails(claimNo).then(res => {
           var claim = res.data;
           console.log(claim);
+          claim.start_date=formatDate(claim.start_date)
+          claim.end_date=formatDate(claim.end_date)
           claim.claim_data = JSON.parse(claim.claim_data);
+            fetchData(claim.claim_data)
 
           setClaimData(claim.claim_data);
           setClaim(claim);
@@ -71,23 +84,21 @@ const EditClaims = ({navigation, route}) => {
         setLoader(false);
         setPopup({isPopupVisible: true, popupContent: e.message});
       });
+
+    
   }, []);
-
-  useEffect(() => {
+  function formatDate(inputDate) {
+    // Parse the input date
+    const date = new Date(inputDate);
     
-    const fetchData = async () => {
-        try {
-          await fillData();
-          // Any additional logic after fillData completes successfully
-        } catch (error) {
-          console.error('Error filling data:', error);
-          // Handle the error (e.g., display an error message to the user)
-        }
-      };
+    // Extract the day, month, and year
+    const day = date.getDate();
+    const month = date.toLocaleString('default', { month: 'short' });
+    const year = date.getFullYear();
     
-      if(claimData.length>1) fetchData();
-  }, [claim]);
-
+    // Format the new date string
+    return `${day.toString().padStart(2, '0')} ${month} ${year}`;
+}
   const handleCategoryChange = async (index, position) => {
     console.log(categories[index].label);
     setLoader(true);
@@ -129,10 +140,12 @@ const EditClaims = ({navigation, route}) => {
 
   const handleSubCategoryChange = async (index, position) => {
     console.log(subCategories);
-    const filtersku = skuName[position]?.filter(s => {
+    let filtersku = skuName[position]?.filter(s => {
       return s.SubCategoryId == subCategories[position][index].subcategory_id;
     });
     let s = [...skuName];
+        filtersku.unshift({PartDescription: 'Select SKU', PartNumber: 0});
+
     s[position] = filtersku;
     setSkuName(s);
     let newArr = [...claimData];
@@ -167,23 +180,27 @@ const EditClaims = ({navigation, route}) => {
     console.log(claimData);
   };
 
-  const fillData = async () => {
+  const fillData = async (cldata) => {
     console.log('filing data');
     console.log(claimData);
-    let categories = []
-    let subcat=[]
-    let sku=[]
+    let categories = [];
+    let subcat = [];
+    let sku = [];
     await Promise.all(
-      claimData.map(async (cl, position) => {
-       
-        categories.push([{label:cl.category_name,value:cl.category_name}])
-        subcat.push([{subcategory_name:cl.subcategory_name,subcategory_id:cl.sub_category_id}])
-        sku.push([{PartDescription:cl.sku_name,PartNumber:cl.sku_code}])
-      })
+      cldata.map(async (cl, position) => {
+        categories.push([{label: cl.category_name, value: cl.category_name}]);
+        subcat.push([
+          {
+            subcategory_name: cl.subcategory_name,
+            subcategory_id: cl.sub_category_id,
+          },
+        ]);
+        sku.push([{PartDescription: cl.sku_name, PartNumber: cl.sku_code}]);
+      }),
     );
     //setCategories(categories);
-    setSubCategories(subcat)
-    setSkuName(sku)
+    setSubCategories(subcat);
+    setSkuName(sku);
     console.log('DONE');
   };
 
@@ -382,6 +399,13 @@ const EditClaims = ({navigation, route}) => {
                   </Text>
                 </TouchableOpacity>
               )}
+                <View style={{
+           
+           justifyContent: 'center',
+           marginVertical:5,
+           alignSelf: 'stretch',
+           borderWidth: 1,
+           borderRadius: 10}}>
               <Picker
                 selectedValue={cl.category_name || 0}
                 onValueChange={(value, index) => {
@@ -391,7 +415,14 @@ const EditClaims = ({navigation, route}) => {
                   <Picker.Item label={c.label} value={c.value} />
                 ))}
               </Picker>
-
+              </View>
+              <View style={{
+           
+           justifyContent: 'center',
+           marginVertical:5,
+           alignSelf: 'stretch',
+           borderWidth: 1,
+           borderRadius: 10}}>
               <Picker
                 selectedValue={cl.subcategory_id || 0}
                 onValueChange={(value, index) => {
@@ -404,7 +435,15 @@ const EditClaims = ({navigation, route}) => {
                   />
                 ))}
               </Picker>
-
+              
+</View>
+<View style={{
+           
+           justifyContent: 'center',
+           marginVertical:5,
+           alignSelf: 'stretch',
+           borderWidth: 1,
+           borderRadius: 10}}>
               <Picker
                 selectedValue={cl.sku_id || 0}
                 onValueChange={(value, index) => {
@@ -414,7 +453,7 @@ const EditClaims = ({navigation, route}) => {
                   <Picker.Item label={c.PartDescription} value={c.PartNumber} />
                 ))}
               </Picker>
-
+</View>
               <InputField
                 label="Quantity"
                 value={cl.quantity.toString()}

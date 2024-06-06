@@ -127,8 +127,9 @@ const Bank = ({navigation}) => {
   }
 
   return (
+    <View style={{backgroundColor:Colors.white,flex:1}}>
     <ScrollView
-      contentContainerStyle={{alignContent: 'center', gap: 10}}
+      contentContainerStyle={{alignContent: 'center', gap: 10,backgroundColor:Colors.white}}
       style={{width: width * 0.9, alignSelf: 'center'}}>
       {popup.isVisible && (
         <Popup
@@ -207,6 +208,7 @@ const Bank = ({navigation}) => {
         />
       </View>
     </ScrollView>
+    </View>
   );
 };
 

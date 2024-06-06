@@ -64,7 +64,7 @@ function App(): React.JSX.Element {
   }
 
   useEffect(() => {
-    requestAllPermissions()
+    requestAllPermissions();
     getItem('USER').then(result => {
       api.defaults.headers.common.Authorization = `Bearer ${result.access_token}`;
       setUser(result);
@@ -75,6 +75,13 @@ function App(): React.JSX.Element {
   const appUtils = React.useMemo(
     () => ({
       signIn: (data: VguardUser) => {
+        if (!data.login_date) {
+          const first: StorageItem = {
+            key: 'FIRST_LOGIN',
+            value: JSON.stringify(true),
+          };
+          addItem(first);
+        }
         api.defaults.headers.common.Authorization = `Bearer ${data.access_token}`;
         console.log(api);
         setUser(data);

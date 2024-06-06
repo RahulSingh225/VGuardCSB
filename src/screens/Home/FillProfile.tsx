@@ -255,9 +255,10 @@ const FillProfile: React.FC<{navigation: any}> = ({navigation}) => {
     }
   };
   return (
+    <View style={{backgroundColor:Colors.white,flex:1}}>
     <ScrollView
-      contentContainerStyle={{alignContent: 'center', gap: 10}}
-      style={{width: width * 0.9, alignSelf: 'center'}}>
+      contentContainerStyle={{alignContent: 'center', gap: 10,backgroundColor:Colors.white}}
+      style={{width: width * 0.9, alignSelf: 'center',backgroundColor:Colors.white}}>
       {loader && <Loader isLoading={loader} />}
       <View
         style={{
@@ -497,6 +498,7 @@ const FillProfile: React.FC<{navigation: any}> = ({navigation}) => {
         </Popup>
       )}
     </ScrollView>
+    </View>
   );
 };
 

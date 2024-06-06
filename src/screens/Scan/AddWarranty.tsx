@@ -235,7 +235,7 @@ const AddWarranty = ({navigation}) => {
     try {
 
       console.log(customerDetails)
-      if (!customerDetails?.contactNo || !sellingPrice) {
+      if (!customerDetails?.contactNo  ) {
         ToastAndroid.show(
           t('strings:enter_mandatory_fields'),
           ToastAndroid.SHORT,

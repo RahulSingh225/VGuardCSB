@@ -27,7 +27,7 @@ import {VguardUser} from '../../types';
 import {AppContext} from '../../services/ContextService';
 import {getImageUrl} from '../../utils/fileutils';
 import {useFocusEffect} from '@react-navigation/native';
-import {StorageItem, addItem} from '../../services/StorageService';
+import {StorageItem, addItem, getItem, removeItem} from '../../services/StorageService';
 import OpenPopupOnOpeningApp from '../../components/OpenPopupOnOpeningApp';
 
 interface User {
@@ -47,6 +47,7 @@ const HomeScreen: React.FC<{navigation: any}> = ({navigation}) => {
   const [userData, setUserData] = useState<VguardUser | null>();
   const [profileImage, setProfileImage] = useState('');
   const [disableOptions, setDisableOptions] = useState(false);
+  const [welcome, setWelocme] = useState(false);
 
   useEffect(() => {
     const user: VguardUser = appContext.getUserDetails();
@@ -74,6 +75,11 @@ const HomeScreen: React.FC<{navigation: any}> = ({navigation}) => {
 
   useFocusEffect(
     React.useCallback(() => {
+      getItem('FIRST_LOGIN').then(res => {
+        if (res) {
+          setWelocme(true);
+        }
+      });
       const user: VguardUser = appContext.getUserDetails();
       if (user?.login_date === null) {
         console.log('first time user');
@@ -97,10 +103,16 @@ const HomeScreen: React.FC<{navigation: any}> = ({navigation}) => {
     }, []),
   );
 
+  function handlePopupClose(){
+    removeItem('FIRST_LOGIN').then(res=>console.log(res))
+  }
+
   return (
     <ScrollView style={styles.mainWrapper}>
       <View style={{padding: 15}}>
-        <OpenPopupOnOpeningApp onClose={()=>console.log("jojo")} />
+        {welcome && (
+          <OpenPopupOnOpeningApp onClose={() => handlePopupClose()} />
+        )}
         <View style={styles.detailContainer}>
           <View style={styles.ImageProfile}>
             <ImageBackground

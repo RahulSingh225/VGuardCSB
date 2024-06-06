@@ -47,8 +47,9 @@ const UpdatePassword = ({navigation}) => {
   }
 
   return (
+    <View style={{backgroundColor:Colors.white,flex:1}}>
     <ScrollView
-      contentContainerStyle={{alignContent: 'center', gap: 10}}
+      contentContainerStyle={{alignContent: 'center', gap: 10,backgroundColor:Colors.white}}
       style={{width: width * 0.9, alignSelf: 'center'}}>
       {loader && <Loader isLoading={loader} />}
       {popup.visible && (
@@ -86,6 +87,7 @@ const UpdatePassword = ({navigation}) => {
         width="80%"
       />
     </ScrollView>
+    </View>
   );
 };
 const style = StyleSheet.create({

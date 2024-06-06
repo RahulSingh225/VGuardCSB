@@ -23,7 +23,7 @@ interface PopupProps {
   children: React.ReactNode;
 }
 
-const Popup: React.FC<PopupProps> = ({isVisible, onClose, children}) => {
+const ScrollPopup: React.FC<PopupProps> = ({isVisible, onClose, children}) => {
   if (!isVisible) {
     return null;
   }
@@ -36,9 +36,14 @@ const Popup: React.FC<PopupProps> = ({isVisible, onClose, children}) => {
       onRequestClose={onClose}>
       <View style={styles.modalContainer}>
         <View style={styles.modalContent}>
-         
+          <ScrollView
+            style={{flexGrow: 1, width: '100%'}}
+            contentContainerStyle={{
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}>
             <Text style={styles.popupText}>{children}</Text>
-          
+          </ScrollView>
           <TouchableOpacity style={styles.closeButton} onPress={onClose}>
             <Image
               source={closeIcon as ImageSourcePropType}
@@ -89,4 +94,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Popup;
+export default ScrollPopup;
