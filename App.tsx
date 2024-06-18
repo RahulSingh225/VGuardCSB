@@ -27,6 +27,7 @@ import UpdatePassword from './src/screens/Home/UpdatePassword';
 import {api} from './src/utils/apiservice';
 import FillProfile from './src/screens/Home/FillProfile';
 import Bank from './src/screens/Home/Bank';
+import Consent from './src/screens/Home/Consent';
 
 function App(): React.JSX.Element {
   async function requestAllPermissions() {
@@ -105,6 +106,8 @@ function App(): React.JSX.Element {
     }),
     [user],
   );
+
+
 
   return (
     <NavigationContainer>

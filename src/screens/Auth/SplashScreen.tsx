@@ -7,7 +7,7 @@ const SplashScreen: React.FC<{navigation: any}> = ({navigation}) => {
   useFocusEffect(
     React.useCallback(() => {
       const timeoutId = setTimeout(() => {
-        navigation.navigate('login');
+        navigation.navigate('loginWithNumber');
       }, 1000);
 
       return () => clearTimeout(timeoutId);

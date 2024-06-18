@@ -4,6 +4,7 @@ import {
   ScrollView,
   TouchableOpacity,
   StyleSheet,
+  Linking,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {
@@ -15,6 +16,7 @@ import {
   editClaim,
   getCategoryList,
   getClaimDetails,
+  getSignedUrl,
   getSubCategoryList,
   raiseClaim,
 } from '../../utils/apiservice';
@@ -303,6 +305,15 @@ const EditClaims = ({navigation, route}) => {
         setPopup({isPopupVisible: true, popupContent: e.response.data.message});
       });
   }
+  function handleImageOpen(){
+    setLoader(true);
+    getSignedUrl({filename:claim.claim_file}).then(res=>{
+      setLoader(false)
+      Linking.openURL(res.data.data)
+
+      
+    })
+  }
 
   return (
     <ScrollView style={styles.mainWrapper}>
@@ -319,49 +330,25 @@ const EditClaims = ({navigation, route}) => {
       <View style={styles.mainView}>
         <Text style={styles.label1}>Edit Claim</Text>
 
-        <DatePickerField
+        <InputField 
+          
           label="Start Date"
-          minimum={
-            new Date().getDate() > 7
-              ? new Date(moment().year(), moment().month(), 1)
-              : new Date(moment().year(), moment().month() - 1, 1)
-          }
-          maximum={
-            new Date().getDate() > 7
-              ? new Date()
-              : new Date(
-                  moment().year(),
-                  moment().month() - 1,
-                  moment().subtract(1, 'month').endOf('month').date(),
-                )
-          }
-          date={claim?.start_date}
-          onDateChange={date => setClaim({...claim, start_date: date})}
+          disabled={true}
+          value={claim?.start_date}
         />
-        <DatePickerField
+        <InputField
           label="End Date"
-          date={claim?.end_date}
-          minimum={
-            new Date().getDate() > 7
-              ? new Date(moment().year(), moment().month(), 1)
-              : new Date(moment().year(), moment().month() - 1, 1)
-          }
-          maximum={
-            new Date().getDate() > 7
-              ? new Date()
-              : new Date(
-                  moment().year(),
-                  moment().month() - 1,
-                  moment().subtract(1, 'month').endOf('month').date(),
-                )
-          }
-          onDateChange={date => setClaim({...claim, end_date: date})}
+          value={claim?.end_date}
+          disabled={true}
         />
         <InputField
           label="Pincode"
           value={claim?.pincode?.toString()}
           onChangeText={t => setClaim({...claim, pincode: t})}
         />
+        <TouchableOpacity onPress={()=>handleImageOpen()}>
+        <Text style={{textDecorationLine:'underline',color:'blue',alignSelf:'flex-end'}}>View earlier images</Text>
+        </TouchableOpacity>
         <TouchableOpacity onPress={() => handleGalleryUpload()}>
           <InputField
             label="Proof of Sale"

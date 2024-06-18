@@ -149,10 +149,12 @@ const ProductRegistrationForm: React.FC<{navigation: any}> = ({navigation}) => {
         setPopupContent(
           'Please enter the customer email id to process the digital warranty',
         );
+
         setPopupVisible(true);
+        showLoader(false)
         return;
       }else {
-        showLoader(true);
+        
         const postData: CustomerData = {
           contactNo: contactNo,
           name: customerFormData.name,
@@ -258,7 +260,7 @@ const ProductRegistrationForm: React.FC<{navigation: any}> = ({navigation}) => {
 
   
   const getDetails = async () => {
-    showLoader(true);
+    
     try {
       if (contactNo.length !== 10) {
         Snackbar.show({
@@ -267,7 +269,7 @@ const ProductRegistrationForm: React.FC<{navigation: any}> = ({navigation}) => {
         });
         return;
       }
-
+      showLoader(true);
       const response = await getCustDetByMobile(contactNo);
 
       const result = await response.data;

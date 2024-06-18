@@ -159,7 +159,7 @@ export default {
     lbl_welcome: 'Welcome!',
     lbl_login_or_register: 'Login or register to continue',
     mobile_icon: 'Mobile Icon',
-    lbl_registered_mobile_number_login: 'Registered Mobile No./Rishta ID',
+    lbl_registered_mobile_number_login: 'Registered Mobile No.',
     login_via_otp: 'Login via OTP',
     log_in: 'Log In',
     enter_registered_mobile_no_rishta_id:
@@ -383,7 +383,7 @@ export default {
     bill_details: 'Bill Details',
     warranty_photo_mandatory: 'Warranty Photo',
     warranty_photo: 'Warranty Photo',
-    selling_price: 'Selling Price *',
+    selling_price: 'Selling Price',
     purchase_date_mandatory: 'Purchase Date*',
     purchase_date: 'Purchase Date',
     add_customer_details: 'Add Customer Details',
@@ -449,7 +449,7 @@ export default {
       'Customer details not available, Please fill manually',
     valid_coupon_please_proceed_to_prod_regi:
       'Valid coupon, Proceed to product registration.',
-    enter_selling_price: 'Enter selling price*',
+    enter_selling_price: 'Enter selling price',
     capture_warranty_details: 'Capture warranty details picture',
     capture_bill_details: 'Capture bill details picture',
     contact_number_optional: 'Contact Number',

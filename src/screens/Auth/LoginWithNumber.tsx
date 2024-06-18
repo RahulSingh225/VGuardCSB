@@ -8,19 +8,29 @@ import {
   ScrollView,
   TouchableOpacity,
   Alert,
+  Modal,
+  Linking,
 } from 'react-native';
 import {useTranslation} from 'react-i18next';
 import Snackbar from 'react-native-snackbar';
-
+import language from '../../assets/images/language.png';
+import {responsiveFontSize} from 'react-native-responsive-dimensions';
+import selectedTickImage from '../../assets/images/tick_1.png';
+import notSelectedTickImage from '../../assets/images/tick_1_notSelected.png';
 import arrowIcon from '../../assets/images/arrow.png';
 import Buttons from '../../components/Buttons';
 import Loader from '../../components/Loader';
 import Popup from '../../components/Popup';
 import {generateOtpForLogin} from '../../utils/apiservice';
-import { Colors } from '../../utils/constants';
+import {Colors} from '../../utils/constants';
+import LanguagePicker from '../../components/LanguagePicker';
+import DeviceInfo from 'react-native-device-info';
 
 const LoginWithNumber: React.FC<{navigation: any}> = ({navigation}) => {
   const [number, setNumber] = useState('');
+  const [showLanguagePicker, setShowLanguagePicker] = useState(false);
+  const [selectedOption, setSelectedOption] = useState(true);
+
   const [preferedLanguage, setpreferedLanguage] = useState(1);
   const [isPopupVisible, setIsPopupVisible] = useState(false);
   const [popupMessage, setPopupMessage] = useState('');
@@ -39,17 +49,15 @@ const LoginWithNumber: React.FC<{navigation: any}> = ({navigation}) => {
     if (number.trim().length) {
       try {
         const body = {
-          mobile_no: number
-          
+          mobile_no: number,
         };
         const validationResponse = await generateOtpForLogin(body);
-        console.log(validationResponse)
+        console.log(validationResponse);
         if (validationResponse.status === 200) {
           showLoader(false);
           const validationResponseData = validationResponse.data.data;
           setResponseCode(validationResponseData.ErrorCode);
           if (validationResponseData.code === 1) {
-            
             const successMessage = validationResponseData.ErrorMessage;
             setIsPopupVisible(true);
             setPopupMessage(successMessage);
@@ -74,7 +82,7 @@ const LoginWithNumber: React.FC<{navigation: any}> = ({navigation}) => {
   }
 
   const placeholderColor = Colors.grey;
-
+  const version = DeviceInfo.getVersion();
   const {t} = useTranslation();
 
   const handleClose = () => {
@@ -82,6 +90,22 @@ const LoginWithNumber: React.FC<{navigation: any}> = ({navigation}) => {
       navigation.navigate('loginwithotp', {usernumber: number});
     }
     setIsPopupVisible(false);
+  };
+  const handleLanguageButtonPress = () => {
+    setShowLanguagePicker(true);
+  };
+  const handleCloseLanguagePicker = () => {
+    setShowLanguagePicker(false);
+  };
+  const handleTermsPress = () => {
+    setSelectedOption(!selectedOption);
+  };
+  const openTermsAndConditions = () => {
+    const url = 'https://vguardrishta.com/tnc_retailer.html';
+
+    Linking.openURL(url).catch(error =>
+      console.error('Error opening URL:', error),
+    );
   };
 
   return (
@@ -94,6 +118,17 @@ const LoginWithNumber: React.FC<{navigation: any}> = ({navigation}) => {
       <View style={styles.registerUser}>
         <Loader isLoading={loader} />
         <View style={styles.mainWrapper}>
+          <View style={styles.buttonLanguageContainer}>
+            <Buttons
+              label=""
+              variant="outlined"
+              onPress={handleLanguageButtonPress}
+              iconHeight={30}
+              iconWidth={30}
+              iconGap={0}
+              icon={language}
+            />
+          </View>
           <Image
             source={require('../../assets/images/rishta_retailer_logo.webp')}
             style={styles.imageSaathi}
@@ -120,6 +155,24 @@ const LoginWithNumber: React.FC<{navigation: any}> = ({navigation}) => {
                   maxLength={10}
                 />
               </View>
+              <View style={styles.updateAndForgot}>
+                <View style={{flexDirection: 'row'}}>
+                  <Text style={[styles.forgotPassword]}>
+                    Already have an account?
+                  </Text>
+                  <TouchableOpacity
+                    onPress={() => navigation.navigate('login')}
+                    style={styles.forgotPasswordContainer}>
+                    <Text
+                      style={[
+                        styles.forgotPassword,
+                        {marginLeft: 10, color: Colors.colorPrimary},
+                      ]}>
+                      Sign In
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
             </View>
             <View>
               <Buttons
@@ -133,7 +186,7 @@ const LoginWithNumber: React.FC<{navigation: any}> = ({navigation}) => {
                 icon={arrowIcon}
               />
             </View>
-            
+
             {/* <View style={{ flexDirection: 'column', alignItems: 'center', marginTop: 30 }}>
               <View style={{ flexDirection: 'row', gap: 10 }}>
                 <Text style={styles.greyText}>{t('strings:otp_not_received')}</Text>
@@ -147,6 +200,25 @@ const LoginWithNumber: React.FC<{navigation: any}> = ({navigation}) => {
           </View>
         </View>
         <View>
+          <TouchableOpacity
+            onPress={() => handleTermsPress()}
+            style={styles.footerTextContainer}>
+            <Image
+              source={
+                selectedOption === true
+                  ? selectedTickImage
+                  : notSelectedTickImage
+              }
+              style={styles.tick}
+            />
+
+            <TouchableOpacity onPress={() => openTermsAndConditions()}>
+              <Text style={styles.footerText}>
+                {t('strings:lbl_accept_terms')}
+              </Text>
+            </TouchableOpacity>
+          </TouchableOpacity>
+          <Text style={styles.versionText}>V {version}</Text>
           <View style={styles.footerContainer}>
             <Text style={styles.footergreyText}>
               {t('strings:powered_by_v_guard')}
@@ -157,6 +229,18 @@ const LoginWithNumber: React.FC<{navigation: any}> = ({navigation}) => {
             />
           </View>
         </View>
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={showLanguagePicker}
+          onRequestClose={handleCloseLanguagePicker}>
+          <View style={styles.languagePickerContainer}>
+            <LanguagePicker onCloseModal={handleCloseLanguagePicker} />
+            <TouchableOpacity onPress={handleCloseLanguagePicker}>
+              <Text style={styles.closeText}>Close</Text>
+            </TouchableOpacity>
+          </View>
+        </Modal>
       </View>
     </ScrollView>
   );
@@ -166,10 +250,56 @@ const styles = StyleSheet.create({
   scrollContainer: {
     flexGrow: 1,
   },
+  footerTextContainer: {
+    paddingBottom: 5,
+    paddingHorizontal: 80,
+    display: 'flex',
+    flexDirection: 'row',
+    gap: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  forgotPassword: {
+    color: Colors.grey,
+    fontWeight: 'bold',
+    fontSize: 12,
+    textAlign: 'right',
+  },
+  forgotPasswordContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  updateAndForgot: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  languagePickerContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: Colors.white,
+  },
+  closeText: {
+    marginTop: 20,
+    color: Colors.black,
+    backgroundColor: Colors.yellow,
+    paddingHorizontal: 15,
+    paddingVertical: 5,
+    borderRadius: 5,
+    fontWeight: 'bold',
+  },
   registerUser: {
     height: '100%',
     backgroundColor: Colors.white,
     display: 'flex',
+  },
+  buttonLanguageContainer: {
+    width: '100%',
+    display: 'flex',
+    justifyContent: 'flex-end',
+    alignItems: 'flex-end',
   },
   mainWrapper: {
     padding: 30,
@@ -190,9 +320,8 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   imageSaathi: {
-    width: 100,
-    height: 98,
-    marginBottom: 30,
+    width: 150,
+    height: 130,
   },
   imageVguard: {
     width: 100,
@@ -203,6 +332,10 @@ const styles = StyleSheet.create({
     padding: 16,
     flex: 2,
   },
+  tick: {
+    height: 15,
+    width: 15,
+  },
   input: {
     color: Colors.black,
     height: 40,
@@ -210,7 +343,7 @@ const styles = StyleSheet.create({
   },
   inputContainer: {
     backgroundColor: Colors.white,
-    marginBottom: 20,
+
     borderRadius: 5,
     shadowColor: 'rgba(0, 0, 0, 0.8)',
     elevation: 5,
@@ -221,6 +354,11 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
     width: 15,
     height: 15,
+  },
+  footerText: {
+    textAlign: 'left',
+    fontSize: 10,
+    color: Colors.black,
   },
   or: {
     textAlign: 'center',
@@ -263,7 +401,7 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'column',
     gap: 20,
-    marginBottom: 50,
+    marginBottom: 30,
   },
   phone: {
     height: 50,
@@ -280,6 +418,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: 30,
+  },
+  versionText: {
+    textAlign: 'center',
+    color: Colors.black,
+    fontSize: responsiveFontSize(1.3),
+    marginVertical: 30,
   },
 });
 

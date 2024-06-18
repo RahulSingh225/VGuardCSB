@@ -58,6 +58,7 @@ const RedeemPoints: React.FC<{navigation: any}> = ({navigation}) => {
             redeemedPoints: vg?.redeemded_points || 0,
             tdsPoints: vg?.tds_deducted || 0,
           };
+          context.updateUser(vg);
           setPointData(data);
         }
       }).catch(err=>{

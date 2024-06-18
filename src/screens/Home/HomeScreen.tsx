@@ -75,16 +75,17 @@ const HomeScreen: React.FC<{navigation: any}> = ({navigation}) => {
 
   useFocusEffect(
     React.useCallback(() => {
-      getItem('FIRST_LOGIN').then(res => {
-        if (res) {
-          setWelocme(true);
-        }
-      });
+      
       const user: VguardUser = appContext.getUserDetails();
       if (user?.login_date === null) {
         console.log('first time user');
         navigation.navigate('UpdatePassword');
       } else {
+        getItem('FIRST_LOGIN').then(res => {
+          if (res) {
+            setWelocme(true);
+          }
+        });
         getUserProfile({user_id: user?.user_id})
           .then(res => {
             if (res.data.status) {
