@@ -51,11 +51,11 @@ const ClaimDetails = ({navigation, route}) => {
       </View>
       <View style={styles.item}>
       <Text style={styles.text}>Start Date</Text>
-      <Text style={styles.text}>{claimData.end_date}</Text>
+      <Text style={styles.text}>{claimData.start_date}</Text>
       </View>
       <View style={styles.item}>
       <Text style={styles.text}>End Date</Text>
-      <Text style={styles.text}>{claimData.start_date}</Text>
+      <Text style={styles.text}>{claimData.end_date}</Text>
       </View>
       <Text style={{alignSelf:'center',fontSize:18,fontWeight:'bold',color:'black',marginVertical:10}}>Claim Details</Text>
       <ScrollView  horizontal>

@@ -31,6 +31,7 @@ const AuthNavigator: React.FC = () => {
         options={{headerShown: false}}
       />
        <Stack.Screen
+
         name="loginwithotp"
         component={LoginWithOtp}
         options={{headerShown: false}}

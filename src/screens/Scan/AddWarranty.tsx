@@ -234,15 +234,9 @@ const AddWarranty = ({navigation}) => {
   async function saveData() {
     try {
 
-      console.log(customerDetails)
-      if(!sellingPrice || Number(sellingPrice) < 1){
-        ToastAndroid.show(
-          "Please enter the valid selling price",
-          ToastAndroid.SHORT,
-        );
-        return;
-      }
-      if (!customerDetails?.contactNo || !sellingPrice ) {
+
+      if (!customerDetails?.contactNo  ) {
+
         ToastAndroid.show(
           t('strings:enter_mandatory_fields'),
           ToastAndroid.SHORT,

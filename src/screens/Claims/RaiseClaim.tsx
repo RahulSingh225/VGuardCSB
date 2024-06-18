@@ -1,4 +1,4 @@
-import {View, Text, ScrollView, TouchableOpacity} from 'react-native';
+import {View, Text, ScrollView, TouchableOpacity, Modal} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {StyleSheet} from 'react-native';
 import {Colors} from '../../utils/constants';
@@ -23,10 +23,16 @@ import {
 import {AppContext} from '../../services/ContextService';
 import Popup from '../../components/Popup';
 import Loader from '../../components/Loader';
+import ScrollPopup from '../../components/ScrollPopup';
 
 const RaiseClaim = ({navigation}) => {
   const context = React.useContext(AppContext);
   useEffect(() => {
+    const user:VguardUser = context.getUserDetails()
+    setfaqContent(
+      `Hi ${user.name},\nAs a store manager, you can claim benefits from V-Guard by raising claims for the business done through your outlet. Refer to the below FAQ using the following conditions:\n\n1. When can a claim be raised?\n Answer - Claims for a particular month have to be raised latest by the 7th of the next month.\nFor example: A claim for the month of May can be raised any time in May, but latest by 7th June. After 8th June, you will not be able to raise claims for May anymore.\n\n\n2. How much time does the claim approval take?\n Answer - Claims typically take on average 10-20 days to be passed via the V-Guard sales team.\n\n\n3. How are claims processed? Can my claim be rejected?\n Answer - Claims are reviewed by the V-Guard sales team and verified against the purchase records of your store.\nIf the sales team feels that the claims you are raising does not match with the sales records, then the sales team may contact you to clarify the issue. If the sales team does not find the claim appropriate, they may partially approve (lesser quantity will be approved) or totally reject the claim (0 units will be approved).\n\n\n4. What happens if my claim gets rejected?\n Answer - Claims, once rejected or partially approved, cannot be edited on the system. You may speak to the sales team to understand how they made their decision, but they may not be able to reverse their decision once made. Therefore, please raise valid claims which the sales team can pass without discrepancy.\n\n\n5. For which products can I raise a claim?\n Answer - You can raise claims for approved categories and for which schemes are available on the Rishta app. For approved categories, please refer to the ‘profile section’ and refer to ‘Mapped categories’ field. For available schemes, please refer to the ‘scheme’ section.\n\n\n6. How many points do I get for the claim?\n Answer - Points are assigned based on the approved quantity and the available scheme for the quantity you have raised. The points per product will be visible in the ‘scheme’ section.\n\n\n7. How can I raise a claim?\n Answer - On the claims page, enter the following details:\n-Select the start date and end date of the claim\n-Pin code of the store\n-Upload proof of sale or purchase of V-Guard products from your store (only jpg, png and pdf files, maximum <insert max size>)\n-Select category, sub-category and SKU name and add quantity sold as per uploaded proof.\n-Add more units as needed\n\nPlease note:\nYou cannot raise 2 claims for the same dates, so please upload ALL products sold within those dates at the same time.\nFor example: If you are selecting 1st May to 7th May, you cannot raise another claim from 6th May to 8th May because 6th and 7th are overlapping dates. So if you raise claims for stabilizer category from 1st to 7th, then you will miss out on claiming points for other categories for those dates.\n\n8. After submitting, do I have a chance to edit my claim?\n Answer - Yes, you can submit the claim unless it has already started being reviewed by the V-Guard sales team.\nTo edit, go the ‘claim’s history’ section and find the claim you want to edit. \nIf the status of the claim is ‘pending’, you can edit the claim and re-submit.\nIf the status is ‘in-progress’ or ‘completed’, you will not be able to edit the claim anymore.\n\n9. How do I know what happened to the claim and how many points I earned?\n Answer - In the ‘claim’s history’ section, find the claim you want to know details for and click it.\nYou will be able to see whether the claim was totally approved, partially approved or rejected.\nIf partially approved or rejected, you will be able to view the comments added by the V-Guard sales team and see how many quantity and points are finally approved.\n\n\n10. How do I redeem the points earned?\n Answer - Go to the ‘redeem points’ section and redeem points for money using the mode of transfer that you prefer.`
+    );
+    setFAQ(true)
     setLoader(true);
     getCategoryList()
       .then(res => {
@@ -49,8 +55,14 @@ const RaiseClaim = ({navigation}) => {
   const [skuName, setSkuName] = useState([]);
   const [claim, setClaim] = useState(new Claims());
   const [claimImage, setClaimImage] = useState([]);
+  const [startDate,setStartDate] = useState(null);
+  const [endDate,setEndDate] = useState(null)
   const [claimData, setClaimData] = useState([new ClaimsData()]);
   const [claimDataCount, setClaimDataCount] = useState(1);
+  const [faq, setFAQ] = useState(false);
+  const [faqcontent, setfaqContent] = useState(
+    'Hi (insert name),\nAs a store manager, you can claim benefits from V-Guard by raising claims for the business done through your outlet. Refer to the below FAQ using the following conditions:\n\n1. When can a claim be raised?\n Answer - Claims for a particular month have to be raised latest by the 7th of the next month.\nFor example: A claim for the month of May can be raised any time in May, but latest by 7th June. After 8th June, you will not be able to raise claims for May anymore.\n\n\n2. How much time does the claim approval take?\n Answer - Claims typically take on average 10-20 days to be passed via the V-Guard sales team.\n\n\n3. How are claims processed? Can my claim be rejected?\n Answer - Claims are reviewed by the V-Guard sales team and verified against the purchase records of your store.\nIf the sales team feels that the claims you are raising does not match with the sales records, then the sales team may contact you to clarify the issue. If the sales team does not find the claim appropriate, they may partially approve (lesser quantity will be approved) or totally reject the claim (0 units will be approved).\n\n\n4. What happens if my claim gets rejected?\n Answer - Claims, once rejected or partially approved, cannot be edited on the system. You may speak to the sales team to understand how they made their decision, but they may not be able to reverse their decision once made. Therefore, please raise valid claims which the sales team can pass without discrepancy.\n\n\n5. For which products can I raise a claim?\n Answer - You can raise claims for approved categories and for which schemes are available on the Rishta app. For approved categories, please refer to the ‘profile section’ and refer to ‘Mapped categories’ field. For available schemes, please refer to the ‘scheme’ section.\n\n\n6. How many points do I get for the claim?\n Answer - Points are assigned based on the approved quantity and the available scheme for the quantity you have raised. The points per product will be visible in the ‘scheme’ section.\n\n\n7. How can I raise a claim?\n Answer - On the claims page, enter the following details:\n-Select the start date and end date of the claim\n-Pin code of the store\n-Upload proof of sale or purchase of V-Guard products from your store (only jpg, png and pdf files, maximum <insert max size>)\n-Select category, sub-category and SKU name and add quantity sold as per uploaded proof.\n-Add more units as needed\n\nPlease note:\nYou cannot raise 2 claims for the same dates, so please upload ALL products sold within those dates at the same time.\nFor example: If you are selecting 1st May to 7th May, you cannot raise another claim from 6th May to 8th May because 6th and 7th are overlapping dates. So if you raise claims for stabilizer category from 1st to 7th, then you will miss out on claiming points for other categories for those dates.\n\n8. After submitting, do I have a chance to edit my claim?\n Answer - Yes, you can submit the claim unless it has already started being reviewed by the V-Guard sales team.\nTo edit, go the ‘claim’s history’ section and find the claim you want to edit. \nIf the status of the claim is ‘pending’, you can edit the claim and re-submit.\nIf the status is ‘in-progress’ or ‘completed’, you will not be able to edit the claim anymore.\n\n9. How do I know what happened to the claim and how many points I earned?\n Answer - In the ‘claim’s history’ section, find the claim you want to know details for and click it.\nYou will be able to see whether the claim was totally approved, partially approved or rejected.\nIf partially approved or rejected, you will be able to view the comments added by the V-Guard sales team and see how many quantity and points are finally approved.\n\n\n10. How do I redeem the points earned?\n Answer - Go to the ‘redeem points’ section and redeem points for money using the mode of transfer that you prefer.',
+  );
   const [popup, setPopup] = useState({isPopupVisible: false, popupContent: ''});
 
   function handleCategoryChange(index: number, position: number) {
@@ -86,12 +98,13 @@ const RaiseClaim = ({navigation}) => {
 
   function handleSubCategoryChange(index: number, position: number) {
     console.log(subCategories);
-    const filtersku = skuName[position].filter(s => {
+    let filtersku = skuName[position].filter(s => {
       if (s.SubCategoryId == subCategories[position][index].subcategory_id) {
         return s;
       }
     });
     let s = [...skuName];
+    filtersku.unshift({PartDescription: 'Select SKU', PartNumber: 0});
     s[position] = filtersku;
     setSkuName(s);
     let newArr = [...claimData];
@@ -229,14 +242,66 @@ const RaiseClaim = ({navigation}) => {
     <ScrollView style={styles.mainWrapper}>
       {loader && <Loader isLoading={loader} />}
       {popup.isPopupVisible && (
-        <Popup
+        <ScrollPopup
           isVisible={popup.isPopupVisible}
           onClose={() =>
             setPopup({...popup, isPopupVisible: !popup.isPopupVisible})
           }>
           <Text style={{fontWeight: 'bold'}}>{popup.popupContent}</Text>
-        </Popup>
+        </ScrollPopup>
       )}
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={faq}
+        onDismiss={() => setFAQ(false)}>
+        <View
+          style={{
+            width: width * 0.9,
+            maxHeight: height * 0.8,
+            alignSelf: 'center',
+            marginTop:50,
+            backgroundColor: Colors.activity_bg_color,
+            flex: 1,
+            borderRadius: 10,
+            elevation: 10,
+            justifyContent: 'center',
+            gap: 10,
+            flexDirection: 'column',
+          }}>
+          <Text
+            style={{
+              color: 'black',
+              fontWeight: 'bold',
+              fontSize: 24,
+              textAlign: 'center',
+              }}>
+            Claims FAQ
+          </Text>
+          <ScrollView
+            style={{flexGrow: 1, width: '100%'}}
+            contentContainerStyle={{
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}>
+          <Text
+            style={{
+              fontWeight: '500',
+              color: Colors.black,
+              textAlign: 'left',
+            }}
+          >
+            {faqcontent}
+          </Text>
+          </ScrollView>
+          <Buttons
+            btnStyle={{width: '50%', alignSelf: 'center',marginVertical:20}}
+            onPress={() => setFAQ(false)}
+            variant="filled"
+            label="OK"
+          />
+        </View>
+      </Modal>
       <View style={styles.mainView}>
         <Buttons
           btnStyle={{alignSelf: 'center'}}
@@ -245,6 +310,9 @@ const RaiseClaim = ({navigation}) => {
           width="90%"
           variant="outlined"
         />
+        <TouchableOpacity onPress={()=>setFAQ(true)}>
+        <Text style={{color:'black',textDecorationLine:'underline',alignSelf:'flex-end',marginRight:20}}>Claim FAQ</Text>
+        </TouchableOpacity>
         <Text style={styles.label1}>Raise new claim</Text>
 
         <DatePickerField
@@ -256,23 +324,26 @@ const RaiseClaim = ({navigation}) => {
           }
           maximum={new Date()}
           date={claim?.start_date}
-          onDateChange={date => setClaim({...claim, start_date: date})}
+          onDateChange={date => {
+            setStartDate(date)
+            setClaim({...claim, start_date: date})
+            
+          }}
+
         />
+     
         <DatePickerField
           label="End Date"
           date={claim?.end_date}
-          minimum={claim?.start_date ? new Date(claim.start_date) : undefined}
+          
+          
           maximum={
-            new Date(claim?.start_date).getMonth() == new Date().getMonth()
-              ? new Date()
-              : new Date(
-                  moment().year(),
-                  moment().month() - 1,
-                  moment().subtract(1, 'month').endOf('month').date(),
-                )
+            
+               new Date()
           }
           onDateChange={date => setClaim({...claim, end_date: date})}
         />
+
         <InputField
           label="Pincode"
           value={claim?.pincode}
@@ -315,38 +386,66 @@ const RaiseClaim = ({navigation}) => {
                   </Text>
                 </TouchableOpacity>
               )}
-              <Picker
-                selectedValue={cl.category_name || 0}
-                onValueChange={(value, index) => {
-                  handleCategoryChange(index, position);
+              <View
+                style={{
+                  justifyContent: 'center',
+                  marginVertical: 5,
+                  alignSelf: 'stretch',
+                  borderWidth: 1,
+                  borderRadius: 10,
                 }}>
-                {categories.map(c => (
-                  <Picker.Item label={c.label} value={c.value} />
-                ))}
-              </Picker>
-
-              <Picker
-                selectedValue={cl.subcategory_id || 0}
-                onValueChange={(value, index) => {
-                  handleSubCategoryChange(index, position);
+                <Picker
+                  selectedValue={cl.category_name || 0}
+                  onValueChange={(value, index) => {
+                    handleCategoryChange(index, position);
+                  }}>
+                  {categories.map(c => (
+                    <Picker.Item label={c.label} value={c.value} />
+                  ))}
+                </Picker>
+              </View>
+              <View
+                style={{
+                  justifyContent: 'center',
+                  marginVertical: 5,
+                  alignSelf: 'stretch',
+                  borderWidth: 1,
+                  borderRadius: 10,
                 }}>
-                {subCategories[position]?.map(c => (
-                  <Picker.Item
-                    label={c.subcategory_name}
-                    value={c.subcategory_id}
-                  />
-                ))}
-              </Picker>
-
-              <Picker
-                selectedValue={cl.sku_id || 0}
-                onValueChange={(value, index) => {
-                  handleSKUChange(index, position);
+                <Picker
+                  selectedValue={cl.subcategory_id || 0}
+                  onValueChange={(value, index) => {
+                    handleSubCategoryChange(index, position);
+                  }}>
+                  {subCategories[position]?.map(c => (
+                    <Picker.Item
+                      label={c.subcategory_name}
+                      value={c.subcategory_id}
+                    />
+                  ))}
+                </Picker>
+              </View>
+              <View
+                style={{
+                  justifyContent: 'center',
+                  marginVertical: 5,
+                  alignSelf: 'stretch',
+                  borderWidth: 1,
+                  borderRadius: 10,
                 }}>
-                {skuName[position]?.map(c => (
-                  <Picker.Item label={c.PartDescription} value={c.PartNumber} />
-                ))}
-              </Picker>
+                <Picker
+                  selectedValue={cl.sku_id || 0}
+                  onValueChange={(value, index) => {
+                    handleSKUChange(index, position);
+                  }}>
+                  {skuName[position]?.map(c => (
+                    <Picker.Item
+                      label={c.PartDescription}
+                      value={c.PartNumber}
+                    />
+                  ))}
+                </Picker>
+              </View>
 
               <InputField
                 label="Quantity"

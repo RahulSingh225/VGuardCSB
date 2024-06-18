@@ -31,67 +31,77 @@ const UpdatePassword = ({navigation}) => {
     } 
     if (confirmPassword !== password) {
       setPopup({visible: true, content: 'Password does not match'});
-      return 
-    } 
-    setLoader(true);
-    updatePassword(password, user.user_id)
-      .then(res => {
-        setLoader(false);
-        if (res.data.status) {
-          navigation.replace('UpdateProfile');
-        } else {
-          setPopup({visible: true, content: res.data.message});
-        }
-      })
-      .catch(err =>{
-        setLoader(false);
-        console.log(err);
-        setPopup({visible:true,content:'Something went wrong'})
+    } else if (password.length != 8) {
+      setPopup({
+        visible: true,
+        content: 'Please set password with maximum 8 digits',
       });
+    } else {
+      setLoader(true);
+      updatePassword(password, user.user_id)
+        .then(res => {
+          setLoader(false);
+          if (res.data.status) {
+            navigation.replace('Consent');
+          } else {
+            setPopup({visible: true, content: res.data.message});
+          }
+        })
+        .catch(err => {
+          setLoader(false);
+          console.log(err);
+          setPopup({visible: true, content: 'Something went wrong'});
+        });
+    }
   }
 
   return (
-    <ScrollView
-      contentContainerStyle={{alignContent: 'center', gap: 10}}
-      // style={{width: width * 0.9, alignSelf: 'center'}}
-      style={style.mainWrapper}
-      >
-      {loader && <Loader isLoading={loader} />}
-      {popup.visible && (
-        <Popup
-          isVisible={true}
-          children={<Text>{popup.content}</Text>}
-          onClose={() => setPopup({visible: false, content: ''})}
+    <View style={{backgroundColor: Colors.white, flex: 1}}>
+      <ScrollView
+        contentContainerStyle={{
+          alignContent: 'center',
+          gap: 10,
+          backgroundColor: Colors.white,
+        }}
+        style={{width: width * 0.9, alignSelf: 'center'}}>
+        {loader && <Loader isLoading={loader} />}
+        {popup.visible && (
+          <Popup
+            isVisible={true}
+            children={<Text>{popup.content}</Text>}
+            onClose={() => setPopup({visible: false, content: ''})}
+          />
+        )}
+        <Text style={style.text}>Please Update your password!</Text>
+        <InputField
+          style={style.input}
+          label="Enter Password"
+          value={password}
+          disabled={false}
+          editable={true}
+          maxLength={8}
+          onChangeText={t => setPassword(t)}
         />
-      )}
-      <Text style={style.text}>Please Update your password!</Text>
-      <InputField
-        style={style.input}
-        label="Enter Password"
-        value={password}
-        disabled={false}
-        editable={true}
-        maxLength={8}
-        onChangeText={t => setPassword(t)}
-      />
-      <InputField
-        style={style.input}
-        label="Enter Confirm Password"
-        value={confirmPassword}
-        disabled={false}
-        editable={true}
-        maxLength={8}
-        onChangeText={t => setConfirmPassword(t)}
-      />
+        <InputField
+          style={style.input}
+          label="Enter Confirm Password"
+          value={confirmPassword}
+          disabled={false}
+          editable={true}
+          maxLength={8}
+          onChangeText={t => setConfirmPassword(t)}
 
-      <Buttons
-        btnStyle={style.button}
-        label={'Update'}
-        variant="filled"
-        onPress={() => handleSubmit()}
-        width="80%"
-      />
-    </ScrollView>
+        />
+
+        <Buttons
+          btnStyle={style.button}
+          label={'Update'}
+          variant="filled"
+          onPress={() => handleSubmit()}
+          width="80%"
+        />
+      </ScrollView>
+    </View>
   );
 };
 const style = StyleSheet.create({
@@ -101,7 +111,7 @@ const style = StyleSheet.create({
     backgroundColor: Colors.white,
   },
   button: {
-    alignSelf:'center',
+    alignSelf: 'center',
     marginTop: 200,
   },
   input: {width: width * 0.8, color: Colors.black},

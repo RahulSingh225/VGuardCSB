@@ -62,7 +62,7 @@ const EditProfile: React.FC<{ navigation: any }> = ({ navigation }) => {
   const gender = ['Male', 'Female', 'Other'];
 
   const ecardURL = 'https://www.vguardrishta.com/img/appImages/eCard/';
-
+  const [api,setAPI]= useState(false)
   const [profileImage, setProfileImage] = useState('');
   const [userData, setUserData] = useState<VguardUser | any>();
   const [isPopupVisible, setPopupVisible] = useState(false);
@@ -249,6 +249,7 @@ const EditProfile: React.FC<{ navigation: any }> = ({ navigation }) => {
       .then(res => {
         showLoader(false);
         if (res.status == 200 && res.data.status) {
+          setAPI(true)
           setPopupContent(() => <Text>{res.data.message}</Text>);
           setPopupVisible(true);
           updateProfileData();
@@ -509,7 +510,10 @@ const EditProfile: React.FC<{ navigation: any }> = ({ navigation }) => {
       {isPopupVisible && (
         <Popup
           isVisible={isPopupVisible}
-          onClose={() => setPopupVisible(false)}>
+          onClose={() => {
+            if(api)navigation.pop()
+            
+            setPopupVisible(false)}}>
           {popupContent}
         </Popup>
       )}

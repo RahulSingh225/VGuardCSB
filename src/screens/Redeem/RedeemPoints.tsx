@@ -16,6 +16,8 @@ import {Colors} from '../../utils/constants';
 import {AppContext} from '../../services/ContextService';
 import {VguardUser} from '../../types';
 import { useFocusEffect } from '@react-navigation/native';
+import Loader from '../../components/Loader';
+import { getUserProfile } from '../../utils/apiservice';
 
 interface PointData {
   pointsBalance: string;
@@ -35,7 +37,7 @@ const RedeemPoints: React.FC<{navigation: any}> = ({navigation}) => {
       imageUrl: require('../../assets/images/banner_redeem_ppoints.webp'),
     },
   ];
-
+  const [loader,setLoader] = useState(false)
   const [pointData, setPointData] = useState<PointData>({
     pointsBalance: '',
     redeemedPoints: '',
@@ -44,19 +46,38 @@ const RedeemPoints: React.FC<{navigation: any}> = ({navigation}) => {
 
   useFocusEffect(
     React.useCallback(() => {
+      setLoader(true)
+
       const user: VguardUser = context.getUserDetails();
-      const data: PointData = {
-        pointsBalance: user?.redeemable_points || 0,
-        redeemedPoints: user?.redeemded_points || 0,
-        tdsPoints: user?.tds_deducted || 0,
-      };
-      setPointData(data);
+      getUserProfile({user_id:user.user_id}).then(res=>{
+        setLoader(false)
+        if(res.data.status){
+          const vg:VguardUser = res.data.data;
+          const data: PointData = {
+            pointsBalance: vg?.redeemable_points || 0,
+            redeemedPoints: vg?.redeemded_points || 0,
+            tdsPoints: vg?.tds_deducted || 0,
+          };
+          context.updateUser(vg);
+          setPointData(data);
+        }
+      }).catch(err=>{
+        setLoader(false)
+        const data: PointData = {
+          pointsBalance: user?.redeemable_points || 0,
+          redeemedPoints: user?.redeemded_points || 0,
+          tdsPoints: user?.tds_deducted || 0,
+        };
+        setPointData(data);
+      })
+      
     }, []),
   );
 
   return (
     <ScrollView contentContainerStyle={styles.scrollViewContainer}>
       <View style={styles.mainWrapper}>
+        <Loader isLoading={loader}/>
         <View style={styles.carousel}>
           <ReusableCarousel data={carouselData} />
         </View>

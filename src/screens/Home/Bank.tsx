@@ -119,7 +119,6 @@ const Bank = ({navigation}) => {
         context.updateUser(vg);
         setUserData(vg);
         setBankDetail(vg.bank_details);
-       
       }
     } catch (error) {
       console.log(error);
@@ -127,11 +126,14 @@ const Bank = ({navigation}) => {
   }
 
   return (
+    <View style={{backgroundColor:Colors.white,flex:1}}>
     <ScrollView
+
       contentContainerStyle={{alignContent: 'center', gap: 10}}
       // style={{width: width * 0.9, alignSelf: 'center'}}
       style={styles.mainWrapper}
       >
+
       {popup.isVisible && (
         <Popup
           isVisible={popup.isVisible}
@@ -144,7 +146,7 @@ const Bank = ({navigation}) => {
         <Buttons
           variant="outlined"
           label={'Skip'}
-          onPress={() => navigation.replace('Home')}
+          onPress={() => navigation.reset({index: 0, routes: [{name: 'Home'}]})}
           width="30%"
         />
       </View>
@@ -204,11 +206,12 @@ const Bank = ({navigation}) => {
         <Buttons
           label={'Finish'}
           variant="filled"
-          onPress={() => navigation.replace('Home')}
+          onPress={() => navigation.reset({index: 0, routes: [{name: 'Home'}]})}
           width="100%"
         />
       </View>
     </ScrollView>
+    </View>
   );
 };
 

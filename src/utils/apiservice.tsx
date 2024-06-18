@@ -5,8 +5,8 @@ import {VguardUser} from '../types';
 import {StorageItem, addItem, getItem} from '../services/StorageService';
 
 // const BASE_URL = 'http://192.168.1.37:5000/vguard/api';
-//const BASE_URL = 'http://localhost:5000/vguard/api';
-const BASE_URL = 'https://vguardcsb.spacempact.cloud/vguard/api';
+const BASE_URL = 'http://localhost:5000/vguard/api';
+//const BASE_URL = 'https://vguardcsb.spacempact.cloud/vguard/api';
 
 export const api: AxiosInstance = axios.create({
   baseURL: BASE_URL,
@@ -33,12 +33,12 @@ async function createPostRequest(
   } catch (error) {
     console.log(error);
     console.log(error?.response);
-    // if (error.response.status == 401) {
-    //   getItem('REFRESH_TOKEN').then(token => {
-    //     console.log(token);
-    //     newTokens(token);
-    //   });
-    // }
+    if (error.response.status == 401) {
+      getItem('REFRESH_TOKEN').then(token => {
+        console.log(token);
+        newTokens(token);
+      });
+    }
     console.error('Error:', relativeUrl, error);
     throw error;
   }
@@ -487,7 +487,11 @@ export function raiseClaim(claim: any) {
   };
   return api.post(path, claim, {headers});
 }
+export function getSignedUrl(claim: any) {
+  const path = 'claims/getClaimFile';
 
+  return createPostRequest(path, claim);
+}
 export function editClaim(claim: any) {
   const path = 'claims/editClaim';
   const headers = {

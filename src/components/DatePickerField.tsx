@@ -22,6 +22,8 @@ const DatePickerField: React.FC<DatePickerFieldProps> = ({
   minimum,
   maximum
 }) => {
+  console.log(minimum)
+  console.log(maximum)
   const [isDatePickerVisible, setDatePickerVisibility] = React.useState(false);
 
   const showDatePicker = () => {

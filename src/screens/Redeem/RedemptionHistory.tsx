@@ -112,7 +112,7 @@ const styles = StyleSheet.create({
   },
   text: {
     flexGrow: 1,
-    width: '20%',
+    
     fontSize: responsiveFontSize(1.5),
   },
   smalltext: {
@@ -121,6 +121,7 @@ const styles = StyleSheet.create({
     color: Colors.black,
   },
   detail: {
+    
     flexGrow: 1,
     width: '40%',
     flexDirection: 'column',

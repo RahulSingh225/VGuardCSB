@@ -40,7 +40,7 @@ const ClaimList = ({navigation}) => {
       <Text style={styles.text}>{item.CreatedDate}</Text>
       <Text style={styles.text}>{item.ClaimNo}</Text>
       <Text style={styles.status}>{item.ClaimStatus}</Text>
-      <TouchableOpacity
+      <TouchableOpacity style={{paddingHorizontal:5}}
         onPress={() => setModal({visible: true, data: item.ClaimNo})}>
         <Icon name="options-vertical" />
       </TouchableOpacity>
@@ -55,6 +55,7 @@ const ClaimList = ({navigation}) => {
         onRequestClose={() => setModal({visible: false, data: ''})}>
         <View style={styles.modalBackground}>
           <View style={styles.modalContent}>
+            
             <Pressable
               style={styles.option}
               onPress={() => {

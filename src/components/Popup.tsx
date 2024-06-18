@@ -7,6 +7,7 @@ import {
   StyleSheet,
   Image,
   ImageSourcePropType,
+  ScrollView,
 } from 'react-native';
 import closeIcon from '../assets/images/ic_close.png';
 
@@ -14,7 +15,7 @@ import {
   responsiveFontSize,
   responsiveHeight,
 } from 'react-native-responsive-dimensions';
-import { Colors } from '../utils/constants';
+import {Colors} from '../utils/constants';
 
 interface PopupProps {
   isVisible: boolean;
@@ -22,7 +23,7 @@ interface PopupProps {
   children: React.ReactNode;
 }
 
-const Popup: React.FC<PopupProps> = ({ isVisible, onClose, children }) => {
+const Popup: React.FC<PopupProps> = ({isVisible, onClose, children}) => {
   if (!isVisible) {
     return null;
   }
@@ -35,11 +36,13 @@ const Popup: React.FC<PopupProps> = ({ isVisible, onClose, children }) => {
       onRequestClose={onClose}>
       <View style={styles.modalContainer}>
         <View style={styles.modalContent}>
-          <Text style={styles.popupText}>{children}</Text>
+         
+            <Text style={styles.popupText}>{children}</Text>
+          
           <TouchableOpacity style={styles.closeButton} onPress={onClose}>
             <Image
               source={closeIcon as ImageSourcePropType}
-              style={{ flex: 1, width: '100%', height: '100%' }}
+              style={{flex: 1, width: '100%', height: '100%'}}
               resizeMode="contain"
             />
           </TouchableOpacity>
