@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   StyleSheet,
   Linking,
+  ToastAndroid,
 } from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
 import Buttons from '../../components/Buttons';
@@ -35,6 +36,7 @@ import {
 } from '../../utils/apiservice';
 import { AppContext } from '../../services/ContextService';
 import { StorageItem, addItem } from '../../services/StorageService';
+import { mailValidation, mobileNoValidation } from '../../utils/pattern';
 
 const EditProfile: React.FC<{ navigation: any }> = ({ navigation }) => {
   const appContext = useContext(AppContext);
@@ -203,20 +205,30 @@ const EditProfile: React.FC<{ navigation: any }> = ({ navigation }) => {
 
   function checkValidation() {
     console.log(userData);
+    if(userData.alternate_contact && !mobileNoValidation(userData.alternate_contact)){
+      ToastAndroid.show("Please enter the valid alternate number",ToastAndroid.SHORT)
+      return
+    }
+
+    if(userData.email && !mailValidation(userData.email)){
+      ToastAndroid.show("Please enter the valid E-mail",ToastAndroid.SHORT)
+      return
+    }
+
     if (!userData?.currentaddress1) {
-      showError('Please enter address details');
+      ToastAndroid.show("Please enter the house/ flat/ block no.",ToastAndroid.SHORT)
       return;
     } else if (!userData?.currentaddress2) {
-      showError('Please enter address details');
+      ToastAndroid.show("Please enter the street/ colony/ locality",ToastAndroid.SHORT)
       return;
     } else if (!userData?.pincode) {
-      showError('Please enter pincode');
+      ToastAndroid.show("Please enter the pincode",ToastAndroid.SHORT)
       return;
     } else if (!bankDetails?.bank_account_number) {
-      showError('Please enter Bank details');
+      ToastAndroid.show("Please enter the bank account number",ToastAndroid.SHORT)
       return;
     } else if (!bankDetails?.bank_account_ifsc) {
-      showError('Please enter Bank details');
+      ToastAndroid.show("Please enter the IFSC code",ToastAndroid.SHORT)
       return;
     } else {
       handleSubmit();
@@ -326,14 +338,17 @@ const EditProfile: React.FC<{ navigation: any }> = ({ navigation }) => {
         <InputField
           label={t('strings:alternate_contact_number')}
           value={userData?.alternate_contact}
+          numeric={true}
+          maxLength={10}
           onChangeText={text => handleInputChange(text, 'alternate_contact')}
         />
 
-        <DatePickerField
+        <InputField
           label={t('strings:lbl_date_of_birth_mandatory')}
-          date={userData?.dob}
-          
-          onDateChange={date => handleInputChange(date, 'dob')}
+          value={userData?.dob}
+          numeric={true}
+          maxLength={10}
+          disabled={true}
         />
         <InputField
           label={t('strings:id_proof_no')}

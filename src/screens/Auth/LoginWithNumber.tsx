@@ -22,9 +22,13 @@ import Buttons from '../../components/Buttons';
 import Loader from '../../components/Loader';
 import Popup from '../../components/Popup';
 import {generateOtpForLogin} from '../../utils/apiservice';
+
+import { mobileNoValidation } from '../../utils/pattern';
+
 import {Colors} from '../../utils/constants';
 import LanguagePicker from '../../components/LanguagePicker';
 import DeviceInfo from 'react-native-device-info';
+
 
 const LoginWithNumber: React.FC<{navigation: any}> = ({navigation}) => {
   const [number, setNumber] = useState('');
@@ -46,38 +50,44 @@ const LoginWithNumber: React.FC<{navigation: any}> = ({navigation}) => {
 
   async function getOTP(otpType: string) {
     showLoader(true);
-    if (number.trim().length) {
-      try {
-        const body = {
-          mobile_no: number,
-        };
-        const validationResponse = await generateOtpForLogin(body);
-        console.log(validationResponse);
-        if (validationResponse.status === 200) {
-          showLoader(false);
-          const validationResponseData = validationResponse.data.data;
-          setResponseCode(validationResponseData.ErrorCode);
-          if (validationResponseData.code === 1) {
-            const successMessage = validationResponseData.ErrorMessage;
-            setIsPopupVisible(true);
-            setPopupMessage(successMessage);
-          } else {
-            const errorMessage = validationResponseData.ErrorMessage;
-            setIsPopupVisible(true);
-            setPopupMessage(errorMessage);
-          }
-        } else {
-          throw new Error('Something went wrong!');
-        }
-      } catch (error: any) {
-        showLoader(false);
-        setIsPopupVisible(true);
-        setPopupMessage(error.response.data);
-        console.error('Error during validation:', error);
-      }
-    } else {
+
+
+    if (!mobileNoValidation(number)) {
       showLoader(false);
-      showSnackbar('Please enter your mobile number');
+      showSnackbar('Please enter your valid mobile number');
+      return
+    }
+
+    try {
+      const body = {
+        mobile_no: number
+        
+      };
+      const validationResponse = await generateOtpForLogin(body);
+      console.log(validationResponse)
+      if (validationResponse.status === 200) {
+        showLoader(false);
+        const validationResponseData = validationResponse.data.data;
+        setResponseCode(validationResponseData.ErrorCode);
+        if (validationResponseData.code === 1) {
+          
+          const successMessage = validationResponseData.ErrorMessage;
+          setIsPopupVisible(true);
+          setPopupMessage(successMessage);
+
+        } else {
+          const errorMessage = validationResponseData.ErrorMessage;
+          setIsPopupVisible(true);
+          setPopupMessage(errorMessage);
+        }
+      } else {
+        throw new Error('Something went wrong!');
+      }
+    } catch (error: any) {
+      showLoader(false);
+      setIsPopupVisible(true);
+      setPopupMessage(error.response.data);
+      console.error('Error during validation:', error);
     }
   }
 

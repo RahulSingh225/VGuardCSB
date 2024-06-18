@@ -117,7 +117,7 @@ const styles = StyleSheet.create({
     opacity: 0.9,
   },
   disabledImage: {
-    filter: 'grayscale(100%)',
+    tintColor: 'rgba(118,118,118,0.6)',
   },
   disabledText: {
     color: Colors.grey,

@@ -37,6 +37,7 @@ import getLocation from '../../utils/geolocation';
 import {AppContext} from '../../services/ContextService';
 import {useFocusEffect} from '@react-navigation/native';
 import {getItem} from '../../services/StorageService';
+import { mailValidation, mobileNoValidation } from '../../utils/pattern';
 
 var location: {};
 const ProductRegistrationForm: React.FC<{navigation: any}> = ({navigation}) => {
@@ -247,13 +248,28 @@ const ProductRegistrationForm: React.FC<{navigation: any}> = ({navigation}) => {
   async function ValidateContact(){
     showLoader(true)
     try{
-    const result = await validateMobile(contactNo)
+      if(!customerFormData.name){
+        ToastAndroid.show("Please enter the name",ToastAndroid.SHORT)
+        return 
+      }
+      if(customerFormData.email && !mailValidation(customerFormData.email)){
+        ToastAndroid.show("Please enter the valid E-mail",ToastAndroid.SHORT)
+        return 
+      }
+
+      if(customerFormData.altContactNo && !mobileNoValidation(customerFormData.altContactNo)){
+        ToastAndroid.show("Please enter the valid alternate number",ToastAndroid.SHORT)
+        return 
+      }
+      const result = await validateMobile(contactNo)
       handleProceed()
     }catch(err){
       showLoader(false);
       console.log(err);
       setPopupContent('Please use valid customer mobile number')
       setPopupVisible(true)
+    }finally{
+      showLoader(false)
     }
 
   }
@@ -262,12 +278,9 @@ const ProductRegistrationForm: React.FC<{navigation: any}> = ({navigation}) => {
   const getDetails = async () => {
     
     try {
-      if (contactNo.length !== 10) {
-        Snackbar.show({
-          text: 'Contact number must be 10 digits',
-          duration: Snackbar.LENGTH_SHORT,
-        });
-        return;
+      if (!mobileNoValidation(contactNo)) {
+        ToastAndroid.show("Please enter the valid contact number",ToastAndroid.SHORT)
+        return 
       }
       showLoader(true);
       const response = await getCustDetByMobile(contactNo);
@@ -279,23 +292,13 @@ const ProductRegistrationForm: React.FC<{navigation: any}> = ({navigation}) => {
       if (result.name) {
         const customerDetails = result;
 
-        setCustomerFormData(prevData => ({
-          ...prevData,
-          name: customerDetails.name || '',
-          email: customerDetails.email || '',
-          altContactNo: customerDetails.alternateNo || '',
-          landmark: customerDetails.landmark || '',
-          pincode: customerDetails.pinCode || '',
-          state: customerDetails.state || '',
-          district: customerDetails.district || '',
-          city: customerDetails.city || '',
-          address: customerDetails.currAdd || '',
-        }));
+        handleUserData(customerDetails)
       } else {
         ToastAndroid.show(
           t('strings:cust_detail_not_found'),
           ToastAndroid.SHORT,
         );
+        handleUserData({})
       }
 
       return result;
@@ -304,14 +307,31 @@ const ProductRegistrationForm: React.FC<{navigation: any}> = ({navigation}) => {
       setPopupVisible(true);
       setPopupContent('Something went wrong!');
       console.error('Error Fetching Customer Details:', error);
+    }finally{
+      showLoader(false)
     }
   };
+
+  const handleUserData = (customerDetails:any) => {
+    setCustomerFormData(prevData => ({
+      ...prevData,
+      name: customerDetails?.name || '',
+      email: customerDetails?.email || '',
+      altContactNo: customerDetails?.alternateNo || '',
+      landmark: customerDetails?.landmark || '',
+      pincode: customerDetails?.pinCode || '',
+      state: customerDetails?.state || '',
+      district: customerDetails?.district || '',
+      city: customerDetails?.city || '',
+      address: customerDetails?.currAdd || '',
+    }));
+  }
 
   useEffect(() => {
     getLocation().then(r => (location = r));
 
     const user: VguardUser = context.getUserDetails();
-
+    console.log(user,"adcadbcjadbchdbchdbcub")
     setAddedBy(user.user_id);
     setCustomerFormData({
       ...customerFormData,
@@ -335,6 +355,7 @@ const ProductRegistrationForm: React.FC<{navigation: any}> = ({navigation}) => {
               style={styles.input}
               placeholder={t('strings:contact_number')}
               value={contactNo}
+              maxLength={10}
               placeholderTextColor={Colors.grey}
               onChangeText={value => setContactNo(value)}
               keyboardType="numeric"
@@ -378,6 +399,8 @@ const ProductRegistrationForm: React.FC<{navigation: any}> = ({navigation}) => {
           <View style={styles.inputContainer}>
             <TextInput
               style={styles.input}
+              maxLength={10}
+              keyboardType='numeric'
               placeholder={t('strings:alternate_contact_number')}
               value={customerFormData.altContactNo}
               placeholderTextColor={Colors.grey}
@@ -450,6 +473,7 @@ const ProductRegistrationForm: React.FC<{navigation: any}> = ({navigation}) => {
             <TextInput
               style={styles.input}
               placeholder={t('strings:lbl_state')}
+              editable={false}
               value={customerFormData.state}
               placeholderTextColor={Colors.grey}
               onChangeText={value =>
@@ -462,6 +486,7 @@ const ProductRegistrationForm: React.FC<{navigation: any}> = ({navigation}) => {
               style={styles.input}
               placeholder={t('strings:district')}
               value={customerFormData.district}
+              editable={false}
               placeholderTextColor={Colors.grey}
               onChangeText={value =>
                 setCustomerFormData(prevData => ({
@@ -676,13 +701,13 @@ const styles = StyleSheet.create({
     borderColor: Colors.lightGrey,
     borderWidth: 2,
     borderRadius: 10,
-    height: responsiveHeight(5),
+    // height: responsiveHeight(5),
     width: '100%',
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginTop: responsiveHeight(1),
+    // marginTop: responsiveHeight(1),
   },
   input: {
     width: '90%',

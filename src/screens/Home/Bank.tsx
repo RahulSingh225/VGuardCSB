@@ -1,4 +1,4 @@
-import {View, Text, StyleSheet, ScrollView} from 'react-native';
+import {View, Text, StyleSheet, ScrollView, ToastAndroid} from 'react-native';
 import React, {useContext, useEffect, useState} from 'react';
 import InputField from '../../components/InputField';
 import {BankDetail, VguardUser} from '../../types';
@@ -20,6 +20,7 @@ import Buttons from '../../components/Buttons';
 import Popup from '../../components/Popup';
 import {width} from '../../utils/dimensions';
 import {useFocusEffect} from '@react-navigation/native';
+import { ifscValidation } from '../../utils/pattern';
 
 const Bank = ({navigation}) => {
   const {t} = useTranslation();
@@ -35,7 +36,7 @@ const Bank = ({navigation}) => {
   );
 
   const [loader, setLoader] = useState(false);
-  const [popup, setPopup] = useState({isVisible: false, content: null});
+  const [popup, setPopup] = useState<any>({isVisible: false, content: null});
 
   const [bankDetails, setBankDetail] = useState<BankDetail | any>();
   const [userData, setUserData] = useState<VguardUser | any>();
@@ -43,17 +44,15 @@ const Bank = ({navigation}) => {
   function checkValidation() {
     console.log(userData);
     console.log(bankDetails);
-    if (!bankDetails?.bank_account_ifsc) {
-      setPopup({isVisible: true, content: 'Please enter bank details'});
+    if (!bankDetails?.bank_account_number) {
+      ToastAndroid.show("Please enter the account number",ToastAndroid.SHORT)
       return;
-    } else if (!bankDetails?.bank_account_number) {
-      setPopup({isVisible: true, content: 'Please enter bank details'});
-
+    } 
+    if (!bankDetails?.bank_account_ifsc  || !ifscValidation(bankDetails?.bank_account_ifsc)) {
+      ToastAndroid.show("Please enter the valid IFSC code",ToastAndroid.SHORT)
       return;
-    } else {
-      console.log('calling hanlde submmit');
-      handleSubmit();
-    }
+    } 
+    handleSubmit();
   }
   async function handleSubmit() {
     console.log('called');
@@ -129,8 +128,12 @@ const Bank = ({navigation}) => {
   return (
     <View style={{backgroundColor:Colors.white,flex:1}}>
     <ScrollView
-      contentContainerStyle={{alignContent: 'center', gap: 10,backgroundColor:Colors.white}}
-      style={{width: width * 0.9, alignSelf: 'center'}}>
+
+      contentContainerStyle={{alignContent: 'center', gap: 10}}
+      // style={{width: width * 0.9, alignSelf: 'center'}}
+      style={styles.mainWrapper}
+      >
+
       {popup.isVisible && (
         <Popup
           isVisible={popup.isVisible}

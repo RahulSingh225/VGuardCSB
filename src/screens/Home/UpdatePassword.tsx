@@ -25,6 +25,10 @@ const UpdatePassword = ({navigation}) => {
   const [popup, setPopup] = useState({visible: false, content: ''});
   const [loader, setLoader] = useState(false);
   function handleSubmit() {
+    if (password.trim().length != 8) {
+      setPopup({visible: true, content: 'Password should contain 8 digits'});
+      return 
+    } 
     if (confirmPassword !== password) {
       setPopup({visible: true, content: 'Password does not match'});
     } else if (password.length != 8) {
@@ -86,6 +90,7 @@ const UpdatePassword = ({navigation}) => {
           editable={true}
           maxLength={8}
           onChangeText={t => setConfirmPassword(t)}
+
         />
 
         <Buttons
@@ -100,6 +105,11 @@ const UpdatePassword = ({navigation}) => {
   );
 };
 const style = StyleSheet.create({
+  mainWrapper: {
+    padding: 15,
+    flex: 1,
+    backgroundColor: Colors.white,
+  },
   button: {
     alignSelf: 'center',
     marginTop: 200,

@@ -60,7 +60,7 @@ const UpiTransfer = () => {
         upiId != null &&
         upiSelected &&
         points != 0 &&
-        points >= 250 &&
+        points >= 150 &&
         points <= 5000
       ) {
         const user: VguardUser = context.getUserDetails();
