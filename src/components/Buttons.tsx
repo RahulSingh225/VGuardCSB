@@ -21,7 +21,7 @@ interface ButtonsProps {
   iconWidth?: number;
   iconHeight?: number;
   iconGap?: number;
-  btnStyle: {};
+  btnStyle?: {};
 }
 
 const Buttons: React.FC<ButtonsProps> = ({
