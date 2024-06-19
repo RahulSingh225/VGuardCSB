@@ -17,17 +17,9 @@ import {
   StorageItem,
 } from './src/services/StorageService';
 import {VguardUser} from './src/types';
-import {Text} from 'react-native-paper';
-import {Alert, PermissionsAndroid, View} from 'react-native';
+import {Alert, PermissionsAndroid} from 'react-native';
 import AuthNavigator from './src/navigator/AuthNavigator';
-import Notification from './src/screens/BottomTab/Notification';
-import EditProfile from './src/screens/BottomTab/EditProfile';
-import Test from './src/screens/WhatsNew/Test';
-import UpdatePassword from './src/screens/Home/UpdatePassword';
 import {api} from './src/utils/apiservice';
-import FillProfile from './src/screens/Home/FillProfile';
-import Bank from './src/screens/Home/Bank';
-import Consent from './src/screens/Home/Consent';
 
 function App(): React.JSX.Element {
   async function requestAllPermissions() {

@@ -13,10 +13,11 @@ interface InputFieldProps {
   isImage?: boolean;
   imageSource?: string;
   onPressImage?: () => void;
-  onChangeText: (value: string) => void;
+  onChangeText?: (value: string) => void;
   numeric?: boolean;
   maxLength?: number;
   imageName?: string;
+  value: any;
 }
 
 const InputField: React.FC<InputFieldProps> = ({
@@ -30,6 +31,7 @@ const InputField: React.FC<InputFieldProps> = ({
   onChangeText,
   numeric,
   maxLength,
+  value,
   ...rest
 }) => {
   const [isFocused, setIsFocused] = useState(false);
@@ -54,7 +56,7 @@ const InputField: React.FC<InputFieldProps> = ({
           <TextInput
             style={[styles.input, styles.disabledInput, { flex: 1 }]}
             editable={false}
-            value={label}
+            value={value}
             {...rest}
           />
           <TouchableOpacity onPress={onPressImage}>
