@@ -32,6 +32,7 @@ import UniqueCodeHistory from '../screens/Scan/UniqueCodeHistory';
 import NewStack from './NewStack';
 import FillProfile from '../screens/Home/FillProfile';
 import Consent from '../screens/Home/Consent';
+import TDSScreen from '../screens/Home/TDSScreen';
 
 const HomeStack: React.FC = () => {
   type HomeStackParams = {
@@ -44,7 +45,8 @@ const HomeStack: React.FC = () => {
     info: undefined;
     new: undefined;
     ticket: undefined;
-    'Update Bank': undefined;
+    'UpdateBank': undefined;
+    'UpdateProfile': undefined;
     'TDS Certificate': undefined;
     'TDS Statement': undefined;
     'Update PAN': undefined;
@@ -55,6 +57,10 @@ const HomeStack: React.FC = () => {
     'Redemption History': undefined;
     'Product Registration Form': undefined;
     'Scan In': undefined;
+    'TDS': undefined;
+    'UpdatePassword': undefined;
+    'Claims': undefined;
+    'Consent': undefined;
   };
 
   const [showLanguagePicker, setShowLanguagePicker] = useState(false);
@@ -175,6 +181,13 @@ const HomeStack: React.FC = () => {
         <Stack.Screen
           name="Unique Code History"
           component={UniqueCodeHistory}
+          options={{
+            headerShown: true,
+          }}
+        />
+        <Stack.Screen
+          name="TDS"
+          component={TDSScreen}
           options={{
             headerShown: true,
           }}

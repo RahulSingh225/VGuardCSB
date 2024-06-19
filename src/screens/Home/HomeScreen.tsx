@@ -217,9 +217,9 @@ const HomeScreen: React.FC<{navigation: any}> = ({navigation}) => {
           </View>
           <View style={styles.row}>
             <CustomTouchableOption
-              text="strings:tds_certificate"
+              text="TDS"
               iconSource={require('../../assets/images/tds_ic.png')}
-              screenName="TDS Certificate"
+              screenName="TDS"
             />
             <CustomTouchableOption
               text="strings:engagement"
@@ -233,13 +233,13 @@ const HomeScreen: React.FC<{navigation: any}> = ({navigation}) => {
             />
           </View>
 
-          <View style={styles.lastrow}>
+          {/* <View style={styles.lastrow}>
             <CustomTouchableOption
               text="strings:tds_statement"
               iconSource={require('../../assets/images/tds_ic.png')}
               screenName="TDS Statement"
             />
-          </View>
+          </View> */}
         </View>
         <NeedHelp />
       </View>
