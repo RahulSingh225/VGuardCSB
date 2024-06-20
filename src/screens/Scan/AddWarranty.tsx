@@ -373,6 +373,12 @@ const AddWarranty = ({navigation}) => {
             textContent: 'POINTS',
             fontWeight: '700',
           },
+          text3: {
+            color: colors.grey,
+            fontSize: 12,
+            textContent: 'These points will be available for redemption from 1st of next month.',
+            fontWeight: '700',
+          },
           
           button: {
             buttonColor: Colors.yellow,

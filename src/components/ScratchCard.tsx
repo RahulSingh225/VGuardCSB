@@ -201,7 +201,9 @@ const RewardBox: React.FC<ScratchCardComponentProps> = ({
             <Text style={styles.text2}>
               {scratchCardProps?.text2?.textContent}
             </Text>
-          
+            <Text style={styles.text3}>
+              {scratchCardProps?.text3?.textContent}
+            </Text>
 
             {scratchCardProps?.button?.buttonText && (
               <TouchableOpacity

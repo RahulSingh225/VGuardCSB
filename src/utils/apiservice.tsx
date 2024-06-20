@@ -5,8 +5,8 @@ import {VguardUser} from '../types';
 import {StorageItem, addItem, getItem} from '../services/StorageService';
 
 // const BASE_URL = 'http://192.168.1.37:5000/vguard/api';
-const BASE_URL = 'http://localhost:5000/vguard/api';
-//const BASE_URL = 'https://vguardcsb.spacempact.cloud/vguard/api';
+//const BASE_URL = 'http://localhost:5000/vguard/api';
+const BASE_URL = 'https://vguardcsb.spacempact.cloud/vguard/api';
 
 export const api: AxiosInstance = axios.create({
   baseURL: BASE_URL,
