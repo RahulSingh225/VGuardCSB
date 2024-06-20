@@ -313,6 +313,7 @@ const RaiseClaim = ({navigation}) => {
               fontWeight: '500',
               color: Colors.black,
               textAlign: 'left',
+              paddingHorizontal:5
             }}
           >
             {faqcontent}
