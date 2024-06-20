@@ -5,6 +5,7 @@ import SplashScreen from '../screens/Auth/SplashScreen';
 import Login from '../screens/Auth/Login';
 import LoginWithNumber from '../screens/Auth/LoginWithNumber';
 import LoginWithOtp from '../screens/Auth/LoginWithOtp';
+import ForgotPassword from '../screens/Auth/ForgotPassword';
 
 const AuthNavigator: React.FC = () => {
   const Stack = createNativeStackNavigator();
@@ -34,6 +35,12 @@ const AuthNavigator: React.FC = () => {
 
         name="loginwithotp"
         component={LoginWithOtp}
+        options={{headerShown: false}}
+      />
+       <Stack.Screen
+
+        name="forgotPassword"
+        component={ForgotPassword}
         options={{headerShown: false}}
       />
     </Stack.Navigator>

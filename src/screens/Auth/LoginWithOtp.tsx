@@ -241,7 +241,11 @@ const LoginWithOtp: React.FC<LoginWithOtpProps> = ({navigation, route}) => {
                   maxLength={4}
                 />
               </View>
+              <Text style={styles.textDesc}>
+                {t('strings:otp_pan_description')}
+              </Text>
             </View>
+
             <View>
               <Buttons
                 label={t('strings:login_with_otp')}
@@ -316,6 +320,11 @@ const styles = StyleSheet.create({
     color: Colors.grey,
     fontSize: 14,
     fontWeight: 'bold',
+  },
+  textDesc: {
+    width: '100%',
+    color: Colors.grey,
+    fontSize: 12,
   },
   mainHeader: {
     color: Colors.black,
@@ -398,8 +407,8 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    gap: 20,
-    marginBottom: 50,
+    gap: 10,
+    marginBottom: 40,
   },
   phone: {
     height: 50,

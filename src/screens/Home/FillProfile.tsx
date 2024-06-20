@@ -29,9 +29,29 @@ import Loader from '../../components/Loader';
 import {Avatar, TextInput} from 'react-native-paper';
 import TDSPopup from '../../components/TDSPopup';
 import { mailValidation, mobileNoValidation } from '../../utils/pattern';
+import { AxiosResponse } from 'axios';
+import Snackbar from 'react-native-snackbar';
 
 const FillProfile: React.FC<{navigation: any}> = ({navigation}) => {
-  const appContext = useContext(AppContext);
+
+  interface PincodeResponseData {
+    pinCodeId: string;
+  }
+  
+  interface DetailsByPinCodeData {
+    distName: string;
+    distId: string;
+    stateName: string;
+    stateId: string;
+    cityName: string;
+  }
+  
+  interface CityData {
+    cityName: string;
+    id: string;
+  }
+
+  const appContext: any = useContext(AppContext);
   useEffect(() => {
     const user: VguardUser = appContext.getUserDetails();
     setUserData(user);
@@ -49,7 +69,7 @@ const FillProfile: React.FC<{navigation: any}> = ({navigation}) => {
   const [userData, setUserData] = useState<VguardUser | any>();
   const [popup, setPopup] = useState<any>({isVisible: false, content: ""});
   const [pincode_suggestions, setPincode_Suggestions] = React.useState([]);
-  const [tdsValue, setTDSValue] = useState(20);
+  const [tdsValue, setTDSValue] = useState('');
   const [cities, setCities] = useState<Cities | any>();
   const [uiSwitch, setUIswitch] = React.useState({
     currentpincode: false,
@@ -73,7 +93,7 @@ const FillProfile: React.FC<{navigation: any}> = ({navigation}) => {
       .then(suggestionData => {
         console.log(suggestionData);
         if (Array.isArray(suggestionData) && suggestionData.length > 0) {
-          const filteredSuggestions = suggestionData.filter(
+          const filteredSuggestions: any = suggestionData.filter(
             item => item.pinCode !== null,
           );
 
@@ -97,16 +117,20 @@ const FillProfile: React.FC<{navigation: any}> = ({navigation}) => {
 
   function updateDistrictState(pincode: string, type: string) {
     setLoader(true);
+  
     getPincodeList(pincode)
-      .then(data => {
-        const pincodeid = data.data[0].pinCodeId;
+      .then((response: AxiosResponse<{ data: PincodeResponseData[] }>) => {
+        const pincodeList = response.data.data;
+        if (pincodeList.length === 0) {
+          throw new Error('No pincode data found');
+        }
+        const pincodeid = pincodeList[0].pinCodeId;
         return getDetailsByPinCode(pincodeid);
       })
-      .then(secondData => {
-        secondData = secondData.data;
+      .then((secondResponse: AxiosResponse<DetailsByPinCodeData>) => {
+        const secondData = secondResponse.data;
         console.log(secondData);
-        setLoader(false);
-
+  
         setUserData((prevData: VguardUser) => ({
           ...prevData,
           district: secondData.distName,
@@ -116,18 +140,14 @@ const FillProfile: React.FC<{navigation: any}> = ({navigation}) => {
           city: secondData.cityName,
           pinCode: pincode,
         }));
-
-        setLoader(false);
-        console.log(userData);
+  
         return getCities(secondData.distId);
       })
-      .then(cityData => {
-        cityData = cityData.data;
-        const cityDataWithOther = [...cityData, {cityName: 'Other', id: ''}];
-
+      .then((cityResponse: AxiosResponse<{ data: CityData[] }>) => {
+        const cityData = cityResponse.data.data;
+        const cityDataWithOther = [...cityData, { cityName: 'Other', id: '' }];
+  
         setCities(cityDataWithOther);
-
-        setLoader(false);
       })
       .catch(error => {
         console.error('Error in Page 1:', error);
@@ -136,11 +156,19 @@ const FillProfile: React.FC<{navigation: any}> = ({navigation}) => {
         setLoader(false);
       });
   }
+  
   function checkValidation() {
-    console.log(userData);
+    // console.log(userData);
 
     if(userData.alternate_contact && !mobileNoValidation(userData.alternate_contact)){
+      console.log(userData.alternate_contact)
+      console.log(!mobileNoValidation(userData.alternate_contact))
       ToastAndroid.show("Please enter the valid alternate number",ToastAndroid.SHORT)
+      return 
+    }
+
+    if(tdsValue!== '' && !initialPopup.tdschecked){
+      ToastAndroid.show("Please verify TDS Value",ToastAndroid.SHORT)
       return 
     }
 
@@ -225,14 +253,13 @@ const FillProfile: React.FC<{navigation: any}> = ({navigation}) => {
         tdsContent: result.data.message,
         tdschecked: true,
       });
-      setTDSValue(result.data.entity);
+      setTDSValue(result.data.entity + '%');
     } catch (error) {
       setLoader(false)
       console.log(error);
     }
   }
   const handleInputChange = async (value: string, label: string) => {
-    console.log(userData);
     setUserData((prevData: VguardUser) => {
       let updatedValue: any = value;
       if (['annualBusinessPotential'].includes(label)) {
@@ -394,15 +421,18 @@ const FillProfile: React.FC<{navigation: any}> = ({navigation}) => {
             contentStyle={{textAlign: 'justify'}}
             style={{flex: 2, maxWidth: '70%', backgroundColor: 'transparent'}}
             textColor="black"
-            disabled={true}
-            value={tdsValue + '%'}
+            value={tdsValue}
+            disabled
+            // onChangeText={(e)=>setTDSValue(e)}
           />
           {!initialPopup.tdschecked && (
             <Buttons
               btnStyle={{flex: 1,height:"70%",width:"100%",alignSelf:"center",right:10}}
               label="Verify"
               onPress={() =>
-                setInitialPopup((prev: any) => ({...prev, tdsPopup: true}))
+                {
+                  setInitialPopup((prev: any) => ({...prev, tdsPopup: true}))
+                }
               }
               variant="filled"
             />
@@ -440,7 +470,6 @@ const FillProfile: React.FC<{navigation: any}> = ({navigation}) => {
             ? 'Search Pincode'
             : `${userData?.pincode || ''}`
         }
-        searchablePlaceholder="Search Pincode"
         searchTextInputProps={{
           maxLength: 6,
           keyboardType: 'number-pad',
@@ -451,7 +480,7 @@ const FillProfile: React.FC<{navigation: any}> = ({navigation}) => {
           decelerationRate: 'fast',
         }}
         open={uiSwitch.pincode}
-        items={pincode_suggestions.map(item => ({
+        items={pincode_suggestions.map((item: any) => ({
           label: item?.pinCode,
           value: item?.pinCode,
         }))}

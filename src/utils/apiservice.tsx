@@ -5,7 +5,7 @@ import {VguardUser} from '../types';
 import {StorageItem, addItem, getItem} from '../services/StorageService';
 
 // const BASE_URL = 'http://192.168.1.37:5000/vguard/api';
-//const BASE_URL = 'http://localhost:5000/vguard/api';
+
 const BASE_URL = 'https://vguardcsb.spacempact.cloud/vguard/api';
 
 export const api: AxiosInstance = axios.create({
@@ -30,7 +30,7 @@ async function createPostRequest(
     });
 
     return response;
-  } catch (error) {
+  } catch (error: any) {
     console.log(error);
     console.log(error?.response);
     if (error.response.status == 401) {
@@ -48,7 +48,7 @@ async function createGetRequest(relativeUrl: string): Promise<AxiosResponse> {
   try {
     const response = await api.get(relativeUrl);
     return response;
-  } catch (error) {
+  } catch (error: any) {
     console.log(error.response.status);
     if (error.response.status == 401) {
       getItem('REFRESH_TOKEN').then(token => {

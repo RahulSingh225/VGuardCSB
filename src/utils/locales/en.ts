@@ -1,6 +1,6 @@
 export default {
   strings: {
-    tds_consent_message:{
+    tds_consent_message: {
       yes: "Yes, I am ready to share my PAN details and authorize V Guard Industries Ltd. to deduct TDS under section 194R @10% which can be credited back at the FY end if the redemption amount is less than 20000.",
       no: "No, I am not ready to share my PAN details and authorize V Guard Industries Ltd. to deduct TDS under section 194R @ 20% which can be credited back at the FY end if the redemption amount is less than 20000",
       note: "It will be applicable for both new earnings and existing point balance",
@@ -9,16 +9,16 @@ export default {
       invalid: "Your TDS deduction will be @ 20% as your PAN details are invalid.",
       notLinked: "Your TDS deduction will be @ 20% as your PAN & Aadhar are not linked",
       emptyIT: "Your TDS deduction will be @ 20% because of non-filing of income tax return.",
-      agreed:"The TDS percentage cannot be changed during the financial year hence,\n I authorize and confirm.",
+      agreed: "The TDS percentage cannot be changed during the financial year hence,\n I authorize and confirm.",
       panPreview: "Please update/preview your PAN details",
-      notApproved:"Your KYC verification is pending. Please contact the V-Guard team to approve your KYC",
-      consent_header:"TDS Consent",
-      submit:"Submit",
-      accept:"Accept",
-      reSubmit:"Re-Submit",
-      proceed:"Proceed",
-      goBack:"Go Back",
-      preview:"Preview"
+      notApproved: "Your KYC verification is pending. Please contact the V-Guard team to approve your KYC",
+      consent_header: "TDS Consent",
+      submit: "Submit",
+      accept: "Accept",
+      reSubmit: "Re-Submit",
+      proceed: "Proceed",
+      goBack: "Go Back",
+      preview: "Preview"
     },
     language: 'English',
     app_name: 'V-Guard Rishta Retailer',
@@ -111,7 +111,8 @@ export default {
     enter_your_mobile_number: 'Enter your mobile number',
     lbl_otp_verification: 'OTP Verification',
     enter_otp_description:
-      'Please enter the 4-digit OTP\nreceived through SMS.\n OTP is 4 digits of PAN if first time login. ',
+      'Please enter the 4-digit OTP received through SMS.',
+    otp_pan_description: 'OTP is 4 digits of PAN if first time login. ',
     new_user: 'New User',
     rishta_id: 'Rishta ID',
     mobile_no: 'Mobile No.',

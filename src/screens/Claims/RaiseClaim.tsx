@@ -65,6 +65,8 @@ const RaiseClaim = ({navigation}) => {
   );
   const [popup, setPopup] = useState({isPopupVisible: false, popupContent: ''});
 
+  const [endDateLimit,setEndDateLimit] = useState({ min:moment().toDate(), max:moment().toDate() });
+
   function handleCategoryChange(index: number, position: number) {
     console.log(categories[index].label);
     setLoader(true);
@@ -238,6 +240,28 @@ const RaiseClaim = ({navigation}) => {
       });
   }
 
+  const setMaxForEndDate = (startDateEvent:any) => { 
+
+    const selectedMonth = moment(startDateEvent,"DD MMM YYYY").format("MM");
+    const currentMonth = moment().format("MM");
+    if(selectedMonth == currentMonth){
+
+      setEndDateLimit({
+        min:moment(startDateEvent,"DD MMM YYYY").toDate(),
+        max:moment().toDate()
+      })
+
+    }else{
+
+      setEndDateLimit({
+        min:moment(startDateEvent,"DD MMM YYYY").toDate(),
+        max:moment(startDateEvent,"DD MMM YYYY").endOf("month").toDate()
+      })
+      
+    }
+    
+  }
+
   return (
     <ScrollView style={styles.mainWrapper}>
       {loader && <Loader isLoading={loader} />}
@@ -327,8 +351,8 @@ const RaiseClaim = ({navigation}) => {
           date={claim?.start_date}
           onDateChange={date => {
             setStartDate(date)
-            setClaim({...claim, start_date: date})
-            
+            setClaim({...claim, start_date: date,end_date:''})
+            setMaxForEndDate(date)
           }}
 
         />
@@ -336,12 +360,8 @@ const RaiseClaim = ({navigation}) => {
         <DatePickerField
           label="End Date"
           date={claim?.end_date}
-          
-          
-          maximum={
-            
-               new Date()
-          }
+          minimum={ endDateLimit.min }
+          maximum={ endDateLimit.max }
           onDateChange={date => setClaim({...claim, end_date: date})}
         />
 

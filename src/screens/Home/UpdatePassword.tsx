@@ -10,8 +10,8 @@ import {AppContext} from '../../services/ContextService';
 import {VguardUser} from '../../types';
 import {Colors} from '../../utils/constants';
 
-const UpdatePassword = ({navigation}) => {
-  const context = useContext(AppContext);
+const UpdatePassword = ({navigation}: any) => {
+  const context: any = useContext(AppContext);
   const user: VguardUser = context.getUserDetails();
   useEffect(() => {
     const backHandler = BackHandler.addEventListener(
@@ -73,6 +73,7 @@ const UpdatePassword = ({navigation}) => {
           />
         )}
         <Text style={style.text}>Please Update your password!</Text>
+        <Text style={style.textDesc}>Please set password with maximum 8 digits</Text>
         <InputField
           style={style.input}
           label="Enter Password"
@@ -117,10 +118,14 @@ const style = StyleSheet.create({
   input: {width: width * 0.8, color: Colors.black},
   text: {
     fontWeight: 'bold',
-    fontSize: 24,
-    marginBottom: 100,
+    fontSize: 20,
     marginTop: 50,
     color: Colors.black,
   },
+  textDesc: {
+    color: Colors.grey,
+    fontSize: 14,
+    marginBottom: 100,
+  }
 });
 export default UpdatePassword;
