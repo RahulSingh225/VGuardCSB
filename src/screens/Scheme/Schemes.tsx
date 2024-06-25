@@ -5,25 +5,19 @@ import CustomTouchableOption from '../../components/CustomTouchableOption';
 import NeedHelp from '../../components/NeedHelp';
 import { Colors } from '../../utils/constants';
 import { getSchemeImages } from '../../utils/apiservice';
+import ReusableCarousel from '../../components/ReusableCarousel';
 
 const Schemes: React.FC = () => {
-  const [imageArray, setImageArray] = useState(null);
-  const imageUrl = 'https://vguardrishta.com/';
-
-  useEffect(() => {
-    getSchemeImages().then(response => {
-      const result = response.data;
-      console.log(result)
-      var ar = [];
-      result.map(r => ar.push({ imageUrl: imageUrl + r.imgPath }));
-      setImageArray(ar);
-    });
-  }, []);
-
+  const carouselData = [
+    {
+      imageUrl: require('../../assets/images/banners/SchemeOffers.jpg'),
+    }
+  ];
   return (
     <View style={styles.container}>
       <View style={styles.carousel}>
-        {imageArray && <ReusableUrlCarousel data={imageArray} />}
+        <ReusableCarousel data={carouselData}
+          carouselHeight={300} />
       </View>
       <View style={styles.mainWrapper}>
         <View style={styles.options}>

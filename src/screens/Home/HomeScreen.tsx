@@ -1,4 +1,4 @@
-import React, {useContext, useEffect, useState} from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -18,16 +18,16 @@ import {
   responsiveHeight,
   responsiveWidth,
 } from 'react-native-responsive-dimensions';
-import {useTranslation} from 'react-i18next';
-import {getFile, getUserProfile} from '../../utils/apiservice';
+import { useTranslation } from 'react-i18next';
+import { getFile, getUserProfile } from '../../utils/apiservice';
 import CustomTouchableOption from '../../components/CustomTouchableOption';
 import NeedHelp from '../../components/NeedHelp';
-import Constants, {Colors} from '../../utils/constants';
-import {VguardUser} from '../../types';
-import {AppContext} from '../../services/ContextService';
-import {getImageUrl} from '../../utils/fileutils';
-import {useFocusEffect} from '@react-navigation/native';
-import {StorageItem, addItem, getItem, removeItem} from '../../services/StorageService';
+import Constants, { Colors } from '../../utils/constants';
+import { VguardUser } from '../../types';
+import { AppContext } from '../../services/ContextService';
+import { getImageUrl } from '../../utils/fileutils';
+import { useFocusEffect } from '@react-navigation/native';
+import { StorageItem, addItem, getItem, removeItem } from '../../services/StorageService';
 import OpenPopupOnOpeningApp from '../../components/OpenPopupOnOpeningApp';
 
 interface User {
@@ -41,8 +41,8 @@ interface User {
   inAllow: number;
 }
 
-const HomeScreen: React.FC<{navigation: any}> = ({navigation}) => {
-  const {t} = useTranslation();
+const HomeScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
+  const { t } = useTranslation();
   const appContext = useContext(AppContext);
   const [userData, setUserData] = useState<VguardUser | null>();
   const [profileImage, setProfileImage] = useState('');
@@ -75,7 +75,7 @@ const HomeScreen: React.FC<{navigation: any}> = ({navigation}) => {
 
   useFocusEffect(
     React.useCallback(() => {
-      
+
       const user: VguardUser = appContext.getUserDetails();
       if (user?.login_date === null) {
         console.log('first time user');
@@ -86,14 +86,14 @@ const HomeScreen: React.FC<{navigation: any}> = ({navigation}) => {
             setWelocme(true);
           }
         });
-        getUserProfile({user_id: user?.user_id})
+        getUserProfile({ user_id: user?.user_id })
           .then(res => {
             if (res.data.status) {
               const vg: VguardUser = res.data.data;
               if (vg.contact != user.contact) {
                 appContext.signOut();
               }
-              const st: StorageItem = {key: 'USER', value: vg};
+              const st: StorageItem = { key: 'USER', value: vg };
               addItem(st);
               //appContext.updateUser(vg);
               setUserData(vg);
@@ -104,25 +104,23 @@ const HomeScreen: React.FC<{navigation: any}> = ({navigation}) => {
     }, []),
   );
 
-  function handlePopupClose(){
-    removeItem('FIRST_LOGIN').then(res=>console.log(res))
+  function handlePopupClose() {
+    removeItem('FIRST_LOGIN').then(res => console.log(res))
   }
 
   return (
     <ScrollView style={styles.mainWrapper}>
-      <View style={{padding: 15}}>
-        {welcome && (
-          <OpenPopupOnOpeningApp onClose={() => handlePopupClose()} />
-        )}
+      <View style={{ padding: 15 }}>
+        <OpenPopupOnOpeningApp onClose={() => handlePopupClose()} />
         <View style={styles.detailContainer}>
           <View style={styles.ImageProfile}>
             <ImageBackground
               source={require('../../assets/images/ic_v_guards_user.png')}
-              style={{width: '100%', height: '100%', borderRadius: 100}}
+              style={{ width: '100%', height: '100%', borderRadius: 100 }}
               resizeMode="contain">
               <Image
-                source={{uri: profileImage}}
-                style={{width: '100%', height: '100%', borderRadius: 100}}
+                source={{ uri: profileImage }}
+                style={{ width: '100%', height: '100%', borderRadius: 100 }}
                 resizeMode="contain"
               />
             </ImageBackground>

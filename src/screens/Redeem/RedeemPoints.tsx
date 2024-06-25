@@ -30,12 +30,8 @@ const RedeemPoints: React.FC<{navigation: any}> = ({navigation}) => {
   const context = useContext(AppContext);
   const carouselData = [
     {
-      imageUrl: require('../../assets/images/banner_redeem_ppoints.webp'),
-    },
-    {imageUrl: require('../../assets/images/banner.webp')},
-    {
-      imageUrl: require('../../assets/images/banner_redeem_ppoints.webp'),
-    },
+      imageUrl: require('../../assets/images/banners/redemption.jpg'),
+    }
   ];
   const [loader,setLoader] = useState(false)
   const [pointData, setPointData] = useState<PointData>({
@@ -76,11 +72,12 @@ const RedeemPoints: React.FC<{navigation: any}> = ({navigation}) => {
 
   return (
     <ScrollView contentContainerStyle={styles.scrollViewContainer}>
-      <View style={styles.mainWrapper}>
-        <Loader isLoading={loader}/>
+      <Loader isLoading={loader}/>
         <View style={styles.carousel}>
-          <ReusableCarousel data={carouselData} />
+          <ReusableCarousel data={carouselData} carouselHeight={300}/>
         </View>
+      <View style={styles.mainWrapper}>
+        
         <View style={styles.points}>
           <View style={styles.leftPoint}>
             <Text style={styles.greyText}>{t('strings:redeemable_points')}</Text>
@@ -162,7 +159,7 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     gap: 5,
-    marginTop: 30,
+    marginTop: 10,
   },
   leftPoint: {
     width: responsiveWidth(30),

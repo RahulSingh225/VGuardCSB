@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import React, { useState, useEffect } from 'react';
 
 import { useTranslation } from 'react-i18next';
@@ -7,32 +7,22 @@ import CustomTouchableOption from '../../components/CustomTouchableOption';
 import NeedHelp from '../../components/NeedHelp';
 import { Colors } from '../../utils/constants';
 import { getInfoDeskBanners } from '../../utils/apiservice';
+import ReusableCarousel from '../../components/ReusableCarousel';
 
 const Info: React.FC = () => {
   const { t } = useTranslation();
 
-  const imageUrl = "https://vguardrishta.com/";
-
-  const [imageArray, setImageArray] = useState(null);
-
-  useEffect(() => {
-    getInfoDeskBanners()
-      .then(response => {
-        const result = response.data
-          var ar = [];
-          result.map(r => ar.push({ imageUrl: imageUrl + r.imgPath }));
-          setImageArray(ar)
-          const image = imageArray;
-      })
-  }, [])
+  const carouselData = [
+    {
+      imageUrl: require('../../assets/images/banners/infodesk.jpg'),
+    }
+  ];
 
 
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       <View style={styles.carousel}>
-        {imageArray &&
-          <ReusableUrlCarousel data={imageArray} />
-        }
+      <ReusableCarousel data={carouselData} carouselHeight={500}/>
       </View>
       <View style={styles.mainWrapper}>
         <View style={styles.options}>
@@ -56,7 +46,7 @@ const Info: React.FC = () => {
         </View>
         <NeedHelp />
       </View>
-    </View>
+    </ScrollView>
   );
 };
 
@@ -72,7 +62,7 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginVertical: 30,
+    marginVertical: 10,
   },
   mainWrapper: {
     padding: 15,
